@@ -1,10 +1,10 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useCtx } from "../../../../context/Ctx";
 import { useFormik } from "formik";
-import { db } from "../../../../config/@firebase";
-import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
-import { COLLECTIONS } from "../../../../utils/firestore-collections";
-import { formatCollectionData } from "../../../../utils/formatData";
+// import { db } from "../../../../config/@firebase";
+// import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
+// import { COLLECTIONS } from "../../../../utils/firestore-collections";
+// import { formatCollectionData } from "../../../../utils/formatData";
 import { validation_schema_manager_add_waiters } from "../../../../utils/validation_schema";
 export function AddWaiters() {
   const [status, setStatus] = useState({ loading: false, error: null });
@@ -21,34 +21,27 @@ export function AddWaiters() {
     validationSchema: validation_schema_manager_add_waiters,
     onSubmit: onSubmit,
   });
-  useEffect(() => {}, []);
+  // useEffect(() => {}, []);
 
   async function onSubmit(values, actions) {
-    const data = {
-      ...values,
-      managerId: authenticatedUser.managerId,
-      branchId: authenticatedUser.branchId,
-      role: "WAITER",
-    };
     setStatus({ loading: true, error: null });
     try {
-      const exists = await getDocs(
-        query(
-          collection(db, COLLECTIONS.waiters),
-          where("username", "==", values.username)
-          // where('')
-        )
-      );
-      const formattedExistingUsername = formatCollectionData(exists);
-      if (formattedExistingUsername?.length === 1) {
-        setStatus({ loading: false, error: "Username already exists" });
-        return;
-      }
-      await addDoc(collection(db, COLLECTIONS.waiters), data);
+      let data = {
+        name: waiterName,
+        waiterRole: subRole,
+        userName: userName,
+        password: password,
+        role: "WAITER",
+      };
+
+      await api.post("/waiter-register", data, {
+        withCredentials: true,
+      });
+
       updateModalStatus(false, null);
       setStatus({ loading: false, error: null });
     } catch (e) {
-      console.log(e?.message);
+      console.log(e);
       setStatus({ loading: false, error: e?.message ? e?.message : null });
     }
   }

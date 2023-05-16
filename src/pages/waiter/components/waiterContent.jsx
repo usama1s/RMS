@@ -4,9 +4,9 @@ import { Modal } from "../../../components/modal";
 import { WaiterHeader } from "./waiterHeader";
 import { TakeAway } from "./takeaway/index.jsx";
 import { Dinein } from "./dinein";
-import { useDocument } from "react-firebase-hooks/firestore";
-import { doc } from "firebase/firestore";
-import { db } from "../../../config/@firebase";
+// import { useDocument } from "react-firebase-hooks/firestore";
+// import { doc } from "firebase/firestore";
+// import { db } from "../../../config/@firebase";
 export function WaiterContent() {
   const {
     activeWaiterTab,
@@ -14,12 +14,12 @@ export function WaiterContent() {
     modalStatus,
     authenticatedUser,
   } = useCtx();
-  const [value, loading, error] = useDocument(
-    doc(db, "branches", authenticatedUser.branchId),
-    {
-      snapshotListenOptions: { includeMetadataChanges: true },
-    }
-  );
+  // const [value, loading, error] = useDocument(
+  //   doc(db, "branches", authenticatedUser.branchId),
+  //   {
+  //     snapshotListenOptions: { includeMetadataChanges: true },
+  //   }
+  // );
   // const ref = `${authenticatedUser.branchId}-${value?.data()?.clockInDate}`;
 
   const renderWaiterContentNormal = (slug) => {
@@ -40,8 +40,8 @@ export function WaiterContent() {
         <h1>Abc</h1>;
     }
   };
-  if (loading) return <h1>Loading...</h1>;
-  if (error) return <h1>Error...</h1>;
+  // if (loading) return <h1>Loading...</h1>;
+  // if (error) return <h1>Error...</h1>;
   return (
     <div className={"w-full px-4 lg:px-6 overflow-x-hidden"}>
       <WaiterHeader />

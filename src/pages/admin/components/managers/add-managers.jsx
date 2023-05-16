@@ -1,22 +1,23 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { validation_schema_admin_add_managers } from "../../../../utils/validation_schema";
-import {
-  collection,
-  serverTimestamp,
-  getDocs,
-  query,
-  where,
-  doc,
-  setDoc,
-  addDoc,
-} from "firebase/firestore";
+// import {
+//   collection,
+//   serverTimestamp,
+//   getDocs,
+//   query,
+//   where,
+//   doc,
+//   setDoc,
+//   addDoc,
+// } from "firebase/firestore";
 
-import { COLLECTIONS } from "../../../../utils/firestore-collections";
-import { db, auth } from "../../../../config/@firebase";
+// import { COLLECTIONS } from "../../../../utils/firestore-collections";
+// import { db, auth } from "../../../../config/@firebase";
 import { useCtx } from "../../../../context/Ctx";
-import { createUserWithEmailAndPassword } from "@firebase/auth";
-import { ROLES } from "../../../../utils/roles";
+// import { createUserWithEmailAndPassword } from "@firebase/auth";
+// import { ROLES } from "../../../../utils/roles";
+import api from "../../../../config/AxiosBase";
 export function AdminAddManagers() {
   const [status, setStatus] = useState({ loading: false, error: null });
   const { updateModalStatus, authenticatedUser } = useCtx();
@@ -36,41 +37,17 @@ export function AdminAddManagers() {
   async function onSubmit(values, actions) {
     setStatus({ loading: true, error: null });
     try {
-      const branchExists = await getDocs(
-        query(
-          collection(db, COLLECTIONS.branches),
-          where("branchName", "==", values.branchName)
-        )
-      );
-      if (branchExists.docs.length > 0) {
-        setStatus({
-          ...status,
-          error: "Branch already exists.",
-          loading: false,
-        });
-        return;
-      }
-      const createdUser = await createUserWithEmailAndPassword(
-        auth,
-        values.email,
-        values.password
-      );
-      const branch = await addDoc(collection(db, COLLECTIONS.branches), {
-        ...values,
-        role: ROLES.MANAGER,
-        timestamp: serverTimestamp(),
-        managerId: createdUser.user.uid,
-        disabled: false,
-      });
-      await setDoc(doc(db, COLLECTIONS.users, createdUser.user.uid), {
-        ...values,
-        role: ROLES.MANAGER,
-        timestamp: serverTimestamp(),
-        managerId: createdUser.user.uid,
-        disabled: false,
-        branchId: branch.id,
-      });
+      let data = {
+        branchName: values.branchName,
+        name: values.managerName,
+        email: values.email,
+        password: values.password,
+        role: "MANAGER",
+      };
 
+      await api.post("/branch-register", data, {
+        withCredentials: true,
+      });
       setStatus({ error: null, loading: false });
       updateModalStatus(false, null);
     } catch (e) {

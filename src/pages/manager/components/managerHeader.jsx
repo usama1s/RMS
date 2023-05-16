@@ -2,9 +2,10 @@ import React from "react";
 import { useMediaQuery } from "react-responsive";
 import { useCtx, LOCAL_STORAGE_BASE } from "../../../context/Ctx";
 import { ROUTES } from "../../../utils/routes";
-import { signOut } from "@firebase/auth";
-import { auth } from "../../../config/@firebase";
+// import { signOut } from "@firebase/auth";
+// import { auth } from "../../../config/@firebase";
 import { useNavigate } from "react-router";
+import api from "../../../config/AxiosBase";
 export function ManagerHeader() {
   const navigate = useNavigate();
   const isTablet = useMediaQuery({ query: `(max-width:786px)` });
@@ -16,11 +17,12 @@ export function ManagerHeader() {
   } = useCtx();
   const logout = async () => {
     try {
-      await signOut(auth);
+      // await signOut(auth);
+      await api.get("/signout", { withCredentials: true });
       updateManagerSidebarLinks("Pending Orders")();
       setAuthenticatedUser(null);
-      localStorage.removeItem(`${LOCAL_STORAGE_BASE}Data`);
-      navigate(ROUTES.login_manager);
+      localStorage.removeItem("ADMIN");
+      navigate("/global-signin");
     } catch (e) {
       console.log(e);
     }

@@ -112,9 +112,7 @@ export function CtxProvider({ children }) {
   const updateManagerSidebarToggle = (value) => () =>
     setManagerSidebarToggle(value);
   useEffect(() => {
-    setAuthenticatedUser(
-      JSON.parse(localStorage.getItem(`${LOCAL_STORAGE_BASE}Data`))
-    );
+    setAuthenticatedUser(localStorage.getItem("ADMIN"));
     setAuthStatus(true);
   }, []);
   return (

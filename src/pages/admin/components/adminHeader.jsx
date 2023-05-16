@@ -4,9 +4,10 @@ import { LOCAL_STORAGE_BASE, useCtx } from "../../../context/Ctx";
 import { BsCartFill } from "react-icons/bs";
 import { useCartCtx } from "../../../context/CartCtx";
 import { auth } from "../../../config/@firebase";
-import { signOut } from "@firebase/auth";
+// import { signOut } from "@firebase/auth";
 import { useNavigate } from "react-router";
 import { ROUTES } from "../../../utils/routes";
+import api from "../../../config/AxiosBase";
 export function AdminHeader() {
   const navigate = useNavigate();
   const isTablet = useMediaQuery({ query: `(max-width:786px)` });
@@ -18,11 +19,12 @@ export function AdminHeader() {
   } = useCtx();
   const logout = async () => {
     try {
-      await signOut(auth);
+      // await signOut(auth);
+      await api.get("/signout", { withCredentials: true });
       updateAdminSidebarLinks("Branches")();
-      navigate(ROUTES.login_admin);
+      navigate("/global-signin");
       setAuthenticatedUser(null);
-      localStorage.removeItem(`${LOCAL_STORAGE_BASE}Data`);
+      localStorage.removeItem("ADMIN");
     } catch (e) {
       console.log(e);
     }

@@ -2,11 +2,12 @@ import React from "react";
 import { useMediaQuery } from "react-responsive";
 import { BsCartFill } from "react-icons/bs";
 import { useCartCtx } from "../../../context/CartCtx";
-import { auth } from "../../../config/@firebase";
+// import { auth } from "../../../config/@firebase";
 import { useNavigate } from "react-router-dom";
-import { signOut } from "firebase/auth";
+// import { signOut } from "firebase/auth";
 import { ROUTES } from "../../../utils/routes";
 import { useCtx, LOCAL_STORAGE_BASE } from "../../../context/Ctx";
+import api from "../../../config/AxiosBase";
 export function WaiterHeader() {
   const navigate = useNavigate();
   const isTablet = useMediaQuery({ query: `(max-width:786px)` });
@@ -18,10 +19,11 @@ export function WaiterHeader() {
   const { updateCartStatus, cartNoOfItems } = useCartCtx();
   const logout = async () => {
     try {
-      await signOut(auth);
-      navigate(ROUTES.login_waiter);
+      // await signOut(auth);
+      await api.get("/signout", { withCredentials: true });
+      navigate("/global-signin");
       setAuthenticatedUser(null);
-      localStorage.removeItem(`${LOCAL_STORAGE_BASE}Data`);
+      localStorage.removeItem("ADMIN");
     } catch (e) {
       console.log(e);
     }

@@ -1,5 +1,5 @@
 import { WaiterSidebar } from "./waiterSidebar";
-import { db } from "../../../config/@firebase";
+// import { db } from "../../../config/@firebase";
 import { useCtx } from "../../../context/Ctx";
 
 export function WaiterLayout({ children }) {

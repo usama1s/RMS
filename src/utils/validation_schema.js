@@ -1,13 +1,23 @@
 import * as Yup from "yup";
+// export const validation_schema_form = Yup.object({
+//   email: Yup.string()
+//     .email("Please provide a valid email address")
+//     .required("Email is required"),
+//   password: Yup.string().required("Password is required."),
+// });
+
 export const validation_schema_form = Yup.object({
   email: Yup.string()
-    .email("Please provide a valid email address")
-    .required("Email is required"),
+    .matches(
+      /^(?:[a-zA-Z0-9._]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}|[a-zA-Z0-9._]+)$/,
+      "Invalid email or username"
+    )
+    .required("Email or username is required"),
   password: Yup.string().required("Password is required."),
 });
+
 export const validation_schema_form_b = Yup.object({
-  email: Yup.string()
-  .required("Username is required"),
+  email: Yup.string().required("Username is required"),
   password: Yup.string().required("Password is required."),
 });
 

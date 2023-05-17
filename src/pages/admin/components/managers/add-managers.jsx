@@ -1,28 +1,13 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useFormik } from "formik";
 import { validation_schema_admin_add_managers } from "../../../../utils/validation_schema";
-// import {
-//   collection,
-//   serverTimestamp,
-//   getDocs,
-//   query,
-//   where,
-//   doc,
-//   setDoc,
-//   addDoc,
-// } from "firebase/firestore";
-
-// import { COLLECTIONS } from "../../../../utils/firestore-collections";
-// import { db, auth } from "../../../../config/@firebase";
 import { useCtx } from "../../../../context/Ctx";
-// import { createUserWithEmailAndPassword } from "@firebase/auth";
-// import { ROLES } from "../../../../utils/roles";
 import api from "../../../../config/AxiosBase";
+
 export function AdminAddManagers() {
   const [status, setStatus] = useState({ loading: false, error: null });
-  const { updateModalStatus, authenticatedUser } = useCtx();
+  const { updateModalStatus, updateApiDoneStatus, apiDone } = useCtx();
 
-  //Form Data
   const formik = useFormik({
     initialValues: {
       branchName: "",
@@ -50,6 +35,7 @@ export function AdminAddManagers() {
       });
       setStatus({ error: null, loading: false });
       updateModalStatus(false, null);
+      updateApiDoneStatus(!apiDone);
     } catch (e) {
       console.log(e);
       setStatus({

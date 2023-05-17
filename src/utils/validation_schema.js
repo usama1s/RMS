@@ -63,3 +63,8 @@ export const validation_schema_manager_add_waiters = Yup.object({
   username: Yup.string().required("Username is required"),
   password: Yup.string().required("Password is required"),
 });
+
+export const validation_schema_admin_edit_managers = Yup.object({
+  branchName: Yup.string().required("Branch Name is required"),
+  email: Yup.string().email("Email is required").required("Email is required"),
+});

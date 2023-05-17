@@ -1,35 +1,46 @@
-import { COLLECTIONS } from "../../../../utils/firestore-collections";
-import { formatCollectionData } from "../../../../utils/formatData";
+import { useEffect, useState } from "react";
 import { PlusIcon } from "@heroicons/react/24/solid";
 import { AdminAddManagers } from "./add-managers";
 import { useCtx } from "../../../../context/Ctx";
 import { Loading } from "../../../../components/loading";
-import { auth, db } from "../../../../config/@firebase";
-import { useCollection } from "react-firebase-hooks/firestore";
-import { collection, deleteDoc, doc, query, where } from "@firebase/firestore";
 import { TrashIcon, PencilIcon } from "@heroicons/react/24/solid";
-import { useState } from "react";
-import { deleteUser } from "@firebase/auth";
+import { EditManager } from "./EditManager";
+import api from "../../../../config/AxiosBase";
 
 export function AdminManagerSection() {
-  const { updateModalStatus } = useCtx();
-  const [value, loading, error] = useCollection(
-    query(collection(db, COLLECTIONS.branches), where("role", "==", "MANAGER")),
-    {
-      snapshotListenOptions: { includeMetadataChanges: true },
+  const { updateModalStatus, apiDone } = useCtx();
+  const [formattedData, setFormattedData] = useState();
+  const [loading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
+
+  const getBranches = async () => {
+    setIsLoading(true);
+    const resp = await api.get("/getAllBranches", { withCredentials: true });
+    if (resp.data.status !== "success") {
+      setError(true);
     }
-  );
-  const formattedData = formatCollectionData(value);
-  if (error)
-    return (
-      <h1 className="text-xl font-semibold">Error fetching menu items..</h1>
-    );
+    setFormattedData(resp.data.data);
+    setIsLoading(false);
+  };
+
+  console.log({ apiDone });
+
+  useEffect(() => {
+    getBranches();
+  }, [apiDone]);
+
   if (loading)
     return (
       <div className="h-[40vh]">
         <Loading />
       </div>
     );
+
+  if (error)
+    return (
+      <h1 className="text-xl font-semibold">Error fetching menu items..</h1>
+    );
+
   return (
     <div>
       <div className="flex items-center justify-between py-4">
@@ -61,19 +72,24 @@ export function AdminManagerSection() {
                 </div>
                 <div className="flex mr-1">
                   <TrashIcon
-                    // onClick={() =>
-                    //   updateModalStatus(
-                    //     true,
-                    //     <DeleteItemJSX
-                    //       updateModalStatus={updateModalStatus}
-                    //       slug={data.slug}
-                    //     />
-                    //   )
-                    // }
+                    onClick={() =>
+                      updateModalStatus(
+                        true,
+                        <DeleteItemJSX
+                          updateModalStatus={updateModalStatus}
+                          slug={data._id}
+                        />
+                      )
+                    }
                     className="h-6 w-6 mr-4 text-gray-900 cursor-pointer hover:scale-110 duration-200"
                   />
                   <PencilIcon
-                    onClick={() => {}}
+                    onClick={() =>
+                      updateModalStatus(
+                        true,
+                        <EditManager branchId={data._id} />
+                      )
+                    }
                     className="h-6 w-6 mr-2 text-gray-900 cursor-pointer hover:scale-110 duration-200"
                   />
                 </div>
@@ -84,12 +100,32 @@ export function AdminManagerSection() {
     </div>
   );
 }
+
 function DeleteItemJSX({ slug, updateModalStatus }) {
   const [status, setStatus] = useState({ loading: false, error: null });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const { updateApiDoneStatus, apiDone } = useCtx();
+
+  const deleteBranch = async () => {
+    setIsLoading(true);
+    const resp = await api.delete(`/deleteBranch/${slug}`, {
+      withCredentials: true,
+    });
+    if (resp.data.status !== "success") {
+      setError(true);
+    }
+
+    updateApiDoneStatus(!apiDone);
+
+    updateModalStatus(false, null);
+    setIsLoading(false);
+  };
+
   return (
     <div>
       <h1 className="text-xl font-bold py-2">Confirm to delete item.</h1>
-      {status.loading ? (
+      {isLoading ? (
         <button className="bg-black text-base font-semibold text-white rounded-md py-2 px-4  mr-2">
           Deleting...
         </button>
@@ -97,31 +133,21 @@ function DeleteItemJSX({ slug, updateModalStatus }) {
         <div className="flex">
           <button
             className="bg-black text-base font-semibold text-white rounded-md py-2 px-4  mr-2"
-            onClick={async () => {
-              setStatus({ loading: true, error: null });
-              // await deleteUser(auth);
-              await deleteDoc(doc(db, COLLECTIONS.users, slug));
-
-              updateModalStatus(false, null);
-              setStatus({
-                loading: false,
-                error: null,
-              });
-            }}
-            disabled={status.loading}
+            onClick={deleteBranch}
+            disabled={isLoading}
           >
             Yes
           </button>
           <button
             className="bg-black text-base font-semibold text-white rounded-md py-2 px-4  mr-2"
             onClick={() => updateModalStatus(false, null)}
-            disabled={status.loading}
+            disabled={isLoading}
           >
             No
           </button>
         </div>
       )}
-      {status.error && <h1>{status.error}</h1>}
+      {error && <h1>Something goes wrong</h1>}
     </div>
   );
 }

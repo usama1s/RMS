@@ -63,7 +63,11 @@ export function CtxProvider({ children }) {
   const [editedCategoryValue, setEditCategoryValue] = useState(null);
   const [editedItemValue, setEditedItemValue] = useState(null);
   const [editedLobbyValue, setEditedLobbyValue] = useState(null);
+  const [apiDone, setApiDone] = useState(false);
 
+  const updateApiDoneStatus = (value) => {
+    setApiDone(value);
+  };
   const updateActiveTab = (tab) => {
     setActiveTab(tab);
   };
@@ -144,6 +148,8 @@ export function CtxProvider({ children }) {
         setAuthenticatedUser,
         setActiveWaiterTab,
         setWaiterSidebarLinks,
+        updateApiDoneStatus,
+        apiDone,
       }}
     >
       {children}

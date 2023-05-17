@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { AdminHeader } from "./adminHeader";
 import { useCtx } from "../../../context/Ctx";
 import { AdminManagerSection } from "./managers";

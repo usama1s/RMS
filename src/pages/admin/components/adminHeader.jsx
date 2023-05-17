@@ -1,25 +1,21 @@
 import React from "react";
-import { useMediaQuery } from "react-responsive";
-import { LOCAL_STORAGE_BASE, useCtx } from "../../../context/Ctx";
+import { useCtx } from "../../../context/Ctx";
 import { BsCartFill } from "react-icons/bs";
 import { useCartCtx } from "../../../context/CartCtx";
-import { auth } from "../../../config/@firebase";
-// import { signOut } from "@firebase/auth";
 import { useNavigate } from "react-router";
-import { ROUTES } from "../../../utils/routes";
 import api from "../../../config/AxiosBase";
+
 export function AdminHeader() {
   const navigate = useNavigate();
-  const isTablet = useMediaQuery({ query: `(max-width:786px)` });
   const {
     managerSidebarToggle,
     updateManagerSidebarToggle,
     updateAdminSidebarLinks,
     setAuthenticatedUser,
   } = useCtx();
+
   const logout = async () => {
     try {
-      // await signOut(auth);
       await api.get("/signout", { withCredentials: true });
       updateAdminSidebarLinks("Branches")();
       navigate("/global-signin");
@@ -29,6 +25,7 @@ export function AdminHeader() {
       console.log(e);
     }
   };
+
   return (
     <div className="flex items-center justify-between md:justify-end min-h-[10vh] w-full">
       <svg

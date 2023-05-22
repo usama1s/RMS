@@ -1,19 +1,12 @@
-import React, { useRef, useState, useEffect } from "react";
+import { useState } from "react";
 import { useFormik } from "formik";
 import { validation_schema_lobbies } from "../../../../utils/validation_schema";
-import {
-  collection,
-  addDoc,
-  serverTimestamp,
-  getDocs,
-  query,
-  where,
-} from "firebase/firestore";
-import { COLLECTIONS } from "../../../../utils/firestore-collections";
-import { db } from "../../../../config/@firebase";
 import { useCtx } from "../../../../context/Ctx";
+import api from "../../../../config/AxiosBase";
+
 export function ManagerAddLobbies() {
-  const { updateModalStatus, authenticatedUser } = useCtx();
+  const { updateModalStatus, updateApiDoneStatus, apiDone } = useCtx();
+  const [status, setStatus] = useState({ loading: false, error: null });
   const formik = useFormik({
     initialValues: {
       title: "",
@@ -22,49 +15,32 @@ export function ManagerAddLobbies() {
     validationSchema: validation_schema_lobbies,
     onSubmit: onSubmit,
   });
-  const [status, setStatus] = useState({ loading: false, error: null });
+
   async function onSubmit(values, actions) {
-    const collection_ref = collection(db, COLLECTIONS.lobbies);
     setStatus((prev) => ({ ...prev, loading: true, error: null }));
 
     try {
-      const category_exist = await getDocs(
-        query(
-          collection(db, COLLECTIONS.lobbies),
-          where("title", "==", values.title),
-          where("branchId", "==", authenticatedUser.branchId)
-        )
-      );
+      let data = {
+        lobbyName: values.title,
+        noOfTables: values.noOfTables,
+      };
 
-      if (category_exist.docs.length >= 1) {
-        setStatus({
-          ...status,
-          loading: false,
-          error: "Lobby already exists.",
-        });
-        return;
-      } else {
-        await addDoc(collection_ref, {
-          ...values,
-          branchId: authenticatedUser.branchId,
-          timestamp: serverTimestamp(),
-        });
-        updateModalStatus(false, null);
-      }
+      await api.post("/addLobby", data, {
+        withCredentials: true,
+      });
+      setStatus({ error: null, loading: false });
+      updateModalStatus(false, null);
+      updateApiDoneStatus(!apiDone);
     } catch (e) {
+      console.log(e);
       setStatus((prev) => ({
         ...prev,
         loading: false,
         error: `Error adding the item.`,
       }));
-    } finally {
-      reset(actions);
     }
   }
-  const reset = (actions) => {
-    actions.resetForm({ title: "", noOfTables: 0 });
-  };
-  //jsx
+
   const formJSX = (
     <div>
       <h1 className="text-2xl font-bold">Add Lobbies</h1>
@@ -121,6 +97,9 @@ export function ManagerAddLobbies() {
               type="submit"
               disabled={status.loading}
               className="inline-flex w-full items-center justify-center rounded-md bg-gray-900/100 px-3.5 py-2.5 text-base font-semibold leading-7 text-white"
+              onClick={() => {
+                onSubmit();
+              }}
             >
               {status.loading ? "Adding..." : "Add a Lobby"}
             </button>

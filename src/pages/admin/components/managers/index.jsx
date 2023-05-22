@@ -23,8 +23,6 @@ export function AdminManagerSection() {
     setIsLoading(false);
   };
 
-  console.log({ apiDone });
-
   useEffect(() => {
     getBranches();
   }, [apiDone]);

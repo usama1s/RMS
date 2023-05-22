@@ -1,47 +1,67 @@
 import { useState } from "react";
 import { TrashIcon, PencilIcon } from "@heroicons/react/24/solid";
-import { db } from "../../../../config/@firebase";
-import { COLLECTIONS } from "../../../../utils/firestore-collections";
-import { doc, deleteDoc } from "firebase/firestore";
 import { ManagerEditCategory } from "./edit-categories";
 import { useCtx } from "../../../../context/Ctx";
-const { categories } = COLLECTIONS;
-export function ManagerCategoriesListingsItems({ slug, title }) {
-  const { updateModalStatus, updateCategoryValue } = useCtx();
-  const [status, setStatus] = useState({ loading: false, error: null });
+import api from "../../../../config/AxiosBase";
+
+export function ManagerCategoriesListingsItems({ formattedD }) {
+  const { updateModalStatus, updateCategoryValue, apiDone } = useCtx();
+  const [propData, setPropData] = useState(formattedD);
 
   const updateItemHandler = async () => {
     updateCategoryValue({ slug, title });
     updateModalStatus(true, <ManagerEditCategory />);
   };
+
   return (
-    <div className="flex items-center  bg-[#FBFBFB] shadow-md w-full p-4 rounded-md my-4 relative">
-      <div>
-        <h3 className="font-bold text-xl">{title}</h3>
-      </div>
-      <div className="absolute right-4 flex">
-        <TrashIcon
-          onClick={async () =>
-            updateModalStatus(
-              true,
-              <DeleteItemJSX
-                slug={slug}
-                updateModalStatus={updateModalStatus}
-              />
-            )
-          }
-          className="h-6 w-6 mr-4 text-gray-900 cursor-pointer hover:scale-110 duration-200"
-        />
-        <PencilIcon
-          onClick={updateItemHandler}
-          className="h-6 w-6 mr-4 text-gray-900 cursor-pointer hover:scale-110 duration-200"
-        />
-      </div>
-    </div>
+    <>
+      {propData?.map((item, index) => (
+        <div
+          key={index + 1}
+          className="flex items-center  bg-[#FBFBFB] shadow-md w-full p-4 rounded-md my-4 relative"
+        >
+          <div>
+            <h3 className="font-bold text-xl">{item?.categoryName}</h3>
+          </div>
+          <div className="absolute right-4 flex">
+            <TrashIcon
+              onClick={async () =>
+                updateModalStatus(
+                  true,
+                  <DeleteItemJSX
+                    slug={item?._id}
+                    updateModalStatus={updateModalStatus}
+                    updateApiDoneStatus={updateApiDoneStatus}
+                    apiDone={apiDone}
+                  />
+                )
+              }
+              className="h-6 w-6 mr-4 text-gray-900 cursor-pointer hover:scale-110 duration-200"
+            />
+            <PencilIcon
+              onClick={() =>
+                updateModalStatus(
+                  true,
+                  <ManagerEditCategory categoryId={item?._id} />
+                )
+              }
+              className="h-6 w-6 mr-4 text-gray-900 cursor-pointer hover:scale-110 duration-200"
+            />
+          </div>
+        </div>
+      ))}
+    </>
   );
 }
-const DeleteItemJSX = ({ slug, updateModalStatus }) => {
+
+const DeleteItemJSX = ({
+  slug,
+  updateModalStatus,
+  updateApiDoneStatus,
+  apiDone,
+}) => {
   const [status, setStatus] = useState({ loading: false, error: null });
+
   return (
     <div>
       <h1 className="text-xl font-bold py-2">Confirm to delete item.</h1>
@@ -59,17 +79,22 @@ const DeleteItemJSX = ({ slug, updateModalStatus }) => {
             onClick={async () => {
               try {
                 setStatus({ loading: true, error: null });
-                await deleteDoc(doc(db, categories, slug));
+                await api.delete(`/deleteCategory/${slug}`, {
+                  withCredentials: true,
+                });
+
                 setStatus({
                   loading: false,
                   error: null,
                 });
                 updateModalStatus(false, null);
+                updateApiDoneStatus(!apiDone);
               } catch (e) {
-                // setStatus({
-                //   loading: false,
-                //   error: "Error deleting the item.",
-                // });
+                console.log(e);
+                setStatus({
+                  loading: false,
+                  error: "Error deleting the item.",
+                });
               }
             }}
             disabled={status.loading}

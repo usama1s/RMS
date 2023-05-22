@@ -1,26 +1,31 @@
-import { PlusIcon, MinusIcon } from "@heroicons/react/24/solid";
+import { useState, useEffect } from "react";
+import { PlusIcon } from "@heroicons/react/24/solid";
 import { useCtx } from "../../../../context/Ctx";
 import { ManagerAddCategories } from "./add-categories";
 import { ManagerCategoriesListingsItems } from "./manager-categories-listings-items";
-import { COLLECTIONS } from "../../../../utils/firestore-collections";
-import { useCollection } from "react-firebase-hooks/firestore";
-import { collection, query, where } from "firebase/firestore";
-import { db } from "../../../../config/@firebase";
-import { formatCollectionData } from "../../../../utils/formatData";
 import { Loading } from "../../../../components/loading";
-const { categories } = COLLECTIONS;
+import api from "../../../../config/AxiosBase";
+
 export function ManagerCategory() {
-  const { updateModalStatus, authenticatedUser } = useCtx();
-  const [value, loading, error] = useCollection(
-    query(
-      collection(db, categories),
-      where("branchId", "==", authenticatedUser.branchId)
-    ),
-    {
-      snapshotListenOptions: { includeMetadataChanges: true },
+  const { updateModalStatus, apiDone } = useCtx();
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [formattedData, setFormattedData] = useState();
+
+  const getCategories = async () => {
+    setLoading(true);
+    const resp = await api.get("/getAllCategories", { withCredentials: true });
+    if (resp.data.status !== "success") {
+      setError(true);
     }
-  );
-  const formattedData = formatCollectionData(value);
+    setFormattedData(resp.data.data.doc);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    getCategories();
+  }, [apiDone]);
+
   if (error)
     return (
       <h1 className="text-xl font-semibold">Error fetching categories..</h1>
@@ -31,6 +36,7 @@ export function ManagerCategory() {
         <Loading />
       </div>
     );
+
   return (
     <div>
       <div className="flex items-center justify-between py-4 ">
@@ -41,10 +47,7 @@ export function ManagerCategory() {
         />
       </div>
       <div className="text-2xl">
-        {formattedData?.length > 0 &&
-          formattedData?.map((data) => (
-            <ManagerCategoriesListingsItems key={data.slug} {...data} />
-          ))}
+        <ManagerCategoriesListingsItems formattedD={formattedData} />
         {formattedData?.length === 0 && (
           <div>
             <h1 className="text-2xl font-normal">

@@ -11,13 +11,7 @@ export function EditManager({ branchId }) {
   async function onSubmit() {
     setStatus({ loading: true, error: null });
     try {
-      await api.patch(
-        `/editBranch/${branchId}`,
-        { name, email },
-        {
-          withCredentials: true,
-        }
-      );
+      c
 
       setStatus({ error: null, loading: false });
       updateModalStatus(false, null);

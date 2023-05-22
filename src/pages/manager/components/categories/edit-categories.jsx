@@ -1,82 +1,40 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useFormik } from "formik";
 import { validation_schema_food_categories } from "../../../../utils/validation_schema";
-import {
-  collection,
-  updateDoc,
-  serverTimestamp,
-  getDocs,
-  query,
-  where,
-  doc,
-} from "firebase/firestore";
-import { COLLECTIONS } from "../../../../utils/firestore-collections";
-import { db } from "../../../../config/@firebase";
 import { useCtx } from "../../../../context/Ctx";
 import { formatCollectionData } from "../../../../utils/formatData";
-export function ManagerEditCategory() {
-  const {
-    editedCategoryValue,
-    updateModalStatus,
-    updateCategoryValue,
-    authenticatedUser,
-  } = useCtx();
+import api from "../../../../config/AxiosBase";
 
-  const formik = useFormik({
-    initialValues: {
-      title: editedCategoryValue.title,
-    },
-    validationSchema: validation_schema_food_categories,
-    onSubmit: onSubmit,
-  });
+export function ManagerEditCategory({ categoryId }) {
   const [status, setStatus] = useState({ loading: false, error: null });
-  async function onSubmit(values, actions) {
-    const collection_ref = doc(
-      db,
-      COLLECTIONS.categories,
-      editedCategoryValue.slug
-    );
-    setStatus((prev) => ({ ...prev, loading: true }));
-    const documents = await getDocs(collection(db, COLLECTIONS.categories));
-    const formattedDocs = formatCollectionData(documents);
-    console.log(
-      formattedDocs
-        .filter((d) => d.title !== editedCategoryValue.title)
-        .map((d) => d.title)
-    );
-    const filteredFormattedDocs = formattedDocs
-      .filter(
-        (d) =>
-          d.title !== editedCategoryValue.title &&
-          d.branchId === authenticatedUser.branchId
-      )
-      .map((d) => d.title);
+  const { updateApiDoneStatus, updateModalStatus, apiDone } = useCtx();
+  const [title, setTitle] = useState("");
 
-    if (filteredFormattedDocs.includes(values.title)) {
-      setStatus({ loading: false, error: `Category already exist.` });
-      return;
-    }
+  async function onSubmit() {
+    setStatus({ loading: true, error: null });
+    setStatus((prev) => ({ ...prev, loading: true }));
     try {
-      await updateDoc(collection_ref, {
-        ...values,
-        timestamp: serverTimestamp(),
-      });
+      await api.patch(
+        `/editCategory/${categoryId}`,
+        { lobbyName: title, noOfTables: noOfTables },
+        {
+          withCredentials: true,
+        }
+      );
+
+      setStatus({ error: null, loading: false });
       updateModalStatus(false, null);
+      updateApiDoneStatus(!apiDone);
     } catch (e) {
       console.log(e);
       setStatus((prev) => ({
         ...prev,
         loading: false,
-        error: `Error adding the item.`,
+        error: `Error updating the item.`,
       }));
-    } finally {
-      reset(actions);
     }
   }
-  const reset = (actions) => {
-    actions.resetForm({ title: "" });
-    updateCategoryValue(null);
-  };
+
   return (
     <div>
       <h1 className="text-2xl font-bold">Update Category</h1>

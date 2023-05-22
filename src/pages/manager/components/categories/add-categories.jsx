@@ -1,20 +1,12 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useFormik } from "formik";
 import { validation_schema_food_categories } from "../../../../utils/validation_schema";
-import {
-  collection,
-  addDoc,
-  serverTimestamp,
-  getDocs,
-  query,
-  where,
-} from "firebase/firestore";
-import { COLLECTIONS } from "../../../../utils/firestore-collections";
-import { db } from "../../../../config/@firebase";
 import { useCtx } from "../../../../context/Ctx";
+import api from "../../../../config/AxiosBase";
+
 export function ManagerAddCategories() {
-  const { updateModalStatus, authenticatedUser } = useCtx();
-  //Form Data
+  const { updateModalStatus, updateApiDoneStatus, apiDone } = useCtx();
+  const [status, setStatus] = useState({ loading: false, error: null });
   const formik = useFormik({
     initialValues: {
       title: "",
@@ -22,36 +14,24 @@ export function ManagerAddCategories() {
     validationSchema: validation_schema_food_categories,
     onSubmit: onSubmit,
   });
-  const [status, setStatus] = useState({ loading: false, error: null });
-  async function onSubmit(values, actions) {
-    const collection_ref = collection(db, COLLECTIONS.categories);
+
+  async function onSubmit(values, actions, e) {
+    e.preventDefault();
     setStatus((prev) => ({ ...prev, loading: true, error: null }));
 
     try {
-      const category_exist = await getDocs(
-        query(
-          collection(db, COLLECTIONS.categories),
-          where("title", "==", values.title),
-          where("branchId", "==", authenticatedUser.branchId)
-        )
+      await api.post(
+        "/addCategory",
+        { categoryName: values.title },
+        {
+          withCredentials: true,
+        }
       );
-
-      if (category_exist.docs.length >= 1) {
-        setStatus({
-          ...status,
-          loading: false,
-          error: "Category already exists.",
-        });
-        return;
-      } else {
-        await addDoc(collection_ref, {
-          ...values,
-          branchId: authenticatedUser.branchId,
-          timestamp: serverTimestamp(),
-        });
-        updateModalStatus(false, null);
-      }
+      setStatus({ error: null, loading: false });
+      updateModalStatus(false, null);
+      updateApiDoneStatus(!apiDone);
     } catch (e) {
+      console.log(e);
       setStatus((prev) => ({
         ...prev,
         loading: false,
@@ -61,9 +41,11 @@ export function ManagerAddCategories() {
       reset(actions);
     }
   }
+
   const reset = (actions) => {
     actions.resetForm({ title: "" });
   };
+
   return (
     <div>
       <h1 className="text-2xl font-bold">Add a Category</h1>

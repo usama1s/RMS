@@ -1,8 +1,5 @@
 import React, { useState } from "react";
-import { useFormik } from "formik";
-import { validation_schema_food_categories } from "../../../../utils/validation_schema";
 import { useCtx } from "../../../../context/Ctx";
-import { formatCollectionData } from "../../../../utils/formatData";
 import api from "../../../../config/AxiosBase";
 
 export function ManagerEditCategory({ categoryId }) {
@@ -16,7 +13,7 @@ export function ManagerEditCategory({ categoryId }) {
     try {
       await api.patch(
         `/editCategory/${categoryId}`,
-        { lobbyName: title, noOfTables: noOfTables },
+        { categoryName: title },
         {
           withCredentials: true,
         }
@@ -30,7 +27,7 @@ export function ManagerEditCategory({ categoryId }) {
       setStatus((prev) => ({
         ...prev,
         loading: false,
-        error: `Error updating the item.`,
+        error: `Error updating the category.`,
       }));
     }
   }
@@ -38,7 +35,7 @@ export function ManagerEditCategory({ categoryId }) {
   return (
     <div>
       <h1 className="text-2xl font-bold">Update Category</h1>
-      <form className="mt-2" onSubmit={formik.handleSubmit}>
+      <form className="mt-2">
         <div className="space-y-5">
           <div>
             <label htmlFor="" className="text-xl font-medium text-gray-900">
@@ -49,15 +46,9 @@ export function ManagerEditCategory({ categoryId }) {
                 className="flex w-full h-10 mb-2 rounded-md border border-gray-300 bg-transparent py-2 px-3 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
                 placeholder="Title"
                 name="title"
-                onChange={formik.handleChange}
-                value={formik.values.title}
-                onBlur={formik.handleBlur}
-              ></input>
-              {formik.touched.title && formik.errors.title ? (
-                <p className="my-2">{formik.errors.title}</p>
-              ) : (
-                ""
-              )}
+                onChange={(e) => setTitle(e.target.value)}
+                value={title}
+              />
             </div>
           </div>
           {status.error && <p className="text-red-500">{status.error}</p>}
@@ -66,6 +57,9 @@ export function ManagerEditCategory({ categoryId }) {
               type="submit"
               disabled={status.loading}
               className="inline-flex w-full items-center justify-center rounded-md bg-black px-3.5 py-2.5 text-base font-semibold leading-7 text-white"
+              onClick={() => {
+                onSubmit();
+              }}
             >
               {status.loading ? "Updating..." : "Update."}
             </button>

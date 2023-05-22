@@ -1,61 +1,18 @@
-import React, { useRef, useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useFormik } from "formik";
 import { validation_schema_food_items } from "../../../../utils/validation_schema";
-import {
-  collection,
-  addDoc,
-  serverTimestamp,
-  getDocs,
-  query,
-  where,
-} from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { food_items_storage_path } from "../../../../utils/storage-refs";
-import { COLLECTIONS } from "../../../../utils/firestore-collections";
-import { db, storage } from "../../../../config/@firebase";
 import { useCtx } from "../../../../context/Ctx";
-import { useCollection } from "react-firebase-hooks/firestore";
-import { formatCollectionData } from "../../../../utils/formatData";
 import { FaCloudUploadAlt } from "react-icons/fa";
-export function ManagerAddItem() {
-  const { updateModalStatus, authenticatedUser } = useCtx();
-  const [value, loading, error] = useCollection(
-    query(
-      collection(db, COLLECTIONS.categories),
-      where("branchId", "==", authenticatedUser.branchId)
-    ),
-    {
-      snapshotListenOptions: { includeMetadataChanges: true },
-    }
-  );
-  const formattedData = value
-    ? [{ title: "" }, ...formatCollectionData(value)]
-    : null;
-  const [showForm, setShowForm] = useState(false);
-  const [categoryError, setCategoryError] = useState(null);
-  const [file, setFile] = useState(null);
-  const [fileUploadError, setFileUploadError] = useState(null);
-  const [fileDataURL, setFileDataURL] = useState(null);
-  const [status, setStatus] = useState({ loading: false, error: null });
-  const inputRef = useRef();
-  React.useEffect(() => {
-    const fetchCategories = async () => {
-      const category_exist = await getDocs(
-        query(
-          collection(db, COLLECTIONS.categories),
-          where("branchId", "==", authenticatedUser.branchId)
-        )
-      );
+import api from "../../../../config/AxiosBase";
 
-      if (category_exist.docs.length >= 1) {
-        setShowForm(true);
-      } else {
-        setShowForm(false);
-      }
-    };
-    fetchCategories();
-  }, []);
-  //Form Data
+export function ManagerAddItem() {
+  const inputRef = useRef();
+  const { updateModalStatus, updateApiDoneStatus, apiDone } = useCtx();
+  const [status, setStatus] = useState({ loading: false, error: null });
+  const [loading, setLoading] = useState(false);
+  const [formattedData, setFormattedData] = useState();
+  const [photo, setPhoto] = useState("");
+
   const formik = useFormik({
     initialValues: {
       title: "",
@@ -66,94 +23,54 @@ export function ManagerAddItem() {
     validationSchema: validation_schema_food_items,
     onSubmit: onSubmit,
   });
-  useEffect(() => {
-    setFileUploadError(null);
-    setFileDataURL(null);
-    let fileReader,
-      isCancel = false;
-    if (file) {
-      fileReader = new FileReader();
-      fileReader.onload = (e) => {
-        const { result } = e.target;
-        if (result && !isCancel) {
-          setFileDataURL(result);
-        }
-      };
-      fileReader.readAsDataURL(file);
+
+  const getCategories = async () => {
+    setLoading(true);
+    const resp = await api.get("/getAllCategories", { withCredentials: true });
+    if (resp.data.status !== "success") {
+      setError(true);
     }
-    return () => {
-      isCancel = true;
-      if (fileReader && fileReader.readyState === 1) {
-        fileReader.abort();
-      }
-    };
-  }, [file]);
-  //
+    setFormattedData(resp.data.data.doc);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    getCategories();
+  }, [apiDone]);
 
   async function onSubmit(values, actions) {
-    const collection_ref = collection(db, COLLECTIONS.food_items);
-    setFileUploadError(null);
     setStatus((prev) => ({ ...prev, loading: true, error: null }));
 
-    if (!file) {
-      setStatus((prev) => ({ ...prev, loading: false }));
-      setFileUploadError(`File is required.`);
-      return;
-    }
-    const item_exist = await getDocs(
-      query(
-        collection(db, COLLECTIONS.food_items),
-        where("title", "==", values.title),
-        where("branchId", "==", authenticatedUser.branchId)
-      )
-    );
+    if (photo) {
+      const formData = new FormData();
+      formData.append("title", values.title);
+      formData.append("description", values.description);
+      formData.append("price", values.price);
+      formData.append("category", values.category);
+      formData.append("photo", photo);
 
-    if (item_exist.docs.length >= 1) {
-      setStatus({
-        ...status,
-        loading: false,
-        error: "Item already exists.",
-      });
-      return;
-    }
-    try {
-      const foodItemStorageRef = ref(
-        storage,
-        food_items_storage_path(file.name)
-      );
-      await uploadBytes(foodItemStorageRef, file).then((snapshot) => {
-        getDownloadURL(snapshot.ref).then(async (downloadURL) => {
-          await addDoc(collection_ref, {
-            ...values,
-            branchId: authenticatedUser.branchId,
-            timestamp: serverTimestamp(),
-            imageURL: downloadURL,
-          });
+      try {
+        await api.post("/addItems", formData, {
+          "Content-Type": "multipart/form-data",
+          withCredentials: true,
         });
-      });
-      updateModalStatus(null, false);
-      // setStatus(prev=>({...prev,loading:false,error:null}))
-    } catch (e) {
-      setStatus((prev) => ({
-        ...prev,
-        loading: false,
-        error: `Error adding the item.`,
-      }));
-      updateModalStatus(null, false);
-    } finally {
-      reset(actions);
+        updateApiDoneStatus(!apiDone);
+        setStatus({ error: null, loading: false });
+        updateModalStatus(false, null);
+      } catch (e) {
+        console.log(e);
+        setStatus((prev) => ({
+          ...prev,
+          loading: false,
+          error: `Error adding the item.`,
+        }));
+        updateModalStatus(null, false);
+      }
+    } else {
+      console.log("No file found");
     }
   }
-  const setImage = (e) => {
-    setFile(e.target.files[0]);
-  };
-  const reset = (actions) => {
-    setFile(null);
-    setFileUploadError(null);
-    setFileDataURL(null);
-    actions.resetForm({ title: "", price: 0, description: "", category: "" });
-    setCategoryError(null);
-  };
+
   const formJSX = (
     <div>
       <h1 className="text-2xl font-bold">Add Item</h1>
@@ -185,7 +102,7 @@ export function ManagerAddItem() {
             </label>
             <div className="mt-1">
               <textarea
-                className="flex h-16  h-10 w-full rounded-md border border-gray-300 bg-transparent py-2 px-3 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex h-16 w-full rounded-md border border-gray-300 bg-transparent py-2 px-3 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
                 placeholder="Description"
                 name="description"
                 onChange={formik.handleChange}
@@ -209,7 +126,6 @@ export function ManagerAddItem() {
             <div className="mt-1">
               <input
                 className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent py-2 px-3 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 "
-                //   type="password"
                 placeholder="Price"
                 type="number"
                 name="price"
@@ -236,9 +152,9 @@ export function ManagerAddItem() {
               value={formik.values.category}
               onBlur={formik.handleBlur}
             >
-              {formattedData?.map(({ title }) => (
-                <option key={title} value={title}>
-                  {title}
+              {formattedData?.map((item, index) => (
+                <option key={item?.categoryName} value={item?.categoryName}>
+                  {item?.categoryName}
                 </option>
               ))}
             </select>
@@ -248,52 +164,21 @@ export function ManagerAddItem() {
               ""
             )}
           </div>
-
-          {/* <div className="flex items-center justify-between">
-            <div className="md:flex items-center justify-between">
-              <label htmlFor="" className="text-lg font-medium text-gray-900">
-                Add Image for the item.
-              </label>
-             
-            <div className="mt-1"></div>
-            {fileDataURL && (
-              <div
-                // onClick={()=>{
-                // setFileDataURL(null)
-                // setFile(null)
-                // }}
-                className="h-[200px] w-[200px] "
-              >
-                <img
-                  className="h-full w-full object-cover"
-                  src={fileDataURL ? fileDataURL : ""}
-                />
-              </div>
-            )}
-          </div> */}
           <div className="flex flex-col">
-            <div
-              //   // onClick={()=>{
-              //   // setFileDataURL(null)
-              //   // setFile(null)
-              //   // }}
-              className="flex justify-center items-center gap-4"
-            >
-              <span>Upload Image</span>
+            <div className="flex justify-center items-center gap-4">
+              {photo ? <span>{photo?.name}</span> : <span>Upload Image</span>}
               <div className="w-8 h-8 relative overflow-hidden">
                 <input
                   ref={inputRef}
-                  accept="image/*"
                   type="file"
                   className="absolute top-0 left-0 opacity-0"
-                  onChange={setImage}
-                ></input>
+                  onChange={(e) => setPhoto(e.target.files[0])}
+                />
 
                 <FaCloudUploadAlt className="pointer-events-none w-full h-full text-gray-900 hover:scale-110 duration-200 cursor-pointer" />
               </div>
             </div>
           </div>
-          {fileUploadError && <p>{fileUploadError}</p>}
           {status.error && <p>{status.error}</p>}
           <div>
             <button
@@ -308,15 +193,5 @@ export function ManagerAddItem() {
       </form>
     </div>
   );
-  return (
-    <div>
-      {loading ? (
-        <h1>Loading...</h1>
-      ) : !showForm ? (
-        <h1>Enter some categories to add a item</h1>
-      ) : (
-        formJSX
-      )}
-    </div>
-  );
+  return <div>{loading ? <h1>Loading...</h1> : formJSX}</div>;
 }

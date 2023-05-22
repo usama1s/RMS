@@ -1,4 +1,4 @@
-import React,{ useState } from "react";
+import React, { useState } from "react";
 import { TrashIcon, PencilIcon } from "@heroicons/react/24/solid";
 import { ManagerEditLobby } from "./edit-lobbies";
 import { useCtx } from "../../../../context/Ctx";

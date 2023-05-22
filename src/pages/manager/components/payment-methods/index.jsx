@@ -1,26 +1,31 @@
-import { PlusIcon, MinusIcon } from "@heroicons/react/24/solid";
+import { useState, useEffect } from "react";
+import { PlusIcon } from "@heroicons/react/24/solid";
 import { useCtx } from "../../../../context/Ctx";
 import { AddPaymentMethod } from "./add-categories";
 import { PaymentMethodsListingsItems } from "./payment-methods-listings";
-import { COLLECTIONS } from "../../../../utils/firestore-collections";
-import { useCollection } from "react-firebase-hooks/firestore";
-import { collection, query, where } from "firebase/firestore";
-import { db } from "../../../../config/@firebase";
-import { formatCollectionData } from "../../../../utils/formatData";
 import { Loading } from "../../../../components/loading";
-const { categories } = COLLECTIONS;
+import api from "../../../../config/AxiosBase";
+
 export function PaymentMethods() {
-  const { updateModalStatus, authenticatedUser } = useCtx();
-  const [value, loading, error] = useCollection(
-    query(
-      collection(db, COLLECTIONS.paymentMethods),
-      where("branchId", "==", authenticatedUser.branchId)
-    ),
-    {
-      snapshotListenOptions: { includeMetadataChanges: true },
+  const { updateModalStatus, apiDone } = useCtx();
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [formattedData, setFormattedData] = useState();
+
+  const getPaymentMethods = async () => {
+    setLoading(true);
+    const resp = await api.get("/getPaymentMethods", { withCredentials: true });
+    if (resp.data.status !== "success") {
+      setError(true);
     }
-  );
-  const formattedData = formatCollectionData(value);
+    setFormattedData(resp.data.data.doc);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    getPaymentMethods();
+  }, [apiDone]);
+
   if (error)
     return (
       <h1 className="text-xl font-semibold">
@@ -33,6 +38,9 @@ export function PaymentMethods() {
         <Loading />
       </div>
     );
+
+  console.log(formattedData);
+
   return (
     <div>
       <div className="flex items-center justify-between py-4 ">
@@ -43,10 +51,7 @@ export function PaymentMethods() {
         />
       </div>
       <div className="text-2xl">
-        {formattedData?.length > 0 &&
-          formattedData?.map((data) => (
-            <PaymentMethodsListingsItems key={data.slug} {...data} />
-          ))}
+        <PaymentMethodsListingsItems formattedD={formattedData} />
         {formattedData?.length === 0 && (
           <div>
             <h1 className="text-2xl font-normal">

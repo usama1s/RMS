@@ -5,13 +5,8 @@ import { useCtx } from "../../../../context/Ctx";
 import api from "../../../../config/AxiosBase";
 
 export function ManagerCategoriesListingsItems({ formattedD }) {
-  const { updateModalStatus, updateCategoryValue, apiDone } = useCtx();
+  const { updateModalStatus, updateApiDoneStatus, apiDone } = useCtx();
   const [propData, setPropData] = useState(formattedD);
-
-  const updateItemHandler = async () => {
-    updateCategoryValue({ slug, title });
-    updateModalStatus(true, <ManagerEditCategory />);
-  };
 
   return (
     <>

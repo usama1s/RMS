@@ -7,8 +7,13 @@ import { PlaceOrderTakeaway } from "../pages/waiter/components/takeaway/placeord
 import { PlaceOrderDinein } from "../pages/waiter/components/dinein/placeorder";
 
 export function Cart({ title }) {
-  const { updateCartStatus, cartStatus, itemsOfCart, cartTotalPrice } =
-    useCartCtx();
+  const {
+    updatePaymentMethod,
+    updateCartStatus,
+    cartStatus,
+    itemsOfCart,
+    cartTotalPrice,
+  } = useCartCtx();
   const { updateModalStatus, activeWaiterTab } = useCtx();
   return (
     <div
@@ -45,6 +50,24 @@ export function Cart({ title }) {
               No items in the cart right now.
             </h1>
           )}
+        </div>
+        <div className="flex items-center gap-4 px-2 m-1">
+          <button
+            className={`items-center justify-center rounded-md bg-black px-2.5 py-2 text-base font-semibold leading-7 text-white`}
+            onClick={() => {
+              updatePaymentMethod("Cash");
+            }}
+          >
+            Cash
+          </button>
+          <button
+            className={`items-center justify-center rounded-md bg-black px-2.5 py-2 text-base font-semibold leading-7 text-white`}
+            onClick={() => {
+              updatePaymentMethod("Debit");
+            }}
+          >
+            Debit
+          </button>
         </div>
         <div className="flex items-center justify-between px-2 m-1">
           <h1 className="text-base font-regular">

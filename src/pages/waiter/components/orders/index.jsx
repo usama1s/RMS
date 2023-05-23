@@ -1,92 +1,64 @@
 import React, { useState, useEffect } from "react";
-import { COLLECTIONS } from "../../../../utils/firestore-collections";
-import { formatCollectionData } from "../../../../utils/formatData";
-import { db } from "../../../../config/@firebase";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { useCollection } from "react-firebase-hooks/firestore";
+// import { COLLECTIONS } from "../../../../utils/firestore-collections";
+// import { formatCollectionData } from "../../../../utils/formatData";
+// import { db } from "../../../../config/@firebase";
+// import { collection, getDocs, query, where } from "firebase/firestore";
+// import { useCollection } from "react-firebase-hooks/firestore";
 //Components
 import { ManagerOrderSlider } from "./slider";
 import { ManagerOrderCards } from "./cards";
 import { Loading } from "../../../../components/loading";
-import { useCartCtx } from "../../../../context/CartCtx";
+// import { useCartCtx } from "../../../../context/CartCtx";
 import { useCtx } from "../../../../context/Ctx";
+import api from "../../../../config/AxiosBase";
+
 export function WaiterOrder() {
-  const { authenticatedUser } = useCtx();
-  const [categories, loadingStatusCategories, errorStatusCategories] =
-    useCollection(
-      query(
-        collection(db, COLLECTIONS.categories),
-        where("branchId", "==", authenticatedUser.branchId)
-      ),
-      {
-        snapshotListenOptions: { includeMetadataChanges: true },
-      }
-    );
-  const [cardItems, setCardItems] = useState({
-    loading: false,
-    error: null,
-    data: null,
-  });
-  const formattedData = formatCollectionData(categories);
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [formattedData, setFormattedData] = useState();
+  const [items, setItems] = useState();
+  const { apiDone } = useCtx;
   const [sliderData, setSliderData] = useState({
     categories: null,
     activeCategory: null,
   });
-  useEffect(() => {
-    let items = null;
-    const getCardItems = async () => {
-      setCardItems({ data: null, loading: true, error: null });
-      try {
-        const data = await getDocs(
-          query(
-            collection(db, COLLECTIONS.food_items),
-            where("category", "==", sliderData.activeCategory),
-            where("branchId", "==", authenticatedUser.branchId)
-          )
-        );
-        items = data && formatCollectionData(data);
-        if (items.length >= 1) {
-          setCardItems({
-            data: items,
-            loading: false,
-            error: null,
-          });
-        } else {
-          setCardItems({
-            data: null,
-            loading: false,
-            error: "No items right now",
-          });
-        }
-      } catch (e) {
-        setCardItems({
-          data: null,
-          loading: false,
-          error: "Error fetching Items.",
-        });
-      }
-    };
+  const [active, setActive] = useState("");
 
-    getCardItems();
-  }, [sliderData.activeCategory]);
-  useEffect(() => {
-    setSliderData({
-      categories:
-        formattedData &&
-        formattedData.map((data, index) => ({
-          ...data,
-          active: index === 0 ? true : false,
-        })),
-      activeCategory: formattedData && formattedData?.[0]?.title,
-    });
-  }, [categories]);
-  const updateSliderCategory = (title) => {
-    const data = [...sliderData.categories].map((d) =>
-      d.title === title ? { ...d, active: true } : { ...d, active: false }
-    );
-    setSliderData({ categories: data, activeCategory: title });
+  const getCategories = async () => {
+    setLoading(true);
+    const resp = await api.get("/getAllCategories", { withCredentials: true });
+    if (resp.data.status !== "success") {
+      setError(true);
+    }
+    setFormattedData(resp.data.data.doc);
+    setLoading(false);
   };
-  if (errorStatusCategories || formattedData?.length < 1)
+
+  useEffect(() => {
+    getCategories();
+  }, [apiDone]);
+
+  const getItemByCategory = async () => {
+    const resp = await api.get("/getItemsById/" + active, {
+      withCredentials: true,
+    });
+    if (resp.data.status !== "success") {
+      setError(true);
+    }
+    setItems(resp.data.data);
+  };
+
+  useEffect(() => {
+    getItemByCategory();
+  }, [active]);
+
+  console.log(items);
+
+  useEffect(() => {
+    getItemByCategory();
+  }, []);
+
+  if (formattedData?.length < 1)
     return formattedData?.length < 1 ? (
       <h1 className="font-semibold text-xl">
         No Categories. Add Categories to proceed.
@@ -94,14 +66,29 @@ export function WaiterOrder() {
     ) : (
       <h1 className="font-semibold text-xl">Error fetching categories..</h1>
     );
-  if (loadingStatusCategories) return <Loading />;
+
+  if (loading) return <Loading />;
+
   return (
     <>
-      <ManagerOrderSlider
-        data={sliderData}
-        updateSliderCategory={updateSliderCategory}
-      />
-      <ManagerOrderCards items={cardItems} />
+      <div className="w-full flex flex-wrap gap-4 mt-4">
+        {formattedData?.map((item, index) => (
+          <div
+            key={index + 1}
+            onClick={() => setActive(item?._id)}
+            className={`cursor-pointer
+          ${
+            item._id === active
+              ? "bg-gray-900 text-white"
+              : "bg-[#F3F4F6] text-gray-900"
+          } rounded-full w-40 h-5 p-5 flex items-center justify-center`}
+          >
+            <p>{item.categoryName}</p>
+          </div>
+        ))}
+      </div>
+
+      <ManagerOrderCards items={items} />
     </>
   );
 }

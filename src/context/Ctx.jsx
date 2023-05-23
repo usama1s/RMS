@@ -64,7 +64,11 @@ export function CtxProvider({ children }) {
   const [editedItemValue, setEditedItemValue] = useState(null);
   const [editedLobbyValue, setEditedLobbyValue] = useState(null);
   const [apiDone, setApiDone] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("");
 
+  const updatePaymentMethod = (value) => {
+    setPaymentMethod(value);
+  };
   const updateApiDoneStatus = (value) => {
     setApiDone(value);
   };
@@ -150,6 +154,8 @@ export function CtxProvider({ children }) {
         setWaiterSidebarLinks,
         updateApiDoneStatus,
         apiDone,
+        paymentMethod,
+        updatePaymentMethod,
       }}
     >
       {children}

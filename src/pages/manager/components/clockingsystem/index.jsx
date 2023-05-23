@@ -1,83 +1,101 @@
-import moment from "moment";
-import { db } from "../../../../config/@firebase";
-import {
-  addDoc,
-  collection,
-  doc,
-  deleteDoc,
-  serverTimestamp,
-  setDoc,
-  updateDoc,
-} from "firebase/firestore";
+import React, { useEffect, useState } from "react";
+// import moment, { localeData } from "moment";
 import { useCtx } from "../../../../context/Ctx";
-import { useDocument } from "react-firebase-hooks/firestore";
-import React from "react";
 import { ClockIn } from "./components/clockin";
 import { ClockOut } from "./components/clockout";
 import { Loading } from "../../../../components/loading";
-// import
+import api from "../../../../config/AxiosBase";
+
 export function ClockingSystem() {
-  const { authenticatedUser, updateModalStatus } = useCtx();
-  const [value, loading, error] = useDocument(
-    doc(db, "branches", authenticatedUser.branchId),
-    {
-      snapshotListenOptions: { includeMetadataChanges: true },
-    }
-  );
-  const [status, setStatus] = React.useState({ loading: false, error: null });
+  const { apiDone, updateModalStatus } = useCtx();
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState({ loading: false, error: null });
+  const [formattedData, setFormattedData] = useState();
+  const [date, setDate] = useState("");
+  const [dateId, setDateId] = useState("");
+
   const clockIn = async () => {
-    const clockInTime = moment().format("MMMM Do YYYY, h:mm:ss a").split(", ");
-    const date = clockInTime[0];
     setStatus({ loading: true, error: null });
     try {
-      await updateDoc(doc(db, `branches`, authenticatedUser.branchId), {
-        clockInTime: serverTimestamp(),
-        clockInDate: date,
+      const response = await fetch("http://localhost:5000/checkIn", {
+        method: "POST",
+        credentials: "include",
       });
-      await setDoc(doc(db, "orders", `${authenticatedUser.branchId}-${date}`), {
-        orders: [],
-      });
-      setStatus({ loading: false, error: null });
-    } catch (e) {
-      console.log(e);
+      const data = await response.json();
+
+      if (data.message !== "Check-in successful!") {
+        setStatus({ loading: false, error: "Error updating the status." });
+      } else {
+        setFormattedData(data.newClocking.startDateTime);
+        localStorage.setItem("ClockInDate", data.newClocking.startDateTime);
+        localStorage.setItem("ClockInId", data.newClocking._id);
+        setStatus({ loading: false, error: null });
+      }
+    } catch (error) {
       setStatus({ loading: false, error: "Error updating the status." });
     }
   };
+
   const clockOut = async () => {
-    if (!value?.data()) return;
     setStatus({ loading: true, error: null });
     try {
-      await deleteDoc(
-        doc(
-          db,
-          "orders",
-          `${authenticatedUser.branchId}-${value?.data()?.clockInDate}`
-        )
-      );
-      await updateDoc(doc(db, "branches", authenticatedUser.branchId), {
-        clockInDate: "",
-        clockInTime: "",
+      const response = await fetch("http://localhost:5000/checkOut/" + dateId, {
+        method: "PATCH",
+        credentials: "include",
       });
+      const data = await response.json();
+      setFormattedData("");
+      localStorage.removeItem("ClockInDate");
+      localStorage.removeItem("ClockInId");
       setStatus({ loading: false, error: null });
-    } catch (e) {
-      console.log(e?.message);
+    } catch (error) {
       setStatus({ loading: false, error: "Error updating the status." });
     }
   };
+
   if (loading)
     return (
       <div className="flex items-center justify-center h-[20vh]">
-        {" "}
         <Loading />
       </div>
     );
   if (error)
     return <h1>{error?.message ? error?.message : "Error right now.."}</h1>;
 
+  function convertDateTime(dateTimeString) {
+    const dateTime = new Date(dateTimeString);
+
+    const year = dateTime.getFullYear();
+    const month = dateTime.getMonth() + 1;
+    const day = dateTime.getDate();
+
+    const hours = dateTime.getHours();
+    const minutes = dateTime.getMinutes();
+    const seconds = dateTime.getSeconds();
+
+    const formattedDateTime = `${year}-${month
+      .toString()
+      .padStart(2, "0")}-${day.toString().padStart(2, "0")} ${hours
+      .toString()
+      .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
+
+    return formattedDateTime;
+  }
+
+  useEffect(() => {
+    const storedData = localStorage.getItem("ClockInDate");
+    const storedId = localStorage.getItem("ClockInId");
+    setDate(storedData);
+    setDateId(storedId);
+  }, [formattedData]);
+
   return (
     <>
       <div>
-        {!value?.data()?.clockInTime ? (
+        {!date ? (
           <div className="flex items-center justify-between">
             <h1>Clock in</h1>
             <button
@@ -87,7 +105,7 @@ export function ClockingSystem() {
                   true,
                   <ClockIn
                     clockIn={clockIn}
-                    disabled={status.loading || value?.data()?.clockInTime}
+                    disabled={status.loading || date}
                     loading={status.loading}
                   />
                 );
@@ -98,7 +116,9 @@ export function ClockingSystem() {
           </div>
         ) : (
           <div className="flex items-center justify-between">
-            <h1>Clock out</h1>
+            <p>
+              Clocked-In at <span>{convertDateTime(date)}</span>
+            </p>
             <button
               className="bg-black text-white"
               onClick={() => {
@@ -106,7 +126,7 @@ export function ClockingSystem() {
                   true,
                   <ClockOut
                     clockOut={clockOut}
-                    disabled={status.loading || !value?.data()?.clockInTime}
+                    disabled={status.loading || !date}
                     loading={status.loading}
                   />
                 );

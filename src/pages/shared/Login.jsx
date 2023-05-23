@@ -1,16 +1,13 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useFormik } from "formik";
 import { validation_schema_form } from "../../utils/validation_schema";
-import { useCtx, LOCAL_STORAGE_BASE } from "../../context/Ctx";
-import { formatCollectionData } from "../../utils/formatData";
+import { useCtx } from "../../context/Ctx";
 import { useNavigate } from "react-router";
 import api from "../../config/AxiosBase";
 
-const Login = ({ url, type }) => {
-  const navigate = useNavigate();
+const Login = () => {
   const [status, setStatus] = useState({ loading: false, error: null });
   const { setAuthenticatedUser } = useCtx();
-  //Forms Data
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -20,7 +17,7 @@ const Login = ({ url, type }) => {
     onSubmit: onSubmit,
   });
 
-  async function onSubmit(values, actions) {
+  async function onSubmit(values) {
     try {
       setStatus({ loading: true, error: null });
 
@@ -33,7 +30,7 @@ const Login = ({ url, type }) => {
         };
       } else {
         data = {
-          username: values.email,
+          userName: values.email,
           password: values.password,
         };
       }
@@ -43,6 +40,7 @@ const Login = ({ url, type }) => {
       });
 
       localStorage.setItem("ADMIN", response.data.data.role);
+      localStorage.setItem("SubRole", response.data.data.subRole);
 
       setAuthenticatedUser(response.data.data.role);
       setStatus({
@@ -57,10 +55,6 @@ const Login = ({ url, type }) => {
       });
     }
   }
-
-  const reset = (actions) => {
-    actions.resetForm({ branchName: "" });
-  };
 
   return (
     <div className="bg-gray-50 flex flex-col items-center justify-center px-6 py-8 mx-auto h-screen lg:py-0">

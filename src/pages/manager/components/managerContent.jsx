@@ -1,7 +1,6 @@
 import React from "react";
 import { ManagerHeader } from "./managerHeader";
 import { useCtx } from "../../../context/Ctx";
-//components
 import { ManagersWaiterSection } from "./waiters";
 import { ManagerCategory } from "./categories";
 import { Modal } from "../../../components/modal";
@@ -10,7 +9,7 @@ import { Lobbies } from "./lobbies";
 import { ClockingSystem } from "./clockingsystem";
 import { PaymentMethods } from "./payment-methods";
 export function ManagerContent() {
-  const { activeTab, managerSidebarLinks, modalStatus } = useCtx();
+  const { activeTab, modalStatus } = useCtx();
 
   const renderManagerContent = (slug) => {
     switch (slug) {

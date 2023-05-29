@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useFormik } from "formik";
 import { validation_schema_form } from "../../utils/validation_schema";
 import { useCtx } from "../../context/Ctx";
-import { useNavigate } from "react-router";
 import api from "../../config/AxiosBase";
 
 const Login = () => {
@@ -61,7 +60,7 @@ const Login = () => {
       <div className="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
           <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
-            Global Login.
+            Login.
           </h1>
           <form
             className="space-y-4 md:space-y-6"

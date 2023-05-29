@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
-// import { ManagerOrderSlider } from "./slider";
 import { ManagerOrderCards } from "./cards";
 import { Loading } from "../../../../components/loading";
-// import { useCartCtx } from "../../../../context/CartCtx";
 import { useCtx } from "../../../../context/Ctx";
 import api from "../../../../config/AxiosBase";
 
@@ -13,10 +11,6 @@ export function WaiterOrder() {
   const [items, setItems] = useState();
   const [active, setActive] = useState("");
   const { apiDone } = useCtx;
-  // const [sliderData, setSliderData] = useState({
-  //   categories: null,
-  //   activeCategory: null,
-  // });
 
   const getCategories = async () => {
     setLoading(true);

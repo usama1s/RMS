@@ -1,31 +1,46 @@
 import React from "react";
-import { useMediaQuery } from "react-responsive";
 import { useCtx } from "../../../context/Ctx";
 import { MdRestaurantMenu } from "react-icons/md";
-//
+import { WAITER_SIDERBARLINKS_HEAD } from "../../../context/Ctx";
+
 export function WaiterSidebar() {
-  const isTablet = useMediaQuery({ query: `(max-width:786px)` });
   const { waiterSidebarLinks, updateWaiterSidebarLinks, managerSidebarToggle } =
     useCtx();
 
-  const JSX = waiterSidebarLinks.map(({ title, active }) => (
-    <div
-      key={title}
-      className={`flex items-center w-full h-12 px-3 mt-2 cursor-pointer ${
-        active && "bg-gray-900 text-white"
-      }  rounded`}
-      onClick={updateWaiterSidebarLinks(title)}
-    >
-      <span className="ml-0 md:ml-2 text-xs md:text-sm font-medium">
-        {title}
-      </span>
-    </div>
-  ));
-  // ${
-  //   isTablet && managerSidebarToggle
-  //     ? "-translate-x-[100%] w-0"
-  //     : "translate-x-0  w-48"
-  // }
+  let JSX;
+
+  const role = localStorage.getItem("SubRole");
+  if (role !== "Head Waiter") {
+    JSX = waiterSidebarLinks.map(({ title, active }) => (
+      <div
+        key={title}
+        className={`flex items-center w-full h-12 px-3 mt-2 cursor-pointer ${
+          active && "bg-gray-900 text-white"
+        }  rounded`}
+        onClick={updateWaiterSidebarLinks(title)}
+      >
+        <span className="ml-0 md:ml-2 text-xs md:text-sm font-medium">
+          {title}
+        </span>
+      </div>
+    ));
+  } else {
+    JSX = WAITER_SIDERBARLINKS_HEAD.map(({ title, active }) => (
+      <div
+        key={title}
+        className={`flex items-center w-full h-12 px-3 mt-2 cursor-pointer ${
+          active && "bg-gray-900 text-white"
+        }  rounded`}
+        onClick={updateWaiterSidebarLinks(title)}
+      >
+        <span className="ml-0 md:ml-2 text-xs md:text-sm font-medium">
+          {title}
+        </span>
+      </div>
+    ));
+  }
+  console.log(role);
+
   return (
     <div
       className={`flex flex-col items-center ${

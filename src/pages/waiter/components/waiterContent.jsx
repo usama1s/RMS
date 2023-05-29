@@ -4,19 +4,23 @@ import { Modal } from "../../../components/modal";
 import { WaiterHeader } from "./waiterHeader";
 import { TakeAway } from "./takeaway/index.jsx";
 import { Dinein } from "./dinein";
+import api from "../../../config/AxiosBase";
+import PendingOrders from "./pendingOrders/PendingOrders";
 
 export function WaiterContent() {
   const { activeWaiterTab, modalStatus } = useCtx();
-  const [clockInDate, setClockInDate] = useState("");
+  const [clockInData, setClockInData] = useState("");
   const [subRole, setSubRole] = useState("");
 
-  useEffect(() => {
-    const date = localStorage.getItem("ClockInDate");
-    const dateId = localStorage.getItem("ClockInDate");
-    const role = localStorage.getItem("SubRole");
+  const getClockIn = async () => {
+    const resp = await api.get("/getAllClockings", { withCredentials: true });
+    setClockInData(resp.data.data[0]);
+  };
 
-    setClockInDate(date);
+  useEffect(() => {
+    const role = localStorage.getItem("SubRole");
     setSubRole(role);
+    getClockIn();
   }, []);
 
   const renderWaiterContentNormal = (slug) => {
@@ -39,16 +43,27 @@ export function WaiterContent() {
     }
   };
 
+  const renderWaiterContentHead = (slug) => {
+    switch (slug) {
+      case "Pending Orders":
+        return <PendingOrders />;
+      default:
+        <h1>Abc</h1>;
+    }
+  };
+
   return (
     <div className={"w-full px-4 lg:px-6 overflow-x-hidden"}>
       <WaiterHeader />
 
-      {!clockInDate ? (
+      {clockInData.status != true ? (
         <h2>Ask manager to clock in.</h2>
-      ) : subRole === "Regular Waiter" ? (
+      ) : subRole && subRole === "Regular Waiter" ? (
         renderWaiterContentNormal(activeWaiterTab)
-      ) : subRole === "Chef" ? (
+      ) : subRole && subRole === "Chef" ? (
         renderWaiterContentChef(activeWaiterTab)
+      ) : subRole && subRole == "Head Waiter" ? (
+        renderWaiterContentHead(activeWaiterTab)
       ) : (
         ""
       )}

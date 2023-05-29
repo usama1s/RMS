@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 const CartCtx = createContext();
+
 export function CartCtxProvider({ children }) {
-  //states and stuff
   const [cartStatus, setCartStatus] = useState(false);
   const [cartModalStatus, setCartModalStatus] = useState({
     open: false,

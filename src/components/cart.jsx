@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { CartItems } from "./cartItems";
-import { XMarkIcon } from "@heroicons/react/24/solid";
-import { useCartCtx } from "../context/CartCtx";
 import { useCtx } from "../context/Ctx";
+import { useCartCtx } from "../context/CartCtx";
+import { XMarkIcon } from "@heroicons/react/24/solid";
 import { PlaceOrderTakeaway } from "../pages/waiter/components/takeaway/placeorder";
 import { PlaceOrderDinein } from "../pages/waiter/components/dinein/placeorder";
 
@@ -15,6 +15,8 @@ export function Cart({ title }) {
     cartTotalPrice,
   } = useCartCtx();
   const { updateModalStatus, activeWaiterTab } = useCtx();
+  const [paymentMethod, setPaymentMethod] = useState("");
+
   return (
     <div
       onClick={(e) => {
@@ -55,7 +57,7 @@ export function Cart({ title }) {
           <button
             className={`items-center justify-center rounded-md bg-black px-2.5 py-2 text-base font-semibold leading-7 text-white`}
             onClick={() => {
-              updatePaymentMethod("Cash");
+              setPaymentMethod("Cash");
             }}
           >
             Cash
@@ -63,7 +65,7 @@ export function Cart({ title }) {
           <button
             className={`items-center justify-center rounded-md bg-black px-2.5 py-2 text-base font-semibold leading-7 text-white`}
             onClick={() => {
-              updatePaymentMethod("Debit");
+              setPaymentMethod("Debit");
             }}
           >
             Debit

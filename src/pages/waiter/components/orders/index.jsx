@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-// import { COLLECTIONS } from "../../../../utils/firestore-collections";
-// import { formatCollectionData } from "../../../../utils/formatData";
-// import { db } from "../../../../config/@firebase";
-// import { collection, getDocs, query, where } from "firebase/firestore";
-// import { useCollection } from "react-firebase-hooks/firestore";
-//Components
-import { ManagerOrderSlider } from "./slider";
+// import { ManagerOrderSlider } from "./slider";
 import { ManagerOrderCards } from "./cards";
 import { Loading } from "../../../../components/loading";
 // import { useCartCtx } from "../../../../context/CartCtx";
@@ -17,12 +11,12 @@ export function WaiterOrder() {
   const [loading, setLoading] = useState(false);
   const [formattedData, setFormattedData] = useState();
   const [items, setItems] = useState();
-  const { apiDone } = useCtx;
-  const [sliderData, setSliderData] = useState({
-    categories: null,
-    activeCategory: null,
-  });
   const [active, setActive] = useState("");
+  const { apiDone } = useCtx;
+  // const [sliderData, setSliderData] = useState({
+  //   categories: null,
+  //   activeCategory: null,
+  // });
 
   const getCategories = async () => {
     setLoading(true);
@@ -33,10 +27,6 @@ export function WaiterOrder() {
     setFormattedData(resp.data.data.doc);
     setLoading(false);
   };
-
-  useEffect(() => {
-    getCategories();
-  }, [apiDone]);
 
   const getItemByCategory = async () => {
     const resp = await api.get("/getItemsById/" + active, {
@@ -49,16 +39,18 @@ export function WaiterOrder() {
   };
 
   useEffect(() => {
+    getCategories();
+  }, [apiDone]);
+
+  useEffect(() => {
     getItemByCategory();
   }, [active]);
-
-  console.log(items);
 
   useEffect(() => {
     getItemByCategory();
   }, []);
 
-  if (formattedData?.length < 1)
+  if (formattedData?.length < 1) {
     return formattedData?.length < 1 ? (
       <h1 className="font-semibold text-xl">
         No Categories. Add Categories to proceed.
@@ -66,6 +58,7 @@ export function WaiterOrder() {
     ) : (
       <h1 className="font-semibold text-xl">Error fetching categories..</h1>
     );
+  }
 
   if (loading) return <Loading />;
 

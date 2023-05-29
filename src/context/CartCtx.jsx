@@ -23,8 +23,7 @@ export function CartCtxProvider({ children }) {
       document.body.style.overflow = "auto";
     }
   }, [cartStatus]);
-  //fns
-  //Calculations
+
   const onItemAdd = (data) => {
     const itemExists = itemsOfCart.find((d) => d.slug === data.slug);
     if (itemExists) {
@@ -69,13 +68,13 @@ export function CartCtxProvider({ children }) {
       );
     }
   };
-  //
   const resetCart = () => {
     setItemsOfCart([]);
   };
   const updateCartStatus = (value) => setCartStatus(value);
   const updateCartModalStatus = (status, value) =>
     setCartModalStatus({ open: status, value });
+
   return (
     <CartCtx.Provider
       value={{

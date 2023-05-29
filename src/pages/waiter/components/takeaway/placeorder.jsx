@@ -1,57 +1,68 @@
+import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
-import { validation_schema_takeaway } from "../../../../utils/validation_schema";
 import { useCartCtx } from "../../../../context/CartCtx";
 import { useCtx } from "../../../../context/Ctx";
-import { addDoc, collection } from "firebase/firestore";
-import { db } from "../../../../config/@firebase";
-import { COLLECTIONS } from "../../../../utils/firestore-collections";
-import React from "react";
+import { Loading } from "../../../../components/loading";
+import api from "../../../../config/AxiosBase";
 
 export function PlaceOrderTakeaway() {
   const formik = useFormik({
     initialValues: {
       name: "",
-      address: "",
-      phoneNo: "",
+      tableNo: 0,
+      lobby: "",
     },
-    validationSchema: validation_schema_takeaway,
     onSubmit: onSubmit,
   });
-  const type = "Take Away";
-  const [status, setStatus] = React.useState({ loading: false, error: null });
-  const { itemsOfCart, resetCart, cartTotalPrice, updateCartStatus } =
-    useCartCtx();
-  const { updateModalStatus, authenticatedUser } = useCtx();
+  const [formattedData, setFormattedData] = useState();
+  // const [status, setStatus] = useState({ loading: false, error: null });
+  const { itemsOfCart, resetCart } = useCartCtx();
+  const { activeWaiterTab, paymentMethod } = useCtx();
+
+  const getLobbies = async () => {
+    const resp = await api.get("/getLobbies", {
+      withCredentials: true,
+    });
+    if (resp.data.status !== "success") {
+      setError(true);
+    }
+    setFormattedData(resp.data.data.doc);
+  };
+
+  useEffect(() => {
+    getLobbies();
+  }, []);
+
   async function onSubmit(values) {
-    if (itemsOfCart.length === 0) {
-      setStatus({ loading: false, error: "Select some items to proceed." });
-      return;
-    }
     const payload = {
-      ...values,
-      status: "PENDING",
-      itemsOfCart,
-      price: cartTotalPrice,
-      type,
-      branchId: authenticatedUser.branchId,
-      waiterId: authenticatedUser.slug,
-      managerId: authenticatedUser.managerId,
+      Name: values.name,
+      LobbyName: values.lobby,
+      TableNo: values.tableNo,
+      Qty: itemsOfCart[0].qty,
+      PaymentMethod: paymentMethod === "Cash" ? "Cash" : "Debit",
+      Price: itemsOfCart[0].price,
+      Title: itemsOfCart[0].title,
     };
-    setStatus({ loading: true, error: null });
-    try {
-      await addDoc(collection(db, COLLECTIONS.takeaway), payload);
-      setStatus({ loading: false, error: null });
-      updateModalStatus(false, null);
-      updateCartStatus(false);
-      resetCart();
-    } catch (e) {
-      setStatus({ loading: false, error: "Error placing order." });
+
+    if (activeWaiterTab === "Take away") {
+      const resp = await api.post("/makeTakeAwayOrder", payload, {
+        withCredentials: true,
+      });
+      console.log(resp);
+    } else {
+      const resp = await api.post("/makeDineInOrder", payload, {
+        withCredentials: true,
+      });
+      console.log(resp);
     }
+
+    resetCart();
   }
+
   const formJSX = (
     <div>
       <h1 className="font-bold text-3xl py-3">Place your order.</h1>
-      <form onSubmit={formik.handleSubmit}>
+      <form onSubmit={formik.handleSubmit} className="mt-2">
         <div className="space-y-5">
           <div>
             <label htmlFor="" className="text-xl font-medium text-gray-900">
@@ -64,70 +75,65 @@ export function PlaceOrderTakeaway() {
                 name="name"
                 onChange={formik.handleChange}
                 value={formik.values.name}
-              ></input>
-              {formik.touched.name && formik.errors.name ? (
-                <p className="my-2">{formik.errors.name}</p>
-              ) : (
-                ""
-              )}
+              />
             </div>
           </div>
           <div>
             <label htmlFor="" className="text-xl font-medium text-gray-900">
-              Phone number
+              Lobby
             </label>
             <div className="mt-2.5">
-              <input
+              <select
                 className="flex  h-10 w-full rounded-md border border-gray-300 bg-transparent py-2 px-3 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
-                placeholder="Phone Number"
-                name="phoneNo"
+                placeholder="Lobby"
+                name="lobby"
                 onChange={formik.handleChange}
-                value={formik.values.phoneNo}
-              ></input>
-              {formik.touched.phoneNo && formik.errors.phoneNo ? (
-                <p className="my-2">{formik.errors.phoneNo}</p>
-              ) : (
-                ""
-              )}
+                value={formik.values.lobby}
+              >
+                {formattedData?.length > 0 &&
+                  formattedData?.map((item, index) => (
+                    <option key={index + 1}>{item.lobbyName}</option>
+                  ))}
+              </select>
             </div>
           </div>
           <div>
             <div className="flex items-center justify-between">
               <label htmlFor="" className="text-xl font-medium text-gray-900">
-                Address
+                Table Number
               </label>
             </div>
             <div className="mt-2.5">
               <input
                 className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent py-2 px-3 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 "
-                //   type="password"
-                placeholder="Address"
-                name="address"
+                type="number"
+                placeholder="Table Number"
+                name="tableNo"
                 onChange={formik.handleChange}
                 value={formik.values.address}
-              ></input>
-              {formik.touched.address && formik.errors.address ? (
-                <p className="my-2">{formik.errors.address}</p>
-              ) : (
-                ""
-              )}
+              />
             </div>
           </div>
-          {status.error && (
-            <p className="text-base font-normal py-2">{status.error}</p>
-          )}
           <div>
             <button
-              type="submit"
-              disabled={status.loading}
               className="inline-flex w-full items-center justify-center rounded-md bg-black px-3.5 py-2.5  font-regular leading-7 text-white  text-xl"
+              type="submit"
             >
-              {status.loading ? "Wait..." : "Place an order"}
+              {/* {status.loading ? "Wait..." : "Place an order"} */}
+              Place an order
             </button>
           </div>
         </div>
       </form>
     </div>
   );
+
+  // if (lobbyLoading)
+  //   return (
+  //     <div>
+  //       <Loading />
+  //     </div>
+  //   );
+  // if (lobbyError) return <h1>Error</h1>;
   return formJSX;
 }

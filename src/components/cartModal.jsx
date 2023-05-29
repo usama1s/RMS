@@ -1,15 +1,15 @@
+import React, { useState } from "react";
+import { useCartCtx } from "../context/CartCtx";
 import {
   PlusCircleIcon,
   MinusCircleIcon,
   XMarkIcon,
 } from "@heroicons/react/24/solid";
-import React, { useState } from "react";
-import { useCartCtx } from "../context/CartCtx";
+
 export function CartModal() {
   const { updateCartModalStatus, onItemAdd, cartModalStatus, itemsOfCart } =
     useCartCtx();
-
-  const [qty, setQty] = React.useState(1);
+  const [qty, setQty] = useState(1);
   const add = (value) => () => {
     if (qty + value <= 0) {
       setQty(1);
@@ -23,6 +23,7 @@ export function CartModal() {
     onItemAdd({ title, price, slug, qty });
     updateCartModalStatus(false, null);
   };
+
   return (
     <div
       onClick={(e) => {

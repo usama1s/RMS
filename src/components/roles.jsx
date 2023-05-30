@@ -4,6 +4,7 @@ import { ROLES } from "../utils/roles";
 function RolesComponent() {
   const navigate = useNavigate();
   const [roles, setRoles] = useState();
+
   useEffect(() => {
     setRoles(
       Object.entries(ROLES).map(([key, value]) => ({

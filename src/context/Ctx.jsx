@@ -9,7 +9,9 @@ export const WAITER_SIDERBARLINKS_NORMAL = [
 ];
 
 export const WAITER_SIDERBARLINKS_HEAD = [
-  { title: "Pending Orders", active: true },
+  { title: "Dine in", active: true },
+  { title: "Take away", active: false },
+  { title: "Pending Orders", active: false },
 ];
 const Ctx = createContext();
 export function CtxProvider({ children }) {
@@ -22,6 +24,11 @@ export function CtxProvider({ children }) {
   const [waiterSidebarLinks, setWaiterSidebarLinks] = useState([
     { title: "Dine in", active: true },
     { title: "Take away", active: false },
+  ]);
+  const [headWaiterSidebarLinks, setHeadWaiterSidebarLinks] = useState([
+    { title: "Dine in", active: true },
+    { title: "Take away", active: false },
+    { title: "Pending Orders", active: false },
   ]);
   const [adminSidebarLinks, setAdminSidebarLinks] = useState([
     { title: "Branches", active: true },
@@ -107,6 +114,16 @@ export function CtxProvider({ children }) {
     );
     setActiveWaiterTab(title);
   };
+  const updateHeadWaiterSidebarLinks = (title) => () => {
+    setHeadWaiterSidebarLinks(
+      headWaiterSidebarLinks.map((link) =>
+        link.title === title
+          ? { ...link, active: true }
+          : { ...link, active: false }
+      )
+    );
+    setActiveWaiterTab(title);
+  };
   const updateAdminSidebarLinks = (title) => () => {
     setAdminSidebarLinks(
       adminSidebarLinks.map((link) =>
@@ -144,7 +161,9 @@ export function CtxProvider({ children }) {
         updateLobbyValue,
         editedLobbyValue,
         waiterSidebarLinks,
+        headWaiterSidebarLinks,
         updateWaiterSidebarLinks,
+        updateHeadWaiterSidebarLinks,
         activeWaiterTab,
         adminSidebarLinks,
         updateAdminSidebarLinks,
@@ -152,6 +171,7 @@ export function CtxProvider({ children }) {
         setAuthenticatedUser,
         setActiveWaiterTab,
         setWaiterSidebarLinks,
+        setHeadWaiterSidebarLinks,
         updateApiDoneStatus,
         apiDone,
         paymentMethod,

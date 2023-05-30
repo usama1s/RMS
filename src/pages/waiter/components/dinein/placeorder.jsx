@@ -39,7 +39,7 @@ export function PlaceOrderDinein() {
       LobbyName: values.lobby,
       TableNo: values.tableNo,
       Qty: itemsOfCart[0].qty,
-      PaymentMethod: paymentMethod === "Cash" ? "Cash" : "Debit",
+      PaymentMethod: paymentMethod,
       Price: itemsOfCart[0].price,
       Title: itemsOfCart[0].title,
     };

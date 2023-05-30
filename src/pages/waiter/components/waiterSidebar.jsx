@@ -1,11 +1,15 @@
 import React from "react";
 import { useCtx } from "../../../context/Ctx";
 import { MdRestaurantMenu } from "react-icons/md";
-import { WAITER_SIDERBARLINKS_HEAD } from "../../../context/Ctx";
 
 export function WaiterSidebar() {
-  const { waiterSidebarLinks, updateWaiterSidebarLinks, managerSidebarToggle } =
-    useCtx();
+  const {
+    waiterSidebarLinks,
+    headWaiterSidebarLinks,
+    updateWaiterSidebarLinks,
+    updateHeadWaiterSidebarLinks,
+    managerSidebarToggle,
+  } = useCtx();
 
   let JSX;
 
@@ -25,13 +29,13 @@ export function WaiterSidebar() {
       </div>
     ));
   } else {
-    JSX = WAITER_SIDERBARLINKS_HEAD.map(({ title, active }) => (
+    JSX = headWaiterSidebarLinks.map(({ title, active }) => (
       <div
         key={title}
         className={`flex items-center w-full h-12 px-3 mt-2 cursor-pointer ${
           active && "bg-gray-900 text-white"
         }  rounded`}
-        onClick={updateWaiterSidebarLinks(title)}
+        onClick={updateHeadWaiterSidebarLinks(title)}
       >
         <span className="ml-0 md:ml-2 text-xs md:text-sm font-medium">
           {title}

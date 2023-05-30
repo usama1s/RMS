@@ -1,4 +1,4 @@
-import { useLocation, Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { useCtx } from "../context/Ctx";
 
 export const RequireAuth = ({ roles }) => {

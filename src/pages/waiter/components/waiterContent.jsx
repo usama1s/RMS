@@ -46,11 +46,11 @@ export function WaiterContent() {
   const renderWaiterContentHead = (slug) => {
     switch (slug) {
       case "Dine in":
-        return <Dinein />;
+        return <PendingOrders />;
       case "Take away":
         return <TakeAway />;
-      case "Pending Orders":
-        return <PendingOrders />;
+      // case "Pending Orders":
+      //   return <Dinein />;
       default:
         <h1>Abc</h1>;
     }

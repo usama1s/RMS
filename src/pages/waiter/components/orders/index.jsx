@@ -19,6 +19,7 @@ export function WaiterOrder() {
       setError(true);
     }
     setFormattedData(resp.data.data.doc);
+    setActive(resp.data.data.doc[0]._id);
     setLoading(false);
   };
 

@@ -1,5 +1,6 @@
 import React from "react";
 import { WaiterOrder } from "../orders";
+
 export function Dinein() {
   return (
     <div>

@@ -35,7 +35,6 @@ export function PlaceOrderDinein() {
 
   async function onSubmit(values) {
     const payload = {
-      Name: values.name,
       LobbyName: values.lobby,
       TableNo: values.tableNo,
       Qty: itemsOfCart[0].qty,
@@ -60,7 +59,7 @@ export function PlaceOrderDinein() {
   }
 
   const formJSX = (
-    <div>
+    <div className="z-10">
       <h1 className="font-bold text-3xl py-3">Place your order.</h1>
       <form onSubmit={formik.handleSubmit} className="mt-2">
         <div className="space-y-5">

@@ -43,7 +43,6 @@ export function WaiterSidebar() {
       </div>
     ));
   }
-  console.log(role);
 
   return (
     <div

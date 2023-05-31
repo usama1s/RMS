@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import api from "../../../../config/AxiosBase";
 import { useCtx } from "../../../../context/Ctx";
 import { useCartCtx } from "../../../../context/CartCtx";
+import { WaiterOrder } from "../orders";
 
 const PendingOrders = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -11,9 +12,15 @@ const PendingOrders = () => {
   const [active, setActive] = useState("");
   const [toggleDetail, setToggleDetail] = useState(false);
   const [orderDetail, setOrderDetail] = useState();
-  const { updateModalStatus, updateApiDoneStatus, apiDone } = useCtx();
-  const { updateCartModalStatus, itemsOfCart, onItemAdd } = useCartCtx();
   const [isOpen, setIsOpen] = useState({});
+  const { updateModalStatus, updateApiDoneStatus, apiDone } = useCtx();
+  const {
+    updateCartModalStatus,
+    itemsOfCart,
+    onItemAdd,
+    updateCartStatus,
+    addOrderData,
+  } = useCartCtx();
 
   const getLobbies = async () => {
     setIsLoading(true);
@@ -25,6 +32,8 @@ const PendingOrders = () => {
     }
 
     setFormattedData(resp.data.data.doc);
+    setIsOpen(resp.data.data.doc[0]?.lobbyName);
+    setActive(resp.data.data.doc[0]?.lobbyName);
     setIsLoading(false);
   };
 
@@ -32,7 +41,7 @@ const PendingOrders = () => {
     const resp = await api.get("/getAllOrders", {
       withCredentials: true,
     });
-    console.log("resp ", resp);
+
     setOrdersList(resp.data.data.doc);
   };
 
@@ -40,34 +49,38 @@ const PendingOrders = () => {
     const resp = await api.get(`/getSingleOrder/${lobbyName}/${tableNo}`, {
       withCredentials: true,
     });
-    console.log("resp ", resp);
-    onItemAdd(resp?.data?.data[0]);
-  };
 
+    const transformObj = {
+      price: resp?.data.data[0].Price,
+      qty: resp?.data.data[0].Qty,
+      slug: resp?.data.data[0]._id,
+      title: resp?.data.data[0].Title,
+    };
+
+    onItemAdd(transformObj);
+  };
   useEffect(() => {
     getLobbies();
     getOrders();
   }, [apiDone]);
 
-  function filterByLobby(lobbyName) {
-    return ordersList.filter((obj) => obj.LobbyName === lobbyName);
-  }
-
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Something goes wrong.</p>;
+  // function filterByLobby(lobbyName) {
+  //   return ordersList.filter((obj) => obj.LobbyName === lobbyName);
+  // }
 
   const handleItemClick = (lobbyName) => {
     setIsOpen((prevOpen) => (prevOpen === lobbyName ? "" : lobbyName));
     setActive(lobbyName);
   };
 
-  console.log(formattedData);
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Something goes wrong.</p>;
 
   return (
     <div>
-      <main class="p-5 bg-light-blue">
-        <div class="flex justify-center items-start my-2">
-          <div class="w-full my-1">
+      <main className="p-5 bg-light-blue">
+        <div className="flex justify-center items-start my-2">
+          <div className="w-full my-1">
             <ul className="flex flex-col">
               {formattedData &&
                 formattedData.map((item) => (
@@ -101,7 +114,21 @@ const PendingOrders = () => {
                                 : "bg-blue-500"
                             } px-4 py-2 w-14 h-14 rounded-md hover:scale-110 duration-200 cursor-pointer flex items-center justify-center text-white`}
                             onClick={() => {
-                              getSingleOrders(item.lobbyName, i.tableNumber);
+                              if (i?.isBooked !== true) {
+                                addOrderData(item.lobbyName, i.tableNumber);
+                                updateModalStatus(
+                                  true,
+                                  <UpdateStatusJSX
+                                    slug={orderDetail?._id}
+                                    updateModalStatus={updateModalStatus}
+                                    updateApiDoneStatus={updateApiDoneStatus}
+                                    apiDone={apiDone}
+                                    updateCartStatus={updateCartStatus}
+                                  />
+                                );
+                              } else {
+                                getSingleOrders(item.lobbyName, i.tableNumber);
+                              }
                             }}
                           >
                             {i.tableNumber}
@@ -258,59 +285,71 @@ const UpdateStatusJSX = ({
   updateModalStatus,
   updateApiDoneStatus,
   apiDone,
+  updateCartStatus,
 }) => {
   const [status, setStatus] = useState({ loading: false, error: null });
 
   return (
+    // <div>
+    //   <h1 className="text-xl font-bold py-2">Confirm to Update status.</h1>
+    //   {status.loading ? (
+    //     <button
+    //       className="bg-black text-base font-semibold text-white rounded-md py-2 px-4  mr-2"
+    //       disabled={status.loading}
+    //     >
+    //       Updating....
+    //     </button>
+    //   ) : (
+    //     <div className="flex mt-2">
+    //       <button
+    //         className="bg-black text-base font-semibold text-white rounded-md py-2 px-4  mr-2"
+    //         onClick={async () => {
+    //           try {
+    //             setStatus({ loading: true, error: null });
+    //             await api.patch(`/updateOrderById/${slug}`, {
+    //               withCredentials: true,
+    //             });
+
+    //             setStatus({
+    //               loading: false,
+    //               error: null,
+    //             });
+    //             updateModalStatus(false, null);
+    //             updateApiDoneStatus(!apiDone);
+    //           } catch (e) {
+    //             console.log(e);
+    //             setStatus({
+    //               loading: false,
+    //               error: "Error updating the status.",
+    //             });
+    //           }
+    //         }}
+    //         disabled={status.loading}
+    //       >
+    //         Yes
+    //       </button>
+    //       <button
+    //         className="bg-black text-base font-semibold text-white rounded-md py-2 px-4 mr-2"
+    //         onClick={() => updateModalStatus(false, null)}
+    //         disabled={status.loading}
+    //       >
+    //         No
+    //       </button>
+    //     </div>
+    //   )}
+
+    //   {status.error && <h1>{status.error}</h1>}
+    // </div>
     <div>
-      <h1 className="text-xl font-bold py-2">Confirm to Update status.</h1>
-      {status.loading ? (
+      <WaiterOrder />
+      {/* <div className="flex justify-end">
         <button
-          className="bg-black text-base font-semibold text-white rounded-md py-2 px-4  mr-2"
-          disabled={status.loading}
+          onClick={() => updateCartStatus(true)}
+          className="bg-gray-900 hover:scale-105 duration-200 text-base font-semibold text-white rounded-md py-2 px-4  mr-2"
         >
-          Updating....
+          Proceed to cart
         </button>
-      ) : (
-        <div className="flex mt-2">
-          <button
-            className="bg-black text-base font-semibold text-white rounded-md py-2 px-4  mr-2"
-            onClick={async () => {
-              try {
-                setStatus({ loading: true, error: null });
-                await api.patch(`/updateOrderById/${slug}`, {
-                  withCredentials: true,
-                });
-
-                setStatus({
-                  loading: false,
-                  error: null,
-                });
-                updateModalStatus(false, null);
-                updateApiDoneStatus(!apiDone);
-              } catch (e) {
-                console.log(e);
-                setStatus({
-                  loading: false,
-                  error: "Error updating the status.",
-                });
-              }
-            }}
-            disabled={status.loading}
-          >
-            Yes
-          </button>
-          <button
-            className="bg-black text-base font-semibold text-white rounded-md py-2 px-4 mr-2"
-            onClick={() => updateModalStatus(false, null)}
-            disabled={status.loading}
-          >
-            No
-          </button>
-        </div>
-      )}
-
-      {status.error && <h1>{status.error}</h1>}
+      </div> */}
     </div>
   );
 };

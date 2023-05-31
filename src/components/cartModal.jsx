@@ -7,8 +7,13 @@ import {
 } from "@heroicons/react/24/solid";
 
 export function CartModal() {
-  const { updateCartModalStatus, onItemAdd, cartModalStatus, itemsOfCart } =
-    useCartCtx();
+  const {
+    updateCartModalStatus,
+    updateCartStatus,
+    onItemAdd,
+    cartModalStatus,
+    itemsOfCart,
+  } = useCartCtx();
   const [qty, setQty] = useState(1);
   const add = (value) => () => {
     if (qty + value <= 0) {
@@ -31,7 +36,7 @@ export function CartModal() {
           updateCartModalStatus(false, null);
         }
       }}
-      className="cart-modal-shadow bg-[rgba(0,0,0,0.5)] flex items-center justify-center fixed top-0 left-0 w-full h-full"
+      className="z-10 cart-modal-shadow bg-[rgba(0,0,0,0.5)] flex items-center justify-center fixed top-0 left-0 w-full h-full"
     >
       <div className="rounded-md bg-white w-80 flex flex-col p-1">
         <div className="p-2">
@@ -55,7 +60,10 @@ export function CartModal() {
           />
         </div>
         <button
-          onClick={addItemToCart}
+          onClick={() => {
+            addItemToCart();
+            updateCartStatus(true);
+          }}
           className="inline-flex w-full items-center justify-center rounded-md bg-gray-900/100 px-3.5 py-2.5 text-base font-semibold leading-7 text-white"
         >
           Ok

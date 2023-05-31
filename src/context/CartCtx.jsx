@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 const CartCtx = createContext();
 
 export function CartCtxProvider({ children }) {
+  const [orderData, setOrderData] = useState({});
   const [cartStatus, setCartStatus] = useState(false);
   const [cartModalStatus, setCartModalStatus] = useState({
     open: false,
@@ -23,7 +24,6 @@ export function CartCtxProvider({ children }) {
       document.body.style.overflow = "auto";
     }
   }, [cartStatus]);
-
   const onItemAdd = (data) => {
     const itemExists = itemsOfCart.find((d) => d.slug === data.slug);
     if (itemExists) {
@@ -34,6 +34,7 @@ export function CartCtxProvider({ children }) {
             : { ...item }
         );
       });
+
       return;
     }
     setItemsOfCart((prevItems) => [...prevItems, data]);
@@ -71,6 +72,16 @@ export function CartCtxProvider({ children }) {
   const resetCart = () => {
     setItemsOfCart([]);
   };
+  const addOrderData = (lobby, table) => {
+    console.log("Received lobby and table:", lobby, table);
+
+    setOrderData({
+      lobby,
+      table,
+    });
+
+    console.log("Order data updated:", orderData);
+  };
   const updateCartStatus = (value) => setCartStatus(value);
   const updateCartModalStatus = (status, value) =>
     setCartModalStatus({ open: status, value });
@@ -90,6 +101,8 @@ export function CartCtxProvider({ children }) {
         onCartItemAdd,
         onCartItemRemove,
         resetCart,
+        addOrderData,
+        orderData,
       }}
     >
       {children}

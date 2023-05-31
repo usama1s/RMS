@@ -28,7 +28,7 @@ export function CtxProvider({ children }) {
   const [headWaiterSidebarLinks, setHeadWaiterSidebarLinks] = useState([
     { title: "Dine in", active: true },
     { title: "Take away", active: false },
-    { title: "Pending Orders", active: false },
+    // { title: "Dine in", active: true },
   ]);
   const [adminSidebarLinks, setAdminSidebarLinks] = useState([
     { title: "Branches", active: true },

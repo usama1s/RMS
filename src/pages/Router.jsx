@@ -6,7 +6,7 @@ import { Waiter } from "./waiter";
 import { Admin } from "./admin";
 import { RequireAuth } from "../components/protectedroute";
 import { ROLES } from "../utils/roles";
-import Login from "./shared/login";
+import Login from "./shared/Login";
 
 export function Router() {
   const { authStatus, authenticatedUser } = useCtx();

@@ -168,7 +168,6 @@ export function CtxProvider({ children }) {
         adminSidebarLinks,
         updateAdminSidebarLinks,
         activeAdminTab,
-        setAuthenticatedUser,
         setActiveWaiterTab,
         setWaiterSidebarLinks,
         setHeadWaiterSidebarLinks,

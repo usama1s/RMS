@@ -57,16 +57,14 @@ const PendingOrders = () => {
       title: resp?.data.data[0].Title,
     };
 
+    updateCartStatus(true, null);
     onItemAdd(transformObj);
   };
+
   useEffect(() => {
     getLobbies();
     getOrders();
   }, [apiDone]);
-
-  // function filterByLobby(lobbyName) {
-  //   return ordersList.filter((obj) => obj.LobbyName === lobbyName);
-  // }
 
   const handleItemClick = (lobbyName) => {
     setIsOpen((prevOpen) => (prevOpen === lobbyName ? "" : lobbyName));
@@ -75,6 +73,8 @@ const PendingOrders = () => {
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Something goes wrong.</p>;
+
+  console.log({ formattedData });
 
   return (
     <div>

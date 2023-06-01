@@ -4,17 +4,22 @@ import { EditPaymentMethods } from "./edit-categories";
 import { useCtx } from "../../../../context/Ctx";
 
 export function PaymentMethodsListingsItems({ formattedD }) {
-  const { updateModalStatus, updateApiDoneStatus, apiDone } = useCtx();
-  const [propData, setPropData] = useState(formattedD);
+  const {
+    updateModalStatus,
+    updateCategoryValue,
+    updateApiDoneStatus,
+    editedCategoryValue,
+    apiDone,
+  } = useCtx();
 
-  const updateItemHandler = async () => {
-    updateCategoryValue({ slug, title });
+  const updateItemHandler = async (slug, title) => {
+    await updateCategoryValue({ slug, title });
     updateModalStatus(true, <EditPaymentMethods />);
   };
 
   return (
     <>
-      {propData?.map((item, index) => (
+      {formattedD?.map((item, index) => (
         <div
           key={index + 1}
           className="flex items-center  bg-[#FBFBFB] shadow-md w-full p-4 rounded-md my-4 relative"
@@ -38,7 +43,9 @@ export function PaymentMethodsListingsItems({ formattedD }) {
               className="h-6 w-6 mr-4 text-gray-900 cursor-pointer hover:scale-110 duration-200"
             />
             <PencilIcon
-              onClick={updateItemHandler}
+              onClick={() => {
+                updateItemHandler(item?._id, item?.title);
+              }}
               className="h-6 w-6 mr-4 text-gray-900 cursor-pointer hover:scale-110 duration-200"
             />
           </div>
@@ -47,6 +54,7 @@ export function PaymentMethodsListingsItems({ formattedD }) {
     </>
   );
 }
+
 const DeleteItemJSX = ({
   slug,
   updateModalStatus,

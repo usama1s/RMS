@@ -9,10 +9,14 @@ export function ManagerOrderCards({ items }) {
       {items?.map((data) => (
         <div
           onClick={() => {
-            updateCartModalStatus(true, data);
+            updateCartModalStatus(true, {
+              price: data.price,
+              slug: data._id,
+              title: data.title,
+            });
           }}
           key={data._id}
-          className={`cursor-pointer pb-0 w-[200px] h-[200px] rounded-lg overflow-hidden my-2 relative border-[1px] border-[#F3F4F6] shadow-lg`}
+          className={`cursor-pointer pb-0 w-[200px] h-[200px] rounded-lg overflow-hidden my-2 relative border border-[#F3F4F6] shadow-lg`}
         >
           <div className="w-full h-full">
             <img

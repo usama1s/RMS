@@ -1,20 +1,12 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useFormik } from "formik";
 import { validation_schema_food_categories } from "../../../../utils/validation_schema";
-import {
-  collection,
-  addDoc,
-  serverTimestamp,
-  getDocs,
-  query,
-  where,
-} from "firebase/firestore";
-import { COLLECTIONS } from "../../../../utils/firestore-collections";
-import { db } from "../../../../config/@firebase";
 import { useCtx } from "../../../../context/Ctx";
+import api from "../../../../config/AxiosBase";
+
 export function AddPaymentMethod() {
-  const { updateModalStatus, authenticatedUser } = useCtx();
-  //Form Data
+  const { updateModalStatus, updateApiDoneStatus, apiDone } = useCtx();
+
   const formik = useFormik({
     initialValues: {
       title: "",
@@ -23,34 +15,23 @@ export function AddPaymentMethod() {
     onSubmit: onSubmit,
   });
   const [status, setStatus] = useState({ loading: false, error: null });
+
   async function onSubmit(values, actions) {
-    const collection_ref = collection(db, COLLECTIONS.paymentMethods);
     setStatus((prev) => ({ ...prev, loading: true, error: null }));
 
     try {
-      const category_exist = await getDocs(
-        query(
-          collection(db, COLLECTIONS.paymentMethods),
-          where("title", "==", values.title),
-          where("branchId", "==", authenticatedUser.branchId)
-        )
+      await api.post(
+        "/addPaymentMethods",
+        {
+          title: values.title,
+        },
+        {
+          withCredentials: true,
+        }
       );
 
-      if (category_exist.docs.length >= 1) {
-        setStatus({
-          ...status,
-          loading: false,
-          error: "Payment Method already exists.",
-        });
-        return;
-      } else {
-        await addDoc(collection_ref, {
-          ...values,
-          branchId: authenticatedUser.branchId,
-          timestamp: serverTimestamp(),
-        });
-        updateModalStatus(false, null);
-      }
+      updateApiDoneStatus(!apiDone);
+      updateModalStatus(false, null);
     } catch (e) {
       setStatus((prev) => ({
         ...prev,
@@ -61,9 +42,11 @@ export function AddPaymentMethod() {
       reset(actions);
     }
   }
+
   const reset = (actions) => {
     actions.resetForm({ title: "" });
   };
+
   return (
     <div>
       <h1 className="text-2xl font-bold">Add a Payment Method</h1>

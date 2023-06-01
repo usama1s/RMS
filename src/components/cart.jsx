@@ -20,8 +20,6 @@ export function Cart({ title }) {
   const { updateModalStatus, activeWaiterTab } = useCtx();
   const [paymentMethod, setPaymentMethod] = useState("");
 
-  console.log("orderData ", orderData);
-
   async function onSubmit(values) {}
 
   const placeOrder = async () => {

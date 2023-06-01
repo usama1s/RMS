@@ -39,8 +39,6 @@ export function PaymentMethods() {
       </div>
     );
 
-  console.log(formattedData);
-
   return (
     <div>
       <div className="flex items-center justify-between py-4 ">

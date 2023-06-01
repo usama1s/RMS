@@ -1,4 +1,3 @@
-//router
 import { Router } from "./pages/Router";
 
 function App() {

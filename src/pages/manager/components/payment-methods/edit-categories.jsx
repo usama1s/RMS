@@ -1,66 +1,40 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useFormik } from "formik";
 import { validation_schema_food_categories } from "../../../../utils/validation_schema";
-import {
-  collection,
-  updateDoc,
-  serverTimestamp,
-  getDocs,
-  query,
-  where,
-  doc,
-} from "firebase/firestore";
-import { COLLECTIONS } from "../../../../utils/firestore-collections";
-import { db } from "../../../../config/@firebase";
 import { useCtx } from "../../../../context/Ctx";
-import { formatCollectionData } from "../../../../utils/formatData";
+import api from "../../../../config/AxiosBase";
+
 export function EditPaymentMethods() {
   const {
     editedCategoryValue,
     updateModalStatus,
+    updateApiDoneStatus,
     updateCategoryValue,
-    authenticatedUser,
+    apiDone,
   } = useCtx();
-
   const formik = useFormik({
     initialValues: {
-      title: editedCategoryValue.title,
+      title: editedCategoryValue?.title,
     },
     validationSchema: validation_schema_food_categories,
     onSubmit: onSubmit,
   });
   const [status, setStatus] = useState({ loading: false, error: null });
-  async function onSubmit(values, actions) {
-    const collection_ref = doc(
-      db,
-      COLLECTIONS.paymentMethods,
-      editedCategoryValue.slug
-    );
-    setStatus((prev) => ({ ...prev, loading: true }));
-    const documents = await getDocs(collection(db, COLLECTIONS.paymentMethods));
-    const formattedDocs = formatCollectionData(documents);
-    console.log(
-      formattedDocs
-        .filter((d) => d.title !== editedCategoryValue.title)
-        .map((d) => d.title)
-    );
-    const filteredFormattedDocs = formattedDocs
-      .filter(
-        (d) =>
-          d.title !== editedCategoryValue.title &&
-          d.branchId === authenticatedUser.branchId
-      )
-      .map((d) => d.title);
 
-    if (filteredFormattedDocs.includes(values.title)) {
-      setStatus({ loading: false, error: `Category already exist.` });
-      return;
-    }
+  async function onSubmit(values, actions) {
+    setStatus((prev) => ({ ...prev, loading: true }));
     try {
-      await updateDoc(collection_ref, {
-        ...values,
-        timestamp: serverTimestamp(),
-      });
+      await api.patch(
+        `/editPaymentMethods/${editedCategoryValue?.slug}`,
+        {
+          title: values.title,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+
+      updateApiDoneStatus(!apiDone);
       updateModalStatus(false, null);
     } catch (e) {
       console.log(e);
@@ -77,6 +51,7 @@ export function EditPaymentMethods() {
     actions.resetForm({ title: "" });
     updateCategoryValue(null);
   };
+
   return (
     <div>
       <h1 className="text-2xl font-bold">Update Payment Method</h1>

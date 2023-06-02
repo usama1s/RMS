@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useMediaQuery } from "react-responsive";
 import { BsCartFill } from "react-icons/bs";
 import { useCartCtx } from "../../../context/CartCtx";
@@ -9,6 +9,7 @@ import api from "../../../config/AxiosBase";
 export function WaiterHeader() {
   const navigate = useNavigate();
   const isTablet = useMediaQuery({ query: `(max-width:786px)` });
+  const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const {
     managerSidebarToggle,
     updateManagerSidebarToggle,
@@ -26,8 +27,21 @@ export function WaiterHeader() {
     }
   };
 
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setCurrentDateTime(new Date());
+    }, 1000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
+
   return (
-    <div className="flex items-center justify-between md:justify-end min-h-[10vh] w-full">
+    <div className="flex items-center justify-between  min-h-[10vh] w-full">
+      <p className=" font-semibold text-lg">
+        {currentDateTime.toLocaleString()}
+      </p>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"

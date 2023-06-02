@@ -18,6 +18,7 @@ const PendingOrders = () => {
     updateCartModalStatus,
     itemsOfCart,
     onItemAdd,
+    onItemAddFromAPI,
     updateCartStatus,
     addOrderData,
   } = useCartCtx();
@@ -55,10 +56,11 @@ const PendingOrders = () => {
       qty: resp?.data.data[0].Qty,
       slug: resp?.data.data[0]._id,
       title: resp?.data.data[0].Title,
+      createdAt: resp?.data.data[0].createdAt,
     };
 
     updateCartStatus(true, null);
-    onItemAdd(transformObj);
+    onItemAddFromAPI(transformObj);
   };
 
   useEffect(() => {
@@ -73,8 +75,6 @@ const PendingOrders = () => {
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Something goes wrong.</p>;
-
-  console.log({ formattedData });
 
   return (
     <div>

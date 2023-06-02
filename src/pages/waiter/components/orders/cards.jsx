@@ -9,10 +9,12 @@ export function ManagerOrderCards({ items }) {
       {items?.map((data) => (
         <div
           onClick={() => {
+            const dateNow = new Date();
             updateCartModalStatus(true, {
               price: data.price,
               slug: data._id,
               title: data.title,
+              currDate: dateNow,
             });
           }}
           key={data._id}

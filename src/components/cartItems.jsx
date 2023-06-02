@@ -1,13 +1,18 @@
 import { PlusCircleIcon, MinusCircleIcon } from "@heroicons/react/24/solid";
 import { useCartCtx } from "../context/CartCtx";
 import { useCtx } from "../context/Ctx";
-export function CartItems({ title, slug, price, qty }) {
-  const { onItemDelete, onCartItemAdd, onCartItemRemove } = useCartCtx();
+export function CartItems({ title, slug, price, qty, currDate }) {
+  const { onItemDelete, onCartItemAdd, onCartItemRemove, onApiItemDelete } =
+    useCartCtx();
   const { updateModalStatus } = useCtx();
+
+  console.log(title, slug, price, qty, currDate);
+
   return (
     <div className="flex flex-col bg-[#F3F4F6] my-2 ">
       <div className="flex flex-col">
         <div className="p-1 pl-3 flex justify-between items-center w-full">
+          <p>{currDate}</p>
           <div className="flex items-center justify-between gap-2">
             <h2 className="truncate break-words pb-1 text-xl font-bold">
               {title}
@@ -29,7 +34,6 @@ export function CartItems({ title, slug, price, qty }) {
               />
             </div>
             <svg
-              // onClick={onItemDelete(slug)}
               onClick={() =>
                 updateModalStatus(
                   true,
@@ -37,6 +41,7 @@ export function CartItems({ title, slug, price, qty }) {
                     slug={slug}
                     onItemDelete={onItemDelete}
                     updateModalStatus={updateModalStatus}
+                    onApiItemDelete={onApiItemDelete}
                   />
                 )
               }
@@ -58,7 +63,12 @@ export function CartItems({ title, slug, price, qty }) {
   );
 }
 
-function DeleteCartItemJSX({ updateModalStatus, onItemDelete, slug }) {
+function DeleteCartItemJSX({
+  updateModalStatus,
+  onItemDelete,
+  onApiItemDelete,
+  slug,
+}) {
   return (
     <div>
       <h2 className="text-2xl text-center font-bold py-4">
@@ -68,6 +78,7 @@ function DeleteCartItemJSX({ updateModalStatus, onItemDelete, slug }) {
         <button
           onClick={() => {
             onItemDelete(slug);
+            onApiItemDelete(slug);
             updateModalStatus(false, null);
           }}
           className="inline-flex w-full items-center justify-center rounded-md bg-black px-3.5 py-2.5 text-base font-semibold leading-7 text-white"

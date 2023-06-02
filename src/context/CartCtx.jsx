@@ -9,13 +9,22 @@ export function CartCtxProvider({ children }) {
     value: null,
   });
   const [itemsOfCart, setItemsOfCart] = useState([]);
+  const [apiItemsOfCart, setApiItemsOfCart] = useState([]);
   const cartNoOfItems = itemsOfCart.length;
+  const cartNoOfItems2 = apiItemsOfCart.length;
   const cartTotalPrice =
     cartNoOfItems > 0
       ? itemsOfCart.reduce((accum, item) => {
           return accum + item.price * item.qty;
         }, 0)
       : 0;
+  const cartTotalPrice2 =
+    cartNoOfItems2 > 0
+      ? apiItemsOfCart.reduce((accum, item) => {
+          return accum + item.price * item.qty;
+        }, 0)
+      : 0;
+  let TotalPriceOfCart = cartTotalPrice + cartTotalPrice2;
 
   useEffect(() => {
     if (cartStatus) {
@@ -39,8 +48,28 @@ export function CartCtxProvider({ children }) {
     }
     setItemsOfCart((prevItems) => [...prevItems, data]);
   };
+  const onItemAddFromAPI = (data) => {
+    const itemExists = apiItemsOfCart.find((d) => d.slug === data.slug);
+    if (itemExists) {
+      setApiItemsOfCart((prevItems) => {
+        return prevItems.map((item) =>
+          item.slug === data.slug
+            ? { ...item, qty: data.qty + item.qty }
+            : { ...item }
+        );
+      });
+
+      return;
+    }
+    setApiItemsOfCart((prevItems) => [...prevItems, data]);
+  };
   const onItemDelete = (slug) => {
     setItemsOfCart((prevItems) =>
+      prevItems.filter((item) => item.slug !== slug)
+    );
+  };
+  const onApiItemDelete = (slug) => {
+    setApiItemsOfCart((prevItems) =>
       prevItems.filter((item) => item.slug !== slug)
     );
   };
@@ -94,10 +123,14 @@ export function CartCtxProvider({ children }) {
         cartModalStatus,
         updateCartModalStatus,
         onItemAdd,
+        onItemAddFromAPI,
+        onApiItemDelete,
         cartNoOfItems,
         itemsOfCart,
+        apiItemsOfCart,
         onItemDelete,
         cartTotalPrice,
+        TotalPriceOfCart,
         onCartItemAdd,
         onCartItemRemove,
         resetCart,

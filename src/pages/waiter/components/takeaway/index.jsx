@@ -1,6 +1,6 @@
 import React from "react";
 import { WaiterOrder } from "../orders";
-import PendingTakeawayOrders from "./pendingTakeawayOrders";
+import PendingTakeawayOrders from "./PendingTakeawayOrders";
 export function TakeAway() {
   return (
     <div>

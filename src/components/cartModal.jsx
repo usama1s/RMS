@@ -23,9 +23,10 @@ export function CartModal() {
     setQty((prev) => prev + value);
   };
   const addItemToCart = () => {
-    const { title, price, slug } = cartModalStatus.value;
+    const { title, price, slug, date } = cartModalStatus.value;
 
-    onItemAdd({ title, price, slug, qty });
+    onItemAdd({ title, price, slug, qty, date });
+    
     updateCartModalStatus(false, null);
   };
 

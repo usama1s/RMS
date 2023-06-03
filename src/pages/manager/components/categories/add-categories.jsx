@@ -15,8 +15,7 @@ export function ManagerAddCategories() {
     onSubmit: onSubmit,
   });
 
-  async function onSubmit(values, actions, e) {
-    e.preventDefault();
+  async function onSubmit(values, actions) {
     setStatus((prev) => ({ ...prev, loading: true, error: null }));
 
     try {

@@ -61,6 +61,14 @@ export function CtxProvider({ children }) {
       active: false,
     },
     {
+      title: "Completed Order",
+      active: false,
+    },
+    {
+      title: "Cancelled Order",
+      active: false,
+    },
+    {
       title: "Clocking System",
       active: false,
     },

@@ -1,20 +1,31 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useCartCtx } from "../../../../context/CartCtx";
 
 export function ManagerOrderCards({ items }) {
   const { updateCartModalStatus, itemsOfCart, onItemAdd } = useCartCtx();
+  const [currDate, setCurrDate] = useState("");
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setCurrDate(new Date());
+    }, 1000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
 
   return (
     <div className={`flex flex-wrap gap-2 overflow-x-hidden mt-4`}>
       {items?.map((data) => (
         <div
           onClick={() => {
-            const dateNow = new Date();
+            console.log("ccc", currDate);
             updateCartModalStatus(true, {
               price: data.price,
               slug: data._id,
               title: data.title,
-              currDate: dateNow,
+              date: Date.now(),
             });
           }}
           key={data._id}

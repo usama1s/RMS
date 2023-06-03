@@ -53,9 +53,9 @@ export function ManagersWaiterSection() {
             No Waiters right now. Add waiters to proceed.
           </h1>
         )}
-        {formattedData?.map((data) => (
+        {formattedData?.map((data, index) => (
           <div
-            key={data.slug}
+            key={index + 1}
             className="flex bg-[#FBFBFB] shadow-md rounded-md relative p-4 w-full"
           >
             <div className="flex w-full items-center justify-between">

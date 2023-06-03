@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { CartItems } from "./cartItems";
+import { CartItems2 } from "./cartItems2";
 import { useCtx } from "../context/Ctx";
 import { useCartCtx } from "../context/CartCtx";
 import { XMarkIcon } from "@heroicons/react/24/solid";
@@ -19,10 +20,11 @@ export function Cart({ title }) {
     TotalPriceOfCart,
     orderData,
     resetCart,
-    apiDone,
   } = useCartCtx();
-  const { updateModalStatus, activeWaiterTab } = useCtx();
-  const [paymentMethod, setPaymentMethod] = useState("");
+  const { updateModalStatus, activeWaiterTab, updateApiDoneStatus, apiDone } =
+    useCtx();
+
+  // const [paymentMethod, setPaymentMethod] = useState("");
 
   // const placeOrder = async () => {
   //   const payload = {
@@ -52,16 +54,54 @@ export function Cart({ title }) {
   function convertToReadable(dateTimeString) {
     const dateTime = new Date(dateTimeString);
     const options = {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
+      // weekday: "long",
+      // year: "numeric",
+      // month: "long",
+      // day: "numeric",
       hour: "numeric",
       minute: "numeric",
-      second: "numeric",
+      // second: "numeric",
     };
     return dateTime.toLocaleString(undefined, options);
   }
+
+  const cancelOrderHandler = async () => {
+    const payload = {
+      LobbyName: apiItemsOfCart[0]?.lobby,
+      TableNo: apiItemsOfCart[0]?.tableNo,
+    };
+
+    console.log({ payload });
+    const resp = await api.patch(
+      `/cancelOrder/${apiItemsOfCart[0].slug}`,
+      payload,
+      { withCredentials: true }
+    );
+
+    if (resp) {
+      alert("order cancelled");
+    }
+
+    updateApiDoneStatus(!apiDone);
+  };
+
+  const makeOrderPending = async () => {
+    const payload = {
+      LobbyName: orderData.lobby,
+      TableNo: orderData.table,
+      Qty: itemsOfCart[0].qty,
+      PaymentMethod: selectedItem,
+      Price: selectedAmount,
+      Title: itemsOfCart[0].title,
+    };
+
+    const resp = await api.post("/makeDineInOrder", payload, {
+      withCredentials: true,
+    });
+    alert("order placed");
+
+    resetCart();
+  };
 
   return (
     <div
@@ -90,36 +130,44 @@ export function Cart({ title }) {
         </div>
         <div className="h-[90vh] overflow-y-scroll pr-2 ">
           <span className="flex justify-end">
-            {convertToReadable(apiItemsOfCart[0]?.createdAt)}
+            {apiItemsOfCart.length !== 0 &&
+              convertToReadable(apiItemsOfCart[0]?.createdAt)}
           </span>
-          {apiItemsOfCart.length >= 1 ? (
-            apiItemsOfCart.map((itemData) => (
-              <CartItems key={itemData.slug} {...itemData} />
-            ))
-          ) : (
-            <h1 className="font-bold text-gray-900 text-xl">
-              No api items in the cart right now.
-            </h1>
-          )}
-          <hr className="my-8" />
-          {itemsOfCart.length >= 1 ? (
-            itemsOfCart.map((itemData) => (
-              <CartItems key={itemData.slug} {...itemData} />
-            ))
-          ) : (
-            <h1 className="font-bold text-gray-900 text-xl">
-              No items in the cart right now.
-            </h1>
-          )}
+          {apiItemsOfCart.length >= 1
+            ? apiItemsOfCart.map((itemData) => (
+                <CartItems key={itemData.slug} {...itemData} />
+              ))
+            : null}
+          {apiItemsOfCart.length !== 0 && <hr className="my-8" />}
+          {itemsOfCart.length >= 1
+            ? itemsOfCart.map((itemData) => (
+                <div>
+                  <p>{convertToReadable(itemData.date)}</p>
+                  <CartItems2 key={itemData.slug} {...itemData} />
+                </div>
+              ))
+            : null}
           <hr className="my-4" />
-          <button
-            className={`items-center justify-center rounded-md bg-black px-2.5 py-2 text-base font-semibold leading-7 text-white`}
-            onClick={() => {
-              updateModalStatus(true, <UpdateStatusJSX />);
-            }}
-          >
-            Add More Items
-          </button>
+          <div className="flex gap-4">
+            <button
+              className={`items-center justify-center rounded-md bg-black px-2.5 py-2 text-base font-semibold leading-7 text-white`}
+              onClick={() => {
+                updateModalStatus(true, <UpdateStatusJSX />);
+              }}
+            >
+              Add More Items
+            </button>
+            {itemsOfCart.length !== 0 && (
+              <button
+                className={`items-center justify-center rounded-md bg-black px-2.5 py-2 text-base font-semibold leading-7 text-white`}
+                onClick={() => {
+                  updateModalStatus(true, <UpdateStatusJSX />);
+                }}
+              >
+                Make Order
+              </button>
+            )}
+          </div>
         </div>
         {/* <div className="flex items-center gap-4 px-2 m-1">
           <button
@@ -157,24 +205,19 @@ export function Cart({ title }) {
             >
               Complete Order
             </button>
-            <button
-              // onClick={() => {
-              //   updateModalStatus(
-              //     true,
-              //     <PlaceOrderJSX
-              //       apiDone={apiDone}
-              //       TotalPriceOfCart={TotalPriceOfCart}
-              //       itemsOfCart={itemsOfCart}
-              //       orderData={orderData}
-              //       resetCart={resetCart}
-              //     />
-              //   );
-              // }}
-              disabled={itemsOfCart.length <= 0}
-              className={`items-center justify-center rounded-md bg-black px-2.5 py-2 text-base font-semibold leading-7 text-white`}
-            >
-              Cancel Order
-            </button>
+            {apiItemsOfCart.length !== 0 ? (
+              <button
+                onClick={() => {
+                  cancelOrderHandler();
+                }}
+                disabled={apiItemsOfCart.length <= 0}
+                className={`items-center justify-center rounded-md bg-black px-2.5 py-2 text-base font-semibold leading-7 text-white`}
+              >
+                Cancel Order
+              </button>
+            ) : (
+              ""
+            )}
           </div>
         </div>
       </div>

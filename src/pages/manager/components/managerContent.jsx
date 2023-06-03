@@ -8,6 +8,9 @@ import { ManagerItems } from "./items";
 import { Lobbies } from "./lobbies";
 import { ClockingSystem } from "./clockingsystem";
 import { PaymentMethods } from "./payment-methods";
+import { CompletedOrder } from "./completed-order";
+import { CancelledOrder } from "./cancelled-order";
+
 export function ManagerContent() {
   const { activeTab, modalStatus } = useCtx();
 
@@ -33,6 +36,10 @@ export function ManagerContent() {
         return <ClockingSystem />;
       case "Payment Methods":
         return <PaymentMethods />;
+      case "Completed Order":
+        return <CompletedOrder />;
+      case "Cancelled Order":
+        return <CancelledOrder />;
     }
   };
 

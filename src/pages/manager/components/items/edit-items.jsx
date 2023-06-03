@@ -10,6 +10,7 @@ export function ManagerEditItem({ itemId }) {
   const [formattedData, setFormattedData] = useState();
   const [photo, setPhoto] = useState("");
   const [loading, setLoading] = useState(false);
+  const [categoryId, setCategoryId] = useState("");
   const [status, setStatus] = useState({ loading: false, error: null });
   const inputRef = useRef();
   const formik = useFormik({

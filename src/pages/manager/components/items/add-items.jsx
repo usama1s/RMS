@@ -11,6 +11,8 @@ export function ManagerAddItem() {
   const [status, setStatus] = useState({ loading: false, error: null });
   const [loading, setLoading] = useState(false);
   const [formattedData, setFormattedData] = useState();
+  const [categoryId, setCategoryId] = useState("");
+  const [categoryName, setCategoryName] = useState("");
   const [photo, setPhoto] = useState("");
 
   const formik = useFormik({
@@ -39,15 +41,20 @@ export function ManagerAddItem() {
   }, [apiDone]);
 
   async function onSubmit(values, actions) {
-    setStatus((prev) => ({ ...prev, loading: true, error: null }));
+    const categoryValue = values.category;
+    const delimiterIndex = categoryValue.indexOf(":");
+    const categoryName = categoryValue.slice(0, delimiterIndex);
+    const categoryId = categoryValue.slice(delimiterIndex + 1);
 
+    setStatus((prev) => ({ ...prev, loading: true, error: null }));
     if (photo) {
       const formData = new FormData();
       formData.append("title", values.title);
       formData.append("description", values.description);
       formData.append("price", values.price);
-      formData.append("category", values.category);
+      formData.append("category", categoryName);
       formData.append("photo", photo);
+      formData.append("categoryId", categoryId);
 
       try {
         await api.post("/addItems", formData, {
@@ -148,12 +155,15 @@ export function ManagerAddItem() {
             </div>
             <select
               name="category"
-              onChange={formik.handleChange}
               value={formik.values.category}
               onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
             >
               {formattedData?.map((item, index) => (
-                <option key={item?.categoryName} value={item?.categoryName}>
+                <option
+                  key={item?.categoryName}
+                  value={`${item?.categoryName}:${item?._id}`}
+                >
                   {item?.categoryName}
                 </option>
               ))}
@@ -172,7 +182,10 @@ export function ManagerAddItem() {
                   ref={inputRef}
                   type="file"
                   className="absolute top-0 left-0 opacity-0"
-                  onChange={(e) => setPhoto(e.target.files[0])}
+                  onChange={(e) => {
+                    console.log(e.target.files[0]);
+                    setPhoto(e.target.files[0]);
+                  }}
                 />
 
                 <FaCloudUploadAlt className="pointer-events-none w-full h-full text-gray-900 hover:scale-110 duration-200 cursor-pointer" />

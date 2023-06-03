@@ -15,9 +15,9 @@ const PendingOrders = () => {
   const [isOpen, setIsOpen] = useState({});
   const { updateModalStatus, updateApiDoneStatus, apiDone } = useCtx();
   const {
-    updateCartModalStatus,
-    itemsOfCart,
-    onItemAdd,
+    // updateCartModalStatus,
+    // itemsOfCart,
+    // onItemAdd,
     onItemAddFromAPI,
     updateCartStatus,
     addOrderData,
@@ -57,6 +57,8 @@ const PendingOrders = () => {
       slug: resp?.data.data[0]._id,
       title: resp?.data.data[0].Title,
       createdAt: resp?.data.data[0].createdAt,
+      lobby: resp?.data.data[0].LobbyName,
+      tableNo: resp?.data.data[0].TableNo,
     };
 
     updateCartStatus(true, null);
@@ -280,14 +282,16 @@ const PendingOrders = () => {
 
 export default PendingOrders;
 
-const UpdateStatusJSX = ({
-  slug,
-  updateModalStatus,
-  updateApiDoneStatus,
-  apiDone,
-  updateCartStatus,
-}) => {
-  const [status, setStatus] = useState({ loading: false, error: null });
+const UpdateStatusJSX = (
+  {
+    // slug,
+    // updateModalStatus,
+    // updateApiDoneStatus,
+    // apiDone,
+    // updateCartStatus,
+  }
+) => {
+  // const [status, setStatus] = useState({ loading: false, error: null });
 
   return (
     // <div>

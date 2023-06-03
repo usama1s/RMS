@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import api from "../../../../config/AxiosBase";
 
-const PendingTakeawayOrders = () => {
+export const PendingTakeawayOrders = () => {
   const [resp, setResp] = useState();
 
   const getTakeAwayPendingOrders = async () => {
@@ -14,8 +14,6 @@ const PendingTakeawayOrders = () => {
   useEffect(() => {
     getTakeAwayPendingOrders();
   }, []);
-
-  console.log({ resp });
 
   return (
     <div>
@@ -46,4 +44,4 @@ const PendingTakeawayOrders = () => {
   );
 };
 
-export default PendingTakeawayOrders;
+// export default PendingTakeawayOrders;

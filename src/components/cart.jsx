@@ -5,6 +5,7 @@ import { useCtx } from "../context/Ctx";
 import { useCartCtx } from "../context/CartCtx";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import { WaiterOrder } from "../pages/waiter/components/orders";
+import { PlusCircleIcon } from "@heroicons/react/24/solid";
 // import { PlaceOrderTakeaway } from "../pages/waiter/components/takeaway/placeorder";
 // import { PlaceOrderDinein } from "../pages/waiter/components/dinein/placeorder";
 import api from "../config/AxiosBase";
@@ -21,35 +22,31 @@ export function Cart({ title }) {
     orderData,
     resetCart,
   } = useCartCtx();
-  const { updateModalStatus, activeWaiterTab, updateApiDoneStatus, apiDone } =
-    useCtx();
+  const {
+    updateModalStatus,
+    activeWaiterTab,
+    updateApiDoneStatus,
+    apiDone,
+    modalStatus,
+  } = useCtx();
 
-  // const [paymentMethod, setPaymentMethod] = useState("");
+  const [showTooltip, setShowTooltip] = useState(false);
 
-  // const placeOrder = async () => {
-  //   const payload = {
-  //     LobbyName: orderData.lobby,
-  //     TableNo: orderData.table,
-  //     Qty: itemsOfCart[0].qty,
-  //     PaymentMethod: paymentMethod,
-  //     Price: itemsOfCart[0].price,
-  //     Title: itemsOfCart[0].title,
-  //   };
+  const handleMouseEnter = () => {
+    setShowTooltip(true);
+  };
 
-  //   if (activeWaiterTab === "Take away") {
-  //     const resp = await api.post("/makeTakeAwayOrder", payload, {
-  //       withCredentials: true,
-  //     });
-  //     console.log(resp);
-  //   } else {
-  //     const resp = await api.post("/makeDineInOrder", payload, {
-  //       withCredentials: true,
-  //     });
-  //     console.log(resp);
-  //   }
+  const handleMouseLeave = () => {
+    setShowTooltip(false);
+  };
 
-  //   resetCart();
-  // };
+  const handleTooltipMouseEnter = () => {
+    setShowTooltip(true);
+  };
+
+  const handleTooltipMouseLeave = () => {
+    setShowTooltip(false);
+  };
 
   function convertToReadable(dateTimeString) {
     const dateTime = new Date(dateTimeString);
@@ -86,20 +83,28 @@ export function Cart({ title }) {
   };
 
   const makeOrderPending = async () => {
+    const newArray = itemsOfCart.map((item) => {
+      const { title, price, qty } = item;
+      return {
+        Qty: qty,
+        Price: price,
+        Title: title,
+      };
+    });
+
     const payload = {
       LobbyName: orderData.lobby,
       TableNo: orderData.table,
-      Qty: itemsOfCart[0].qty,
-      PaymentMethod: selectedItem,
-      Price: selectedAmount,
-      Title: itemsOfCart[0].title,
+      items: newArray,
+      slug: apiItemsOfCart[0]?.slug,
     };
 
-    const resp = await api.post("/makeDineInOrder", payload, {
+    const resp = await api.post("/makeDineInOrderPending", payload, {
       withCredentials: true,
     });
-    alert("order placed");
 
+    updateApiDoneStatus(!apiDone);
+    updateCartStatus(false);
     resetCart();
   };
 
@@ -110,11 +115,11 @@ export function Cart({ title }) {
           updateCartStatus(false);
         }
       }}
-      className={`card-shadow z-[1000] transition-all duration-75 ease-in-outs ${
+      className={`card-shadow transition-all duration-75 ease-in-outs ${
         cartStatus
           ? "opacity-1 pointer-events-auto"
           : "opacity-0 pointer-events-none"
-      } fixed h-full top-0 right-0 w-full flex justify-end bg-[rgba(0,0,0,0.5)]`}
+      } fixed h-full top-0 right-0 w-full flex justify-end bg-[rgba(0,0,0,0.5)] `}
     >
       <div
         className={`bg-white w-[30rem] flex flex-col overflow-hidden px-2 transition-all duration-75 ease-in-outs ${
@@ -128,66 +133,79 @@ export function Cart({ title }) {
             className="h-6 w-6 cursor-pointer"
           />
         </div>
+        <div className="flex items-center justify-between">
+          {apiItemsOfCart.length !== 0 ? (
+            <button
+              onClick={() => {
+                cancelOrderHandler();
+              }}
+              disabled={apiItemsOfCart.length <= 0}
+              className={`w-fit items-center justify-center rounded-md bg-black px-2.5 py-2 text-base font-semibold leading-7 text-white`}
+            >
+              Cancel Order
+            </button>
+          ) : null}
+          <p className="text-center font-semibold text-xl m-auto -translate-x-[64px]">
+            {localStorage.getItem("seletedLobby")} -{" "}
+            {localStorage.getItem("seletedTable")}
+          </p>
+        </div>
         <div className="h-[90vh] overflow-y-scroll pr-2 ">
-          <span className="flex justify-end">
-            {apiItemsOfCart.length !== 0 &&
-              convertToReadable(apiItemsOfCart[0]?.createdAt)}
-          </span>
+          <div className="flex justify-end gap-4 font-semibold">
+            <span className="">Currency TRY</span>
+            <span>
+              {apiItemsOfCart.length !== 0 &&
+                convertToReadable(apiItemsOfCart[0]?.createdAt)}
+            </span>
+          </div>
           {apiItemsOfCart.length >= 1
             ? apiItemsOfCart.map((itemData) => (
                 <CartItems key={itemData.slug} {...itemData} />
               ))
             : null}
-          {apiItemsOfCart.length !== 0 && <hr className="my-8" />}
+          {apiItemsOfCart.length !== 0 && <hr className="my-5" />}
           {itemsOfCart.length >= 1
             ? itemsOfCart.map((itemData) => (
                 <div>
-                  <p>{convertToReadable(itemData.date)}</p>
+                  {/* <p className="text-right">
+                    {convertToReadable(itemData.date)}
+                  </p> */}
                   <CartItems2 key={itemData.slug} {...itemData} />
                 </div>
               ))
             : null}
-          <hr className="my-4" />
-          <div className="flex gap-4">
-            <button
-              className={`items-center justify-center rounded-md bg-black px-2.5 py-2 text-base font-semibold leading-7 text-white`}
-              onClick={() => {
-                updateModalStatus(true, <UpdateStatusJSX />);
-              }}
-            >
-              Add More Items
-            </button>
-            {itemsOfCart.length !== 0 && (
+          <div className="flex justify-center gap-4">
+            {modalStatus.status === false ? (
               <button
-                className={`items-center justify-center rounded-md bg-black px-2.5 py-2 text-base font-semibold leading-7 text-white`}
+                className={`items-center justify-center rounded-md shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)] px-2.5 py-2 text-base font-semibold leading-7 text-white`}
                 onClick={() => {
                   updateModalStatus(true, <UpdateStatusJSX />);
                 }}
               >
-                Make Order
+                <PlusCircleIcon className="h-6 w-6 cursor-pointer text-gray-800 hover:scale-110 duration-200" />
+              </button>
+            ) : null}
+            {itemsOfCart.length !== 0 && (
+              <button
+                className={`items-center justify-center rounded-md bg-black px-2.5 py-2 text-base font-semibold leading-7 text-white`}
+                onClick={() => {
+                  makeOrderPending();
+                }}
+              >
+                Place Order
               </button>
             )}
           </div>
         </div>
-        {/* <div className="flex items-center gap-4 px-2 m-1">
-          <button
-            className={`items-center justify-center rounded-md bg-black px-2.5 py-2 text-base font-semibold leading-7 text-white`}
-            onClick={() => {
-              updateModalStatus(true, <UpdateStatusJSX />);
-            }}
-          >
-            Add More Items
-          </button>
-        </div> */}
         <div className="flex items-center justify-between px-2 m-1">
           <h1 className="text-base font-regular">
-            Total:
+            Total TRY:
             <span className="text-gray-900 ml-1 font-bold">
-              TRY {TotalPriceOfCart}
+              {apiItemsOfCart[0]?.totalPrice}
             </span>
           </h1>
           <div className="flex gap-2">
-            <button
+            {/* <button
               onClick={() => {
                 updateModalStatus(
                   true,
@@ -200,24 +218,42 @@ export function Cart({ title }) {
                   />
                 );
               }}
-              disabled={itemsOfCart.length <= 0}
+              disabled={itemsOfCart.length <= 0 && apiItemsOfCart.length <= 0}
               className={`items-center justify-center rounded-md bg-black px-2.5 py-2 text-base font-semibold leading-7 text-white`}
             >
-              Complete Order
-            </button>
-            {apiItemsOfCart.length !== 0 ? (
+              Close Order
+            </button> */}
+            <div className="relative inline-block">
               <button
                 onClick={() => {
-                  cancelOrderHandler();
+                  updateModalStatus(
+                    true,
+                    <PlaceOrderJSX
+                      apiDone={apiDone}
+                      TotalPriceOfCart={TotalPriceOfCart}
+                      itemsOfCart={itemsOfCart}
+                      orderData={orderData}
+                      resetCart={resetCart}
+                    />
+                  );
                 }}
-                disabled={apiItemsOfCart.length <= 0}
-                className={`items-center justify-center rounded-md bg-black px-2.5 py-2 text-base font-semibold leading-7 text-white`}
+                disabled={itemsOfCart.length <= 0 && apiItemsOfCart.length <= 0}
+                className="items-center justify-center rounded-md bg-black px-2.5 py-2 text-base font-semibold leading-7 text-white"
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
               >
-                Cancel Order
+                Close Order
               </button>
-            ) : (
-              ""
-            )}
+              {showTooltip && (
+                <div
+                  className="absolute -top-10 -left-[6rem] p-2 bg-gray-800 text-white text-sm rounded-md shadow-md"
+                  onMouseEnter={handleTooltipMouseEnter}
+                  onMouseLeave={handleTooltipMouseLeave}
+                >
+                  Clear items from the cart
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -268,16 +304,16 @@ const PlaceOrderJSX = ({
     const payload = {
       LobbyName: orderData.lobby,
       TableNo: orderData.table,
-      Qty: itemsOfCart[0].qty,
+      // Qty: itemsOfCart[0].qty,
       PaymentMethod: selectedItem,
       Price: selectedAmount,
-      Title: itemsOfCart[0].title,
+      // Title: itemsOfCart[0].title,
     };
 
-    const resp = await api.post("/makeDineInOrder", payload, {
+    const resp = await api.patch("/makeDineInOrder", payload, {
       withCredentials: true,
     });
-    alert("order placed");
+    alert("order placed completed");
 
     resetCart();
   };

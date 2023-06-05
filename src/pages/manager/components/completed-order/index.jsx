@@ -63,7 +63,7 @@ export const CompletedOrder = () => {
           </thead>
           <tbody>
             {formattedData
-              ?.filter((item) => item.Status === "Pending")
+              ?.filter((item) => item.Status === "PaymentDone")
               .sort((a, b) => a.createdAt - b.createdAt)
               .map((item, index) => (
                 <tr key={index + 1} className="bg-white border-b">

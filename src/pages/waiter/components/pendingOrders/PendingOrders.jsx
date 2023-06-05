@@ -14,14 +14,7 @@ const PendingOrders = () => {
   const [orderDetail, setOrderDetail] = useState();
   const [isOpen, setIsOpen] = useState({});
   const { updateModalStatus, updateApiDoneStatus, apiDone } = useCtx();
-  const {
-    // updateCartModalStatus,
-    // itemsOfCart,
-    // onItemAdd,
-    onItemAddFromAPI,
-    updateCartStatus,
-    addOrderData,
-  } = useCartCtx();
+  const { onItemAddFromAPI, updateCartStatus, addOrderData } = useCartCtx();
 
   const getLobbies = async () => {
     setIsLoading(true);
@@ -52,13 +45,12 @@ const PendingOrders = () => {
     });
 
     const transformObj = {
-      price: resp?.data.data[0].Price,
-      qty: resp?.data.data[0].Qty,
-      slug: resp?.data.data[0]._id,
-      title: resp?.data.data[0].Title,
-      createdAt: resp?.data.data[0].createdAt,
-      lobby: resp?.data.data[0].LobbyName,
-      tableNo: resp?.data.data[0].TableNo,
+      slug: resp.data.data[0]._id,
+      createdAt: resp.data.data[0].createdAt,
+      lobby: resp.data.data[0].LobbyName,
+      tableNo: resp.data.data[0].TableNo,
+      item: resp.data.data[0].items,
+      totalPrice: resp.data.data[0].TotalPrice,
     };
 
     updateCartStatus(true, null);
@@ -117,6 +109,14 @@ const PendingOrders = () => {
                             } px-4 py-2 w-14 h-14 rounded-md hover:scale-110 duration-200 cursor-pointer flex items-center justify-center text-white`}
                             onClick={() => {
                               if (i?.isBooked !== true) {
+                                localStorage.setItem(
+                                  "seletedLobby",
+                                  item.lobbyName
+                                );
+                                localStorage.setItem(
+                                  "seletedTable",
+                                  i.tableNumber
+                                );
                                 addOrderData(item.lobbyName, i.tableNumber);
                                 updateModalStatus(
                                   true,
@@ -129,6 +129,15 @@ const PendingOrders = () => {
                                   />
                                 );
                               } else {
+                                localStorage.setItem(
+                                  "seletedLobby",
+                                  item.lobbyName
+                                );
+                                localStorage.setItem(
+                                  "seletedTable",
+                                  i.tableNumber
+                                );
+                                addOrderData(item.lobbyName, i.tableNumber);
                                 getSingleOrders(item.lobbyName, i.tableNumber);
                               }
                             }}
@@ -136,23 +145,6 @@ const PendingOrders = () => {
                             {i.tableNumber}
                           </p>
                         ))}
-                        {/* {ordersList &&
-                          filterByLobby(active)?.map((item, index) => (
-                            <p
-                              key={index + 1}
-                              className={`${
-                                item?.Status === "Pending"
-                                  ? "bg-gray-400"
-                                  : "bg-blue-500"
-                              } px-4 py-2 w-14 h-14 rounded-md hover:scale-110 duration-200 cursor-pointer flex items-center justify-center`}
-                              onClick={() => {
-                                setToggleDetail(true);
-                                setOrderDetail(item);
-                              }}
-                            >
-                              {item.TableNo}
-                            </p>
-                          ))} */}
                       </div>
                     </div>
                   </li>
@@ -161,27 +153,6 @@ const PendingOrders = () => {
           </div>
         </div>
       </main>
-      {/* <div className="w-full flex flex-wrap gap-4 mt-4">
-        <select
-          onChange={handleSelectChange}
-          className="cursor-pointer rounded-full w-40 p-5 bg-[#F3F4F6] text-gray-900"
-        >
-          <option value="" disabled selected>
-            Select Lobby
-          </option>
-          {formattedData &&
-            formattedData.map((item) => (
-              <option
-                key={item._id}
-                value={item.lobbyName}
-                className="active:bg-gray-900"
-              >
-                {item.lobbyName}
-              </option>
-            ))}
-        </select>
-      </div> */}
-
       {toggleDetail && (
         <div className="mt-4 bg-blue-500 p-4 rounded-2xl text-white">
           <div className="flex justify-between">

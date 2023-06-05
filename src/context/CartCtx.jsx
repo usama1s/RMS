@@ -34,7 +34,6 @@ export function CartCtxProvider({ children }) {
     }
   }, [cartStatus]);
   const onItemAdd = (data) => {
-    console.log({ data });
     const itemExists = itemsOfCart.find((d) => d.slug === data.slug);
     if (itemExists) {
       setItemsOfCart((prevItems) => {

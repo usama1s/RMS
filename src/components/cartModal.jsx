@@ -24,9 +24,7 @@ export function CartModal() {
   };
   const addItemToCart = () => {
     const { title, price, slug, date } = cartModalStatus.value;
-
     onItemAdd({ title, price, slug, qty, date });
-    
     updateCartModalStatus(false, null);
   };
 

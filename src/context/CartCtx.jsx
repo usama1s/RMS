@@ -48,20 +48,11 @@ export function CartCtxProvider({ children }) {
     }
     setItemsOfCart((prevItems) => [...prevItems, data]);
   };
+  const onClearCart = () => {
+    setItemsOfCart([]);
+  };
   const onItemAddFromAPI = (data) => {
-    const itemExists = apiItemsOfCart.find((d) => d.slug === data.slug);
-    if (itemExists) {
-      setApiItemsOfCart((prevItems) => {
-        return prevItems.map((item) =>
-          item.slug === data.slug
-            ? { ...item, qty: data.qty + item.qty }
-            : { ...item }
-        );
-      });
-
-      return;
-    }
-    setApiItemsOfCart((prevItems) => [...prevItems, data]);
+    setApiItemsOfCart([data]);
   };
   const onItemDelete = (slug) => {
     setItemsOfCart((prevItems) =>
@@ -102,14 +93,10 @@ export function CartCtxProvider({ children }) {
     setItemsOfCart([]);
   };
   const addOrderData = (lobby, table) => {
-    console.log("Received lobby and table:", lobby, table);
-
     setOrderData({
       lobby,
       table,
     });
-
-    console.log("Order data updated:", orderData);
   };
   const updateCartStatus = (value) => setCartStatus(value);
   const updateCartModalStatus = (status, value) =>
@@ -122,6 +109,7 @@ export function CartCtxProvider({ children }) {
         updateCartStatus,
         cartModalStatus,
         updateCartModalStatus,
+        onClearCart,
         onItemAdd,
         onItemAddFromAPI,
         onApiItemDelete,

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useCtx } from "../../../../context/Ctx";
 import api from "../../../../config/AxiosBase";
+import DataTable from "react-data-table-component";
 
 export const CompletedOrder = () => {
-  const { updateModalStatus, apiDone } = useCtx();
-  const [error, setError] = useState(false);
+  const { apiDone } = useCtx();
   const [loading, setLoading] = useState(false);
   const [formattedData, setFormattedData] = useState();
 
@@ -13,9 +13,7 @@ export const CompletedOrder = () => {
     const resp = await api.get("/getAllOrders", {
       withCredentials: true,
     });
-    if (resp.data.status !== "success") {
-      setError(true);
-    }
+
     setFormattedData(resp.data.data.doc);
     setLoading(false);
   };
@@ -32,58 +30,110 @@ export const CompletedOrder = () => {
       day: "numeric",
       hour: "numeric",
       minute: "numeric",
-      second: "numeric",
     };
     return date.toLocaleDateString(undefined, options);
   }
 
+  const column = [
+    {
+      name: "Testing ID",
+      selector: (row, index) => index + 1,
+      sortable: true,
+    },
+    {
+      name: "Date and Time",
+      selector: (row) => convertTimestamp(row.createdAt),
+      sortable: true,
+    },
+    {
+      name: "Total Price",
+      selector: (row) => row.TotalPrice,
+      sortable: true,
+    },
+    {
+      name: "PaymentMethod",
+      selector: (row) => row.PaymentMethod,
+      sortable: true,
+    },
+  ];
+
+  const ExpandedComponent = ({ data }) => (
+    <div className="bg-gray-200 rounded-lg shadow-md p-4 my-4 max-w-xl mx-auto">
+      <h1 className="text-xl font-bold mb-2">Order Detail</h1>
+      <div className="flex gap-8 font-semibold text-sm">
+        <p className="w-[100px]">Lobby Name</p>
+        <p className="text-gray-600 mb-2 ">{data.LobbyName}</p>
+      </div>
+      <div className="flex gap-8 font-semibold text-sm">
+        <p className="w-[100px]">Table No.</p>
+        <p className="text-gray-600 mb-2 ">{data.TableNo}</p>
+      </div>
+      <div className="flex gap-8 font-semibold text-sm">
+        <p className="w-[100px]">Order Type</p>
+        <p className="text-gray-600 mb-2 ">{data.Type}</p>
+      </div>
+
+      {data.OrderItems.map((i, index) => (
+        <div key={index} className="mb-4">
+          <p className="text-gray-600 text-right text-sm font-semibold italic">
+            {convertTimestamp(i.createdAt)}
+          </p>
+          {i.items.map((j, jIndex) => (
+            <div
+              key={jIndex}
+              className="flex justify-between items-center mb-2 text-sm"
+            >
+              <p className="w-[130px]">{j.Title}</p>
+              <p className="text-gray-600 ml-2 ">Qty: {j.Qty}</p>
+              <p className="text-gray-600 ml-2">Price: {j.Price}</p>
+            </div>
+          ))}
+        </div>
+      ))}
+      <div className="flex gap-8 font-semibold text-sm">
+        <p>Payment Method</p>
+        <p className="text-gray-600 mb-2 ">{data.PaymentMethod}</p>
+      </div>
+      <div className="flex gap-8 font-semibold text-sm">
+        <p>Total Price</p>
+        <p className="text-gray-600 mb-2 ">{data.TotalPrice}</p>
+      </div>
+      <div className="flex gap-8 font-semibold text-sm">
+        <p>Order Status</p>
+        <p className="text-gray-600 mb-2 ">{data.Status}</p>
+      </div>
+    </div>
+  );
+
   return (
     <div>
       <h1 className="text-2xl font-bold">Completed Orders</h1>
-      <div className="relative overflow-x-auto mt-4">
-        <table className="w-full text-sm text-left text-gray-500 ">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50 ">
-            <tr>
-              <th scope="col" className="px-6 py-3">
-                No.
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Title
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Date and Time
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Total Price
-              </th>
-              <th scope="col" className="px-6 py-3">
-                PaymentMethod
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {formattedData
-              ?.filter((item) => item.Status === "PaymentDone")
-              .sort((a, b) => a.createdAt - b.createdAt)
-              .map((item, index) => (
-                <tr key={index + 1} className="bg-white border-b">
-                  <th
-                    scope="row"
-                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-                  >
-                    {index + 1}
-                  </th>
-                  <td className="px-6 py-4">{item?.Title}</td>
-                  <td className="px-6 py-4">
-                    {convertTimestamp(item?.createdAt)}
-                  </td>
-                  <td className="px-6 py-4">{item?.TotalPrice}</td>
-                  <td className="px-6 py-4">{item?.PaymentMethod}</td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
-      </div>
+      <DataTable
+        columns={column}
+        data={formattedData
+          ?.filter((item) => item.Status === "PaymentDone")
+          .sort((a, b) => a.createdAt - b.createdAt)}
+        pagination
+        fixedHeader
+        highlightOnHover
+        actions={
+          <select
+            name="cars"
+            id="cars"
+            className="bg-gray-900 border border-gray-300 text-gray-50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-fit p-1"
+          >
+            <option value="volvo" disabled selected>
+              Select Clocking Period
+            </option>
+            <option value="saab">Day 1</option>
+            <option value="mercedes">Day 2</option>
+            <option value="audi">Day 3</option>
+          </select>
+        }
+        expandableRows
+        expandableRowsComponent={ExpandedComponent}
+        loading={loading}
+      />
     </div>
   );
 };

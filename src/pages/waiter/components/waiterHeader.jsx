@@ -27,9 +27,30 @@ export function WaiterHeader() {
     }
   };
 
+  // useEffect(() => {
+  //   const intervalId = setInterval(() => {
+  //     setCurrentDateTime(new Date());
+  //   }, 1000);
+
+  //   return () => {
+  //     clearInterval(intervalId);
+  //   };
+  // }, []);
   useEffect(() => {
     const intervalId = setInterval(() => {
-      setCurrentDateTime(new Date());
+      const currentDate = new Date();
+      const formattedDate = currentDate.toLocaleString(undefined, {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+      });
+
+      // Remove the "at" part
+      const formattedDateWithoutAt = formattedDate.replace("at", "");
+
+      setCurrentDateTime(formattedDateWithoutAt);
     }, 1000);
 
     return () => {
@@ -56,7 +77,7 @@ export function WaiterHeader() {
         />
       </svg>
       <div className={`relative justify-end flex space-x-4 items-center`}>
-        <div className="relative">
+        {/* <div className="relative">
           <BsCartFill
             className="cursor-pointer w-6 h-6 text-gray-900 hover:scale-110 duration-200"
             size={16}
@@ -69,7 +90,7 @@ export function WaiterHeader() {
               {cartNoOfItems}
             </span>
           )}
-        </div>
+        </div> */}
         <div className="rounded relative inline-flex group items-center justify-center px-3.5 py-2 m-1 cursor-pointer border-b-4 border-l-2 active:border-gray-800 active:shadow-none shadow-lg bg-gradient-to-tr from-gray-900 to-gray-800 border-gray-800 text-white">
           <span className="absolute w-0 h-0 transition-all duration-300 ease-out bg-white rounded-full group-hover:w-36 group-hover:h-20 opacity-10"></span>
           <button className="relative" onClick={logout}>

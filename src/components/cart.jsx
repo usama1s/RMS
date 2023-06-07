@@ -9,6 +9,8 @@ import { PlusCircleIcon } from "@heroicons/react/24/solid";
 // import { PlaceOrderTakeaway } from "../pages/waiter/components/takeaway/placeorder";
 // import { PlaceOrderDinein } from "../pages/waiter/components/dinein/placeorder";
 import api from "../config/AxiosBase";
+import { Cart2Items } from "./cart2Items";
+// import { Cart2Items2 } from "./cart2Itmes2";
 
 export function Cart({ title }) {
   const {
@@ -21,6 +23,8 @@ export function Cart({ title }) {
     TotalPriceOfCart,
     orderData,
     resetCart,
+    onItemAddFromAPI,
+    onClearCart,
   } = useCartCtx();
   const {
     updateModalStatus,
@@ -31,6 +35,7 @@ export function Cart({ title }) {
   } = useCtx();
 
   const [showTooltip, setShowTooltip] = useState(false);
+  const [cartSwitch, setCartSwitch] = useState(false);
 
   const handleMouseEnter = () => {
     setShowTooltip(true);
@@ -104,8 +109,9 @@ export function Cart({ title }) {
     });
 
     updateApiDoneStatus(!apiDone);
-    updateCartStatus(false);
     resetCart();
+    // onItemAddFromAPI(null);
+    // updateCartStatus(false);
   };
 
   return (
@@ -127,13 +133,31 @@ export function Cart({ title }) {
         }`}
       >
         <div className="flex items-center justify-between py-4">
-          <h1 className="text-xl font-bold leading-2 ">{title}</h1>
+          {/* <h1 className="text-xl font-bold leading-2 ">{title}</h1> */}
+          {apiItemsOfCart.length !== 0 ? (
+            <button
+              onClick={() => {
+                cancelOrderHandler();
+              }}
+              disabled={apiItemsOfCart.length <= 0}
+              className={`w-fit items-center justify-center rounded-md bg-black px-2.5 py-2 text-base font-semibold leading-7 text-white`}
+            >
+              Cancel Order
+            </button>
+          ) : null}
+          <p className="text-center font-semibold text-xl m-auto ">
+            {localStorage.getItem("seletedLobby")} -{" "}
+            {localStorage.getItem("seletedTable")}
+          </p>
           <XMarkIcon
-            onClick={() => updateCartStatus(false)}
-            className="h-6 w-6 cursor-pointer"
+            onClick={() => {
+              updateCartStatus(false);
+              onClearCart();
+            }}
+            className="h-8 w-8 cursor-pointer"
           />
         </div>
-        <div className="flex items-center justify-between">
+        {/* <div className="flex items-center justify-between">
           {apiItemsOfCart.length !== 0 ? (
             <button
               onClick={() => {
@@ -149,54 +173,99 @@ export function Cart({ title }) {
             {localStorage.getItem("seletedLobby")} -{" "}
             {localStorage.getItem("seletedTable")}
           </p>
-        </div>
-        <div className="h-[90vh] overflow-y-scroll pr-2 ">
-          <div className="flex justify-end gap-4 font-semibold">
-            <span className="">Currency TRY</span>
-            <span>
-              {apiItemsOfCart.length !== 0 &&
-                convertToReadable(apiItemsOfCart[0]?.createdAt)}
-            </span>
-          </div>
-          {apiItemsOfCart.length >= 1
-            ? apiItemsOfCart.map((itemData) => (
-                <CartItems key={itemData.slug} {...itemData} />
-              ))
-            : null}
-          {apiItemsOfCart.length !== 0 && <hr className="my-5" />}
-          {itemsOfCart.length >= 1
-            ? itemsOfCart.map((itemData) => (
-                <div>
-                  {/* <p className="text-right">
-                    {convertToReadable(itemData.date)}
-                  </p> */}
-                  <CartItems2 key={itemData.slug} {...itemData} />
-                </div>
-              ))
-            : null}
-          <div className="flex justify-center gap-4">
-            {modalStatus.status === false ? (
-              <button
-                className={`items-center justify-center rounded-md shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)] px-2.5 py-2 text-base font-semibold leading-7 text-white`}
-                onClick={() => {
-                  updateModalStatus(true, <UpdateStatusJSX />);
-                }}
-              >
-                <PlusCircleIcon className="h-6 w-6 cursor-pointer text-gray-800 hover:scale-110 duration-200" />
-              </button>
+        </div> */}
+        {cartSwitch === true ? (
+          <div className="h-[90vh] overflow-y-scroll customScrollbar pr-2 ">
+            <div className="flex justify-end gap-4 font-semibold">
+              <span className="font-semibold bg-blue-400 text-white py-1 px-2 rounded-md">
+                TRY
+              </span>
+            </div>
+            {apiItemsOfCart.length >= 1 ? (
+              <CartItems data={apiItemsOfCart} />
             ) : null}
-            {itemsOfCart.length !== 0 && (
-              <button
-                className={`items-center justify-center rounded-md bg-black px-2.5 py-2 text-base font-semibold leading-7 text-white`}
-                onClick={() => {
-                  makeOrderPending();
-                }}
-              >
-                Place Order
-              </button>
-            )}
+            {apiItemsOfCart.length !== 0 && <hr className="my-5" />}
+            {itemsOfCart.length >= 1
+              ? itemsOfCart.map((itemData) => (
+                  <div>
+                    <CartItems2 key={itemData.slug} {...itemData} />
+                  </div>
+                ))
+              : null}
+            <div className="flex justify-center gap-4">
+              {modalStatus.status === false ? (
+                <button
+                  className={`items-center justify-center rounded-md shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)] px-2.5 py-2 text-base font-semibold leading-7 text-white`}
+                  onClick={() => {
+                    updateModalStatus(true, <UpdateStatusJSX />);
+                  }}
+                >
+                  <PlusCircleIcon className="h-6 w-6 cursor-pointer text-gray-800 hover:scale-110 duration-200" />
+                </button>
+              ) : null}
+              {itemsOfCart.length !== 0 && (
+                <button
+                  className={`items-center justify-center rounded-md bg-black px-2.5 py-2 text-base font-semibold leading-7 text-white`}
+                  onClick={() => {
+                    makeOrderPending();
+                  }}
+                >
+                  Place Order
+                </button>
+              )}
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="h-[90vh] overflow-y-scroll customScrollbar pr-2 ">
+            <div className="flex justify-end gap-4 font-semibold">
+              <span className="font-semibold bg-blue-400 text-white py-1 px-2 rounded-md">
+                TRY
+              </span>
+            </div>
+            {apiItemsOfCart.length >= 1 ? (
+              <Cart2Items data={apiItemsOfCart} />
+            ) : null}
+            {apiItemsOfCart.length !== 0 && <hr className="my-5" />}
+            {itemsOfCart.length >= 1
+              ? itemsOfCart.map((itemData) => (
+                  // <Cart2Items2 key={itemData.slug} {...itemData} />
+                  <div>
+                    <CartItems2 key={itemData.slug} {...itemData} />
+                  </div>
+                ))
+              : null}
+            <div className="flex justify-center gap-4">
+              {modalStatus.status === false ? (
+                <button
+                  className={`items-center justify-center rounded-md shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)] px-2.5 py-2 text-base font-semibold leading-7 text-white`}
+                  onClick={() => {
+                    updateModalStatus(true, <UpdateStatusJSX />);
+                  }}
+                >
+                  <PlusCircleIcon className="h-6 w-6 cursor-pointer text-gray-800 hover:scale-110 duration-200" />
+                </button>
+              ) : null}
+              {itemsOfCart.length !== 0 && (
+                <button
+                  className={`items-center justify-center rounded-md bg-black px-2.5 py-2 text-base font-semibold leading-7 text-white`}
+                  onClick={() => {
+                    makeOrderPending();
+                  }}
+                >
+                  Place Order
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+        <button
+          className="items-center justify-center rounded-md bg-black px-2.5 py-2 text-base font-semibold leading-7 text-white w-fit"
+          onClick={() => {
+            setCartSwitch(!cartSwitch);
+          }}
+        >
+          Detailed Cart
+        </button>
         <div className="flex items-center justify-between px-2 m-1">
           <h1 className="text-base font-regular">
             Total TRY:
@@ -230,10 +299,13 @@ export function Cart({ title }) {
                     true,
                     <PlaceOrderJSX
                       apiDone={apiDone}
-                      TotalPriceOfCart={TotalPriceOfCart}
+                      TotalPriceOfCart={apiItemsOfCart[0]?.totalPrice}
                       itemsOfCart={itemsOfCart}
                       orderData={orderData}
                       resetCart={resetCart}
+                      updateApiDoneStatus={updateApiDoneStatus}
+                      updateModalStatus={updateModalStatus}
+                      updateCartStatus={updateCartStatus}
                     />
                   );
                 }}
@@ -275,12 +347,17 @@ const PlaceOrderJSX = ({
   itemsOfCart,
   orderData,
   resetCart,
+  updateApiDoneStatus,
+  updateModalStatus,
+  updateCartStatus,
 }) => {
   const [resp, setResp] = useState();
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
-  const [selectedItem, setSelectedItem] = useState("");
+  const [selectedItem, setSelectedItem] = useState("Cash");
   const [selectedAmount, setSelectedAmount] = useState(TotalPriceOfCart);
+  const LobbyName = localStorage.getItem("seletedLobby");
+  const TableNo = localStorage.getItem("seletedTable");
 
   const getPaymentMethods = async () => {
     setLoading(true);
@@ -302,8 +379,8 @@ const PlaceOrderJSX = ({
 
   const placeOrder = async () => {
     const payload = {
-      LobbyName: orderData.lobby,
-      TableNo: orderData.table,
+      LobbyName: orderData.lobby || localStorage.getItem("seletedLobby"),
+      TableNo: orderData.table || localStorage.getItem("seletedTable") * 1,
       // Qty: itemsOfCart[0].qty,
       PaymentMethod: selectedItem,
       Price: selectedAmount,
@@ -313,14 +390,22 @@ const PlaceOrderJSX = ({
     const resp = await api.patch("/makeDineInOrder", payload, {
       withCredentials: true,
     });
-    alert("order placed completed");
 
     resetCart();
+    // updateCartStatus(false);
+    updateApiDoneStatus(!apiDone);
+    updateModalStatus(false, null);
   };
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-bold">Place Order</h1>
+      <div className="flex justify-between">
+        <h1 className="text-xl font-bold">Receive Payment</h1>
+        <p>
+          {LobbyName} - {TableNo}
+        </p>
+        <span />
+      </div>
       <div>
         <label className="mr-4 font-semibold">Total Bill</label>
         <input
@@ -337,11 +422,21 @@ const PlaceOrderJSX = ({
           onChange={handleSelectChange}
           className="border px-2 py-1 rounded-md"
         >
-          {resp?.map((item) => (
-            <option key={item._id} value={item.title}>
-              {item.title}
-            </option>
-          ))}
+          {resp
+            ?.sort((a, b) => {
+              if (a.title === "Cash") {
+                return -1;
+              } else if (b.title === "Cash") {
+                return 1;
+              } else {
+                return a.title.localeCompare(b.title);
+              }
+            })
+            .map((item) => (
+              <option key={item._id} value={item.title}>
+                {item.title}
+              </option>
+            ))}
         </select>
       </div>
       <button
@@ -350,7 +445,7 @@ const PlaceOrderJSX = ({
           placeOrder();
         }}
       >
-        Place order
+        Receive Payment
       </button>
     </div>
   );

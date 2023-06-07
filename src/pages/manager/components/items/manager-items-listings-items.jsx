@@ -61,7 +61,7 @@ export function ManagerItemsListingItems({ formattedD }) {
               <span className="font-semibold text-base mr-1"> Category:</span>
               {item?.category}
             </p>
-            <p className="text-sm truncate break-words">
+            <p className="text-sm truncate" style={{ textWrap: "wrap" }}>
               <span className="font-semibold text-base mr-1">Description:</span>
               {item?.description}
             </p>

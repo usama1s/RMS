@@ -49,7 +49,7 @@ const PendingOrders = () => {
       createdAt: resp.data.data[0].createdAt,
       lobby: resp.data.data[0].LobbyName,
       tableNo: resp.data.data[0].TableNo,
-      item: resp.data.data[0].items,
+      item: resp.data.data[0].OrderItems,
       totalPrice: resp.data.data[0].TotalPrice,
     };
 
@@ -60,6 +60,14 @@ const PendingOrders = () => {
   useEffect(() => {
     getLobbies();
     getOrders();
+  }, [apiDone]);
+
+  useEffect(() => {
+    const tableNo = localStorage.getItem("seletedTable") * 1;
+    const lobbyNam = localStorage.getItem("seletedLobby")?.toString();
+    if ((tableNo, lobbyNam)) {
+      getSingleOrders(lobbyNam, tableNo);
+    }
   }, [apiDone]);
 
   const handleItemClick = (lobbyName) => {

@@ -98,8 +98,8 @@ export function Cart({ title }) {
     });
 
     const payload = {
-      LobbyName: orderData.lobby,
-      TableNo: orderData.table,
+      LobbyName: localStorage.getItem("seletedLobby")?.toString(),
+      TableNo: localStorage.getItem("seletedTable") * 1,
       items: newArray,
       slug: apiItemsOfCart[0]?.slug,
     };
@@ -108,10 +108,8 @@ export function Cart({ title }) {
       withCredentials: true,
     });
 
+    localStorage.setItem("orderId", resp?.data._id);
     updateApiDoneStatus(!apiDone);
-    resetCart();
-    // onItemAddFromAPI(null);
-    // updateCartStatus(false);
   };
 
   return (
@@ -133,7 +131,6 @@ export function Cart({ title }) {
         }`}
       >
         <div className="flex items-center justify-between py-4">
-          {/* <h1 className="text-xl font-bold leading-2 ">{title}</h1> */}
           {apiItemsOfCart.length !== 0 ? (
             <button
               onClick={() => {
@@ -222,13 +219,14 @@ export function Cart({ title }) {
                 TRY
               </span>
             </div>
-            {apiItemsOfCart.length >= 1 ? (
+            {apiItemsOfCart.length >= 1 &&
+            apiItemsOfCart[0].lobby === orderData.lobby &&
+            apiItemsOfCart[0].tableNo === orderData.table ? (
               <Cart2Items data={apiItemsOfCart} />
             ) : null}
             {apiItemsOfCart.length !== 0 && <hr className="my-5" />}
             {itemsOfCart.length >= 1
               ? itemsOfCart.map((itemData) => (
-                  // <Cart2Items2 key={itemData.slug} {...itemData} />
                   <div>
                     <CartItems2 key={itemData.slug} {...itemData} />
                   </div>
@@ -381,10 +379,9 @@ const PlaceOrderJSX = ({
     const payload = {
       LobbyName: orderData.lobby || localStorage.getItem("seletedLobby"),
       TableNo: orderData.table || localStorage.getItem("seletedTable") * 1,
-      // Qty: itemsOfCart[0].qty,
       PaymentMethod: selectedItem,
       Price: selectedAmount,
-      // Title: itemsOfCart[0].title,
+      orderId: localStorage.getItem("orderId")?.toString(),
     };
 
     const resp = await api.patch("/makeDineInOrder", payload, {

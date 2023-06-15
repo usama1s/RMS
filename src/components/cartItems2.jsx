@@ -2,14 +2,13 @@ import { PlusCircleIcon, MinusCircleIcon } from "@heroicons/react/24/solid";
 import { useCartCtx } from "../context/CartCtx";
 import { useCtx } from "../context/Ctx";
 
-export function CartItems2({ title, slug, price, qty, currDate }) {
+export function CartItems2({ title, slug, price, qty }) {
   const { onItemDelete, onCartItemAdd, onCartItemRemove, onApiItemDelete } =
     useCartCtx();
   const { updateModalStatus } = useCtx();
 
   return (
     <div className="flex flex-col text-red-500 my-2">
-      {/* <p className="text-right">{currDate}</p> */}
       <div className="flex justify-between items-center w-full p-1">
         <div className="flex items-center justify-between gap-2">
           <h2 className="truncate break-words pb-1 text-md font-bold">

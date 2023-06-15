@@ -2,8 +2,8 @@ import { useCtx } from "../../../../../context/Ctx";
 export function ClockOut({ clockOut, disabled, loading }) {
   const { updateModalStatus } = useCtx();
   return (
-    <div>
-      <h2>
+    <div className="flex flex-col justify-center">
+      <h2 className="text-center">
         <span className=" font-semibold">Clock Out Confirmation: </span> Are you
         sure you want to clock out? Please note that once you clock out, Waiters
         work session will be ended, and you won't be able to perform any further

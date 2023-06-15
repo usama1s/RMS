@@ -1,5 +1,17 @@
 import { ManagerLayout } from "./components/managerLayout";
 import { ManagerContent } from "./components/managerContent";
+import { CartModal } from "../../components/cartModal";
+import { useCartCtx } from "../../context/CartCtx";
+import { ManCart } from "../../components/manCart";
+
 export function Manager() {
-  return <ManagerLayout>{<ManagerContent />}</ManagerLayout>;
+  const { cartModalStatus, cartStatus } = useCartCtx();
+
+  return (
+    <ManagerLayout>
+      {<ManagerContent />}
+      {cartModalStatus.open && <CartModal />}
+      {cartStatus && <ManCart />}
+    </ManagerLayout>
+  );
 }

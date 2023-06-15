@@ -24,11 +24,7 @@ export function ManagerSidebar() {
       </span>
     </div>
   ));
-  // ${
-  //   isTablet && managerSidebarToggle
-  //     ? "-translate-x-[100%] w-0"
-  //     : "translate-x-0  w-48"
-  // }
+
   return (
     <div
       className={`flex flex-col items-center ${

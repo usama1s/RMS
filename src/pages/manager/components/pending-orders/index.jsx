@@ -1,19 +1,16 @@
 import React, { useState, useEffect } from "react";
-import api from "../../../../config/AxiosBase";
 import { useCtx } from "../../../../context/Ctx";
 import { useCartCtx } from "../../../../context/CartCtx";
-import { WaiterOrder } from "../orders";
+import api from "../../../../config/AxiosBase";
 
-const PendingOrders = () => {
+export const PendingOrders = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [formattedData, setFormattedData] = useState(false);
   const [ordersList, setOrdersList] = useState();
   const [active, setActive] = useState("");
-  const [toggleDetail, setToggleDetail] = useState(false);
-  const [orderDetail, setOrderDetail] = useState();
   const [isOpen, setIsOpen] = useState({});
-  const { updateModalStatus, updateApiDoneStatus, apiDone } = useCtx();
+  const { apiDone } = useCtx();
   const { onItemAddFromAPI, updateCartStatus, addOrderData } = useCartCtx();
 
   const getLobbies = async () => {
@@ -56,6 +53,8 @@ const PendingOrders = () => {
       totalPrice: resp.data.data[0].TotalPrice,
     };
 
+    console.log({ transformObj });
+
     updateCartStatus(true, null);
     onItemAddFromAPI(transformObj);
   };
@@ -63,16 +62,6 @@ const PendingOrders = () => {
   useEffect(() => {
     getLobbies();
     getOrders();
-  }, [apiDone]);
-
-  useEffect(() => {
-    const tableNo = localStorage.getItem("seletedTable") * 1;
-    const lobbyNam = localStorage.getItem("seletedLobby")?.toString();
-    const orderId = localStorage.getItem("orderId")?.toString();
-
-    if ((tableNo, lobbyNam, orderId)) {
-      getSingleOrders(lobbyNam, tableNo, orderId);
-    }
   }, [apiDone]);
 
   const handleItemClick = (lobbyName) => {
@@ -117,35 +106,15 @@ const PendingOrders = () => {
                             key={ind + 1}
                             className={`${
                               i?.isBooked !== true &&
-                              ordersList.map(
+                              ordersList &&
+                              ordersList?.map(
                                 (j, index) => j.TableNo === i.tableNo
                               )
                                 ? "bg-gray-400"
                                 : "bg-blue-500"
                             } px-4 py-2 w-14 h-14 rounded-md hover:scale-110 duration-200 cursor-pointer flex items-center justify-center text-white`}
                             onClick={() => {
-                              if (i?.isBooked !== true) {
-                                localStorage.setItem(
-                                  "seletedLobby",
-                                  item.lobbyName
-                                );
-                                localStorage.setItem(
-                                  "seletedTable",
-                                  i.tableNumber
-                                );
-                                localStorage.removeItem("orderId");
-                                addOrderData(item.lobbyName, i.tableNumber);
-                                updateModalStatus(
-                                  true,
-                                  <UpdateStatusJSX
-                                    slug={orderDetail?._id}
-                                    updateModalStatus={updateModalStatus}
-                                    updateApiDoneStatus={updateApiDoneStatus}
-                                    apiDone={apiDone}
-                                    updateCartStatus={updateCartStatus}
-                                  />
-                                );
-                              } else {
+                              if (i?.isBooked === true) {
                                 {
                                   if (
                                     ordersList?.find(
@@ -186,110 +155,6 @@ const PendingOrders = () => {
           </div>
         </div>
       </main>
-      {toggleDetail && (
-        <div className="mt-4 bg-blue-500 p-4 rounded-2xl text-white">
-          <div className="flex justify-between">
-            <h1 className="text-2xl font-bold mb-2">Order Detail</h1>
-            <span
-              className="font-bold cursor-pointer"
-              onClick={() => setToggleDetail(false)}
-            >
-              X
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <div className="flex gap-4">
-              <h2 className="font-semibold">Customer Name:</h2>
-              <h2 className="text-gray-900 font-semibold">
-                {orderDetail.Name}
-              </h2>
-            </div>
-            <div className="flex gap-4">
-              <h2 className="font-semibold">Table No:</h2>
-              <h2 className="text-gray-900 font-semibold">
-                {orderDetail.TableNo}
-              </h2>
-            </div>
-          </div>
-          <div className="border-t-2 border-b-2 py-2 my-2 ">
-            <div className="flex gap-4">
-              <h2 className="font-semibold">Title:</h2>
-              <h2 className="text-gray-900 font-semibold">
-                {orderDetail.Title}
-              </h2>
-            </div>
-
-            <div className="flex gap-4">
-              <h2 className="font-semibold">Quantity:</h2>
-              <h2 className="text-gray-900 font-semibold">{orderDetail.Qty}</h2>
-            </div>
-            <div className="flex gap-4">
-              <h2 className="font-semibold">Price:</h2>
-              <h2 className="text-gray-900 font-semibold">
-                {orderDetail.Price}
-              </h2>
-            </div>
-          </div>
-          <div className="flex justify-between">
-            <div>
-              <div className="flex gap-4">
-                <h2 className="font-semibold">Total Price</h2>
-                <h2 className="text-gray-900 font-semibold">
-                  {orderDetail.TotalPrice}
-                </h2>
-              </div>
-              <div className="flex gap-4">
-                <h2 className="font-semibold">Payment Method:</h2>
-                <h2 className="text-gray-900 font-semibold">
-                  {orderDetail.PaymentMethod}
-                </h2>
-              </div>
-            </div>
-            <div>
-              <div className="flex gap-4">
-                <h2 className="font-semibold">Type:</h2>
-                <h2 className="text-gray-900 font-semibold">
-                  {orderDetail.Type}
-                </h2>
-              </div>
-              <div className="flex gap-4">
-                <h2 className="font-semibold">Status:</h2>
-                <h2 className="text-gray-900 font-semibold">
-                  {orderDetail.Status}
-                </h2>
-              </div>
-              {orderDetail.Status !== "Delivered" && (
-                <button
-                  className="bg-gray-900 py-1 px-2 rounded-md hover:underline hover:scale-105 duration-200"
-                  onClick={async () =>
-                    updateModalStatus(
-                      true,
-                      <UpdateStatusJSX
-                        slug={orderDetail?._id}
-                        updateModalStatus={updateModalStatus}
-                        updateApiDoneStatus={updateApiDoneStatus}
-                        apiDone={apiDone}
-                      />
-                    )
-                  }
-                >
-                  Update Status
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-export default PendingOrders;
-
-const UpdateStatusJSX = () => {
-  return (
-    <div>
-      <WaiterOrder />
     </div>
   );
 };

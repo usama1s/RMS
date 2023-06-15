@@ -2,25 +2,28 @@ import React, { useState, useEffect } from "react";
 import { useCtx } from "../../../../context/Ctx";
 import api from "../../../../config/AxiosBase";
 import DataTable from "react-data-table-component";
+import CoCharts from "./components/CoCharts";
 
 export const CompletedOrder = () => {
   const { apiDone } = useCtx();
   const [loading, setLoading] = useState(false);
   const [formattedData, setFormattedData] = useState();
+  const [clockingData, setClockingData] = useState();
+  const [selectedClocking, setSelectedClocking] = useState("all");
 
-  const getCompletedOrders = async () => {
-    setLoading(true);
-    const resp = await api.get("/getAllOrders", {
+  const getClockingsData = async () => {
+    const resp = await api.get("/getAllClockings", {
       withCredentials: true,
     });
-
-    setFormattedData(resp.data.data.doc);
-    setLoading(false);
+    setClockingData(resp.data.data);
   };
 
-  useEffect(() => {
-    getCompletedOrders();
-  }, [apiDone]);
+  const getOrderByClockingsData = async () => {
+    const resp = await api.get(`/getOrderByClocking/${selectedClocking}`, {
+      withCredentials: true,
+    });
+    setFormattedData(resp.data.data);
+  };
 
   function convertTimestamp(timestamp) {
     const date = new Date(timestamp);
@@ -105,9 +108,19 @@ export const CompletedOrder = () => {
     </div>
   );
 
+  useEffect(() => {
+    getOrderByClockingsData();
+    getClockingsData();
+  }, [apiDone]);
+
+  useEffect(() => {
+    getOrderByClockingsData();
+  }, [selectedClocking]);
+
   return (
     <div>
       <h1 className="text-2xl font-bold">Completed Orders</h1>
+      <CoCharts id={selectedClocking} />
       <DataTable
         columns={column}
         data={formattedData
@@ -118,16 +131,16 @@ export const CompletedOrder = () => {
         highlightOnHover
         actions={
           <select
-            name="cars"
-            id="cars"
+            onChange={(e) => setSelectedClocking(e.target.value)}
             className="bg-gray-900 border border-gray-300 text-gray-50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-fit p-1"
           >
-            <option value="volvo" disabled selected>
-              Select Clocking Period
-            </option>
-            <option value="saab">Day 1</option>
-            <option value="mercedes">Day 2</option>
-            <option value="audi">Day 3</option>
+            <option value="all">All</option>
+            {clockingData &&
+              clockingData?.map((item, index) => (
+                <option key={index + 1} value={item?.startDateTime}>
+                  {convertTimestamp(item?.startDateTime)}
+                </option>
+              ))}
           </select>
         }
         expandableRows

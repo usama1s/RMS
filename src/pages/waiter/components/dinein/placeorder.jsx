@@ -47,12 +47,10 @@ export function PlaceOrderDinein() {
       const resp = await api.post("/makeTakeAwayOrder", payload, {
         withCredentials: true,
       });
-      console.log(resp);
     } else {
       const resp = await api.post("/makeDineInOrder", payload, {
         withCredentials: true,
       });
-      console.log(resp);
     }
 
     resetCart();

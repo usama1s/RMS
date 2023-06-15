@@ -1,21 +1,16 @@
 import { useCtx } from "../../../../../context/Ctx";
-export function ClockOut({ clockOut, disabled, loading }) {
+export function ClockIn({ clockIn, disabled, loading }) {
   const { updateModalStatus } = useCtx();
   return (
     <div>
-      <h2>
-        <span className=" font-semibold">Clock Out Confirmation: </span> Are you
-        sure you want to clock out? Please note that once you clock out, Waiters
-        work session will be ended, and you won't be able to perform any further
-        tasks.
-      </h2>
+      <h2>Confirm to clock in</h2>
       {loading ? (
-        <h2>Clocking Out..</h2>
+        <h2>Clockign In</h2>
       ) : (
         <div>
           <button
             onClick={() => {
-              clockOut();
+              clockIn();
               updateModalStatus(false, null);
             }}
             disabled={disabled}

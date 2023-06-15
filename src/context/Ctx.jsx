@@ -18,7 +18,7 @@ export function CtxProvider({ children }) {
   const [modalStatus, setModalStatus] = useState({ status: false, jsx: null });
   // const user = localStorage.getItem(`${LOCAL_STORAGE_BASE}Data`);
 
-  const [activeTab, setActiveTab] = useState("Pending Orders");
+  const [activeTab, setActiveTab] = useState("Home");
   const [activeWaiterTab, setActiveWaiterTab] = useState("Dine in");
   const [managerSidebarToggle, setManagerSidebarToggle] = useState(false);
   const [waiterSidebarLinks, setWaiterSidebarLinks] = useState([
@@ -28,7 +28,6 @@ export function CtxProvider({ children }) {
   const [headWaiterSidebarLinks, setHeadWaiterSidebarLinks] = useState([
     { title: "Dine in", active: true },
     { title: "Take away", active: false },
-    // { title: "Dine in", active: true },
   ]);
   const [adminSidebarLinks, setAdminSidebarLinks] = useState([
     { title: "Branches", active: true },
@@ -37,8 +36,12 @@ export function CtxProvider({ children }) {
   const [activeAdminTab, setActiveAdminTab] = useState("Branches");
   const [managerSidebarLinks, setManagerSidebarLinks] = useState([
     {
-      title: "Pending Orders",
+      title: "Home",
       active: true,
+    },
+    {
+      title: "Pending Dine In Orders",
+      active: false,
     },
     {
       title: "Lobbies",
@@ -68,10 +71,10 @@ export function CtxProvider({ children }) {
       title: "Cancelled Order",
       active: false,
     },
-    {
-      title: "Clocking System",
-      active: false,
-    },
+    // {
+    //   title: "Clocking System",
+    //   active: false,
+    // },
   ]);
   const [authenticatedUser, setAuthenticatedUser] = useState();
   const [authStatus, setAuthStatus] = useState(false);

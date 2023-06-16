@@ -56,8 +56,8 @@ const PendingOrders = () => {
       totalPrice: resp.data.data[0].TotalPrice,
     };
 
-    updateCartStatus(true, null);
     onItemAddFromAPI(transformObj);
+    updateCartStatus(true);
   };
 
   useEffect(() => {
@@ -90,7 +90,7 @@ const PendingOrders = () => {
           <div className="w-full my-1">
             <ul className="flex flex-col">
               {formattedData &&
-                formattedData.map((item) => (
+                formattedData?.map((item) => (
                   <li className="bg-white my-2 shadow-lg" key={item.lobbyName}>
                     <h2
                       onClick={() => handleItemClick(item.lobbyName)}
@@ -112,12 +112,12 @@ const PendingOrders = () => {
                       } border-l-2 border-purple-600 duration-500 transition-all`}
                     >
                       <div className="p-3 mt-4 flex gap-4 flex-wrap">
-                        {item.Tables.map((i, ind) => (
+                        {item.Tables?.map((i, ind) => (
                           <p
                             key={ind + 1}
                             className={`${
                               i?.isBooked !== true &&
-                              ordersList.map(
+                              ordersList?.map(
                                 (j, index) => j.TableNo === i.tableNo
                               )
                                 ? "bg-gray-400"

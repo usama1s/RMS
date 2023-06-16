@@ -3,6 +3,7 @@ import { useCtx } from "../../../../context/Ctx";
 import api from "../../../../config/AxiosBase";
 import DataTable from "react-data-table-component";
 import CoCharts from "./components/CoCharts";
+import CoStats from "./components/CoStats";
 
 export const CompletedOrder = () => {
   const { apiDone } = useCtx();
@@ -120,6 +121,7 @@ export const CompletedOrder = () => {
   return (
     <div>
       <h1 className="text-2xl font-bold">Completed Orders</h1>
+      <CoStats />
       <CoCharts id={selectedClocking} />
       <DataTable
         columns={column}

@@ -22,8 +22,6 @@ export function CartItems(props) {
     return dateTime.toLocaleString(undefined, options);
   }
 
-  console.log(props.data);
-
   return (
     <>
       {props &&

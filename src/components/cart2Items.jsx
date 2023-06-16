@@ -12,7 +12,7 @@ export const Cart2Items = (props) => {
         );
         if (existingItemIndex !== -1) {
           acc[existingItemIndex].Qty += item.Qty;
-          acc[existingItemIndex].Price += item.Price;
+          acc[existingItemIndex].Price;
         } else {
           acc.push({ ...item });
         }
@@ -26,8 +26,6 @@ export const Cart2Items = (props) => {
     });
   }, [data]);
 
-  console.log({ props });
-
   return (
     <div>
       {combinedData?.item.map((item, index) => (
@@ -35,10 +33,10 @@ export const Cart2Items = (props) => {
           <div className="flex justify-between p-1">
             <div className="w-full flex items-center justify-between gap-2">
               <h2 className="truncate break-words pb-1 text-md font-bold">
-                {item.Title}aaa
+                {item.Title}
               </h2>
               <p className="truncate break-words text-base">
-                {item.Price} x {item.Qty} ={item.Price}
+                {item.Price} x {item.Qty} = {item.Price * item.Qty}
               </p>
             </div>
           </div>

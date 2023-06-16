@@ -2,12 +2,12 @@ import { useCtx } from "../../../../../context/Ctx";
 export function ClockOut({ clockOut, disabled, loading }) {
   const { updateModalStatus } = useCtx();
   return (
-    <div className="flex flex-col justify-center">
-      <h2 className="text-center">
-        <span className=" font-semibold">Clock Out Confirmation: </span> Are you
-        sure you want to clock out? Please note that once you clock out, Waiters
-        work session will be ended, and you won't be able to perform any further
-        tasks.
+    <div className="flex flex-col">
+      <span className=" font-semibold">Clock Out Confirmation: </span>
+      <h2 className="my-2">
+        Are you sure you want to clock out? Please note that once you clock out,
+        Waiters work session will be ended, and you won't be able to perform any
+        further tasks.
       </h2>
       {loading ? (
         <h2>Clocking Out..</h2>

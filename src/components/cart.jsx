@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { CartItems } from "./cartItems";
 import { CartItems2 } from "./cartItems2";
 import { useCtx } from "../context/Ctx";
@@ -6,11 +6,8 @@ import { useCartCtx } from "../context/CartCtx";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import { WaiterOrder } from "../pages/waiter/components/orders";
 import { PlusCircleIcon } from "@heroicons/react/24/solid";
-// import { PlaceOrderTakeaway } from "../pages/waiter/components/takeaway/placeorder";
-// import { PlaceOrderDinein } from "../pages/waiter/components/dinein/placeorder";
-import api from "../config/AxiosBase";
 import { Cart2Items } from "./cart2Items";
-// import { Cart2Items2 } from "./cart2Itmes2";
+import api from "../config/AxiosBase";
 
 export function Cart({ title }) {
   const {
@@ -25,6 +22,7 @@ export function Cart({ title }) {
     resetCart,
     onItemAddFromAPI,
     onClearCart,
+    resetApiCart,
   } = useCartCtx();
   const {
     updateModalStatus,
@@ -80,11 +78,11 @@ export function Cart({ title }) {
       { withCredentials: true }
     );
 
-    if (resp) {
-      alert("order cancelled");
-    }
-
+    localStorage.removeItem("seletedTable");
+    localStorage.removeItem("seletedLobby");
+    resetApiCart();
     updateApiDoneStatus(!apiDone);
+    updateCartStatus(false);
   };
 
   const makeOrderPending = async () => {
@@ -109,6 +107,7 @@ export function Cart({ title }) {
     });
 
     localStorage.setItem("orderId", resp?.data._id);
+    onClearCart();
     updateApiDoneStatus(!apiDone);
   };
 
@@ -154,23 +153,6 @@ export function Cart({ title }) {
             className="h-8 w-8 cursor-pointer"
           />
         </div>
-        {/* <div className="flex items-center justify-between">
-          {apiItemsOfCart.length !== 0 ? (
-            <button
-              onClick={() => {
-                cancelOrderHandler();
-              }}
-              disabled={apiItemsOfCart.length <= 0}
-              className={`w-fit items-center justify-center rounded-md bg-black px-2.5 py-2 text-base font-semibold leading-7 text-white`}
-            >
-              Cancel Order
-            </button>
-          ) : null}
-          <p className="text-center font-semibold text-xl m-auto -translate-x-[64px]">
-            {localStorage.getItem("seletedLobby")} -{" "}
-            {localStorage.getItem("seletedTable")}
-          </p>
-        </div> */}
         {cartSwitch === true ? (
           <div className="h-[90vh] overflow-y-scroll customScrollbar pr-2 ">
             <div className="flex justify-end gap-4 font-semibold">
@@ -178,7 +160,7 @@ export function Cart({ title }) {
                 TRY
               </span>
             </div>
-            {apiItemsOfCart.length >= 1 ? (
+            {apiItemsOfCart && apiItemsOfCart.length >= 1 ? (
               <CartItems data={apiItemsOfCart} />
             ) : null}
             {apiItemsOfCart.length !== 0 && <hr className="my-5" />}
@@ -219,17 +201,13 @@ export function Cart({ title }) {
                 TRY
               </span>
             </div>
-            {apiItemsOfCart.length >= 1 &&
-            apiItemsOfCart[0].lobby === orderData.lobby &&
-            apiItemsOfCart[0].tableNo === orderData.table ? (
+            {apiItemsOfCart.length >= 1 ? (
               <Cart2Items data={apiItemsOfCart} />
             ) : null}
             {apiItemsOfCart.length !== 0 && <hr className="my-5" />}
             {itemsOfCart.length >= 1
               ? itemsOfCart.map((itemData) => (
-                  <div>
-                    <CartItems2 key={itemData.slug} {...itemData} />
-                  </div>
+                  <CartItems2 key={itemData.slug} {...itemData} />
                 ))
               : null}
             <div className="flex justify-center gap-4">
@@ -272,24 +250,6 @@ export function Cart({ title }) {
             </span>
           </h1>
           <div className="flex gap-2">
-            {/* <button
-              onClick={() => {
-                updateModalStatus(
-                  true,
-                  <PlaceOrderJSX
-                    apiDone={apiDone}
-                    TotalPriceOfCart={TotalPriceOfCart}
-                    itemsOfCart={itemsOfCart}
-                    orderData={orderData}
-                    resetCart={resetCart}
-                  />
-                );
-              }}
-              disabled={itemsOfCart.length <= 0 && apiItemsOfCart.length <= 0}
-              className={`items-center justify-center rounded-md bg-black px-2.5 py-2 text-base font-semibold leading-7 text-white`}
-            >
-              Close Order
-            </button> */}
             <div className="relative inline-block">
               <button
                 onClick={() => {
@@ -304,6 +264,7 @@ export function Cart({ title }) {
                       updateApiDoneStatus={updateApiDoneStatus}
                       updateModalStatus={updateModalStatus}
                       updateCartStatus={updateCartStatus}
+                      resetApiCart={resetApiCart}
                     />
                   );
                 }}
@@ -348,6 +309,7 @@ const PlaceOrderJSX = ({
   updateApiDoneStatus,
   updateModalStatus,
   updateCartStatus,
+  resetApiCart,
 }) => {
   const [resp, setResp] = useState();
   const [error, setError] = useState();
@@ -367,10 +329,6 @@ const PlaceOrderJSX = ({
     setLoading(false);
   };
 
-  useEffect(() => {
-    getPaymentMethods();
-  }, [apiDone]);
-
   const handleSelectChange = (event) => {
     setSelectedItem(event.target.value);
   };
@@ -388,10 +346,13 @@ const PlaceOrderJSX = ({
       withCredentials: true,
     });
 
+    localStorage.removeItem("seletedTable");
+    localStorage.removeItem("seletedLobby");
     resetCart();
-    // updateCartStatus(false);
+    resetApiCart();
     updateApiDoneStatus(!apiDone);
-    updateModalStatus(false, null);
+    updateModalStatus(false);
+    updateCartStatus(false);
   };
 
   return (

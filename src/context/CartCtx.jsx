@@ -92,6 +92,9 @@ export function CartCtxProvider({ children }) {
   const resetCart = () => {
     setItemsOfCart([]);
   };
+  const resetApiCart = () => {
+    setApiItemsOfCart([]);
+  };
   const addOrderData = (lobby, table) => {
     setOrderData({
       lobby,
@@ -122,6 +125,7 @@ export function CartCtxProvider({ children }) {
         onCartItemAdd,
         onCartItemRemove,
         resetCart,
+        resetApiCart,
         addOrderData,
         orderData,
       }}

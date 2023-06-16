@@ -11,7 +11,7 @@ export function AddWaiters() {
   const formik = useFormik({
     initialValues: {
       waiterName: "",
-      subRole: "",
+      subRole: "Head Waiter",
       username: "",
       password: "",
     },

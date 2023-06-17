@@ -3,16 +3,16 @@ import LineChart from "./LineChart";
 import { UserData } from "./Data";
 import api from "../../../../../config/AxiosBase";
 
-const CoCharts = ({ id }) => {
+const ItemPriceChart = ({ id }) => {
   const [configLabels, setConfigLabels] = useState();
   const [configData, setConfigData] = useState();
 
   const getItemState = async () => {
-    const resp = await api.get(`getSoldItemsQTY/${id}`, {
+    const resp = await api.get(`getSoldItemsPrice/${id}`, {
       withCredentials: "true",
     });
     if (resp) {
-      const labels = resp.data.quantities.map((data) => data.quantity);
+      const labels = resp.data.quantities.map((data) => data.price);
       const data = resp.data.quantities.map((data) => data._id);
       setConfigLabels(labels);
       setConfigData(data);
@@ -27,7 +27,7 @@ const CoCharts = ({ id }) => {
     labels: configData,
     datasets: [
       {
-        label: "Quantity",
+        label: "Sales",
         data: configLabels,
         backgroundColor: [
           "rgba(75,192,192,1)",
@@ -51,4 +51,4 @@ const CoCharts = ({ id }) => {
   );
 };
 
-export default CoCharts;
+export default ItemPriceChart;

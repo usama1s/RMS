@@ -18,7 +18,7 @@ export function ManagerLobbiesListingsItems({ formattedD }) {
           <div className="flex flex-col gap-2">
             <h3 className="font-bold text-xl">{item?.lobbyName}</h3>
             <p className="text-base font-normal">
-              <span className="font-bold">Number of Rooms:</span>{" "}
+              <span className="font-bold">Number of Tables:</span>{" "}
               <span className="bg-green-500 py-1 px-2 text-xs rounded-md text-white">
                 {item?.noOfTables}
               </span>

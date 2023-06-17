@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { TrashIcon, PencilIcon } from "@heroicons/react/24/solid";
-import { EditPaymentMethods } from "./edit-categories";
+import { EditExpenses } from "./edit-expenses";
 import { useCtx } from "../../../../context/Ctx";
 import api from "../../../../config/AxiosBase";
 
-export function PaymentMethodsListingsItems({ formattedD }) {
+export const ExpensesListingsItems = ({ formattedD }) => {
   const {
     updateModalStatus,
     updateCategoryValue,
@@ -13,9 +13,9 @@ export function PaymentMethodsListingsItems({ formattedD }) {
     apiDone,
   } = useCtx();
 
-  const updateItemHandler = async (slug, title) => {
-    await updateCategoryValue({ slug, title });
-    updateModalStatus(true, <EditPaymentMethods />);
+  const updateItemHandler = async (slug, title, amount) => {
+    await updateCategoryValue({ slug, title, amount });
+    updateModalStatus(true, <EditExpenses />);
   };
 
   return (
@@ -27,6 +27,7 @@ export function PaymentMethodsListingsItems({ formattedD }) {
         >
           <div>
             <h3 className="font-bold text-xl">{item?.title}</h3>
+            <p className="text-sm font-semibold">Amount: {item?.amount}</p>
           </div>
           <div className="absolute right-4 flex">
             <TrashIcon
@@ -45,7 +46,7 @@ export function PaymentMethodsListingsItems({ formattedD }) {
             />
             <PencilIcon
               onClick={() => {
-                updateItemHandler(item?._id, item?.title);
+                updateItemHandler(item?._id, item?.title, item?.amount);
               }}
               className="h-6 w-6 mr-4 text-gray-900 cursor-pointer hover:scale-110 duration-200"
             />
@@ -54,7 +55,7 @@ export function PaymentMethodsListingsItems({ formattedD }) {
       ))}
     </>
   );
-}
+};
 
 const DeleteItemJSX = ({
   slug,
@@ -66,7 +67,7 @@ const DeleteItemJSX = ({
 
   return (
     <div>
-      <h1 className="text-xl font-bold py-2">Confirm to delete item.</h1>
+      <h1 className="text-xl font-bold py-2">Confirm to delete Expense.</h1>
       {status.loading ? (
         <button
           className="bg-black text-base font-semibold text-white rounded-md py-2 px-4  mr-2"
@@ -81,7 +82,7 @@ const DeleteItemJSX = ({
             onClick={async () => {
               try {
                 setStatus({ loading: true, error: null });
-                await api.delete(`/deletePaymentMethods/${slug}`, {
+                await api.delete(`/removeExpense/${slug}`, {
                   withCredentials: true,
                 });
 

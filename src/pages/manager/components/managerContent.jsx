@@ -12,6 +12,7 @@ import { CompletedOrder } from "./completed-order";
 import { CancelledOrder } from "./cancelled-order";
 import { PendingOrders } from "./pending-orders";
 import { Home } from "./Home";
+import { Expenses } from "./expenses";
 
 export function ManagerContent() {
   const { activeTab, modalStatus } = useCtx();
@@ -36,6 +37,8 @@ export function ManagerContent() {
         return <CompletedOrder />;
       case "Cancelled Order":
         return <CancelledOrder />;
+      case "Expenses":
+        return <Expenses />;
       // case "Clocking System":
       //   return <ClockingSystem />;
     }

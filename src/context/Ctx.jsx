@@ -71,6 +71,10 @@ export function CtxProvider({ children }) {
       title: "Cancelled Order",
       active: false,
     },
+    {
+      title: "Expenses",
+      active: false,
+    },
     // {
     //   title: "Clocking System",
     //   active: false,

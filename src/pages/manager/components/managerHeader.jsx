@@ -90,16 +90,16 @@ export function ManagerHeader() {
       >
         <span className="absolute w-0 h-0 transition-all duration-300 ease-out bg-white group-hover:w-full group-hover:h-20 opacity-10"></span>
         <button className="relative flex items-center">
-          <div class="relative flex-shrink-0 mr-4">
+          <div className="relative flex-shrink-0 mr-4">
             <img
               src="https://e7.pngegg.com/pngimages/753/432/png-clipart-user-profile-2018-in-sight-user-conference-expo-business-default-business-angle-service-thumbnail.png"
               alt=""
-              class="w-8 h-8 border rounded-full dark:bg-gray-500 dark:border-gray-700"
+              className="w-8 h-8 border rounded-full dark:bg-gray-500 dark:border-gray-700"
             />
           </div>
           {profileData?.name}{" "}
           <IoIosArrowDown
-            class={`${toggleDropdown != true ? "rotate-180" : ""} w-4 h-4 ml-2`}
+            className={`${toggleDropdown != true ? "rotate-180" : ""} w-4 h-4 ml-2`}
           />
         </button>
         <div
@@ -109,11 +109,11 @@ export function ManagerHeader() {
               : "absolute top-14 right-0 z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-900"
           } `}
         >
-          <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
+          <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
             <li>
               <span
                 onClick={logout}
-                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
               >
                 Logout
               </span>

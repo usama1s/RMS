@@ -125,12 +125,5 @@ export function PlaceOrderDinein() {
     </div>
   );
 
-  // if (lobbyLoading)
-  //   return (
-  //     <div>
-  //       <Loading />
-  //     </div>
-  //   );
-  // if (lobbyError) return <h1>Error</h1>;
   return formJSX;
 }

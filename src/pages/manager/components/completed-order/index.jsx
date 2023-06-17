@@ -4,6 +4,7 @@ import api from "../../../../config/AxiosBase";
 import DataTable from "react-data-table-component";
 import CoCharts from "./components/CoCharts";
 import CoStats from "./components/CoStats";
+import ItemPriceChart from "./components/ItemPriceChart";
 
 export const CompletedOrder = () => {
   const { apiDone } = useCtx();
@@ -121,8 +122,25 @@ export const CompletedOrder = () => {
   return (
     <div>
       <h1 className="text-2xl font-bold">Completed Orders</h1>
-      <CoStats />
-      <CoCharts id={selectedClocking} />
+      <div className="flex justify-end">
+        <select
+          onChange={(e) => setSelectedClocking(e.target.value)}
+          className="bg-gray-900 border border-gray-300 text-gray-50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-fit p-1"
+        >
+          <option value="all">All</option>
+          {clockingData &&
+            clockingData?.map((item, index) => (
+              <option key={index + 1} value={item?.startDateTime}>
+                {convertTimestamp(item?.startDateTime)}
+              </option>
+            ))}
+        </select>
+      </div>
+      <CoStats id={selectedClocking} />
+      <div className="flex">
+        <CoCharts id={selectedClocking} />
+        <ItemPriceChart id={selectedClocking} />
+      </div>
       <DataTable
         columns={column}
         data={formattedData
@@ -131,20 +149,6 @@ export const CompletedOrder = () => {
         pagination
         fixedHeader
         highlightOnHover
-        actions={
-          <select
-            onChange={(e) => setSelectedClocking(e.target.value)}
-            className="bg-gray-900 border border-gray-300 text-gray-50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-fit p-1"
-          >
-            <option value="all">All</option>
-            {clockingData &&
-              clockingData?.map((item, index) => (
-                <option key={index + 1} value={item?.startDateTime}>
-                  {convertTimestamp(item?.startDateTime)}
-                </option>
-              ))}
-          </select>
-        }
         expandableRows
         expandableRowsComponent={ExpandedComponent}
         loading={loading}

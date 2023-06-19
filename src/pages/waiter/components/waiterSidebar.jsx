@@ -18,7 +18,7 @@ export function WaiterSidebar() {
     JSX = waiterSidebarLinks.map(({ title, active }) => (
       <div
         key={title}
-        className={`flex items-center w-full h-12 px-3 mt-2 cursor-pointer ${
+        className={`flex items-center w-full h-12 px-3 mt-1 cursor-pointer ${
           active && "bg-gray-900 text-white"
         }  rounded`}
         onClick={updateWaiterSidebarLinks(title)}
@@ -32,7 +32,7 @@ export function WaiterSidebar() {
     JSX = headWaiterSidebarLinks.map(({ title, active }) => (
       <div
         key={title}
-        className={`flex items-center w-full h-12 px-3 mt-2 cursor-pointer ${
+        className={`flex items-center w-full h-12 px-3 mt-1 cursor-pointer ${
           active && "bg-gray-900 text-white"
         }  rounded`}
         onClick={updateHeadWaiterSidebarLinks(title)}

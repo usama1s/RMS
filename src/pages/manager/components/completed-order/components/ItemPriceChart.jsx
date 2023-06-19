@@ -12,8 +12,11 @@ const ItemPriceChart = ({ id }) => {
       withCredentials: "true",
     });
     if (resp) {
-      const labels = resp.data.quantities.map((data) => data.price);
-      const data = resp.data.quantities.map((data) => data._id);
+      const sortedQuantities = resp.data.quantities.sort(
+        (a, b) => a.price - b.price
+      );
+      const labels = sortedQuantities.map((data) => data.price);
+      const data = sortedQuantities.map((data) => data._id);
       setConfigLabels(labels);
       setConfigData(data);
     }

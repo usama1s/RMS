@@ -21,8 +21,8 @@ export function ManagerContent() {
     switch (slug) {
       case "Home":
         return <Home />;
-      case "Pending Dine In Orders":
-        return <PendingOrders />;
+      // case "Pending Dine In Orders":
+      //   return <PendingOrders />;
       case "Lobbies":
         return <Lobbies />;
       case "Categories":
@@ -37,7 +37,7 @@ export function ManagerContent() {
         return <CompletedOrder />;
       case "Cancelled Order":
         return <CancelledOrder />;
-      case "Expenses":
+      case "Manage Expenses":
         return <Expenses />;
       // case "Clocking System":
       //   return <ClockingSystem />;

@@ -4,6 +4,7 @@ import { useCtx } from "../../../../context/Ctx";
 import { ClockIn } from "./components/clockin";
 import { ClockOut } from "./components/clockout";
 import { Loading } from "../../../../components/loading";
+import { PendingOrders } from "../pending-orders";
 
 export const Home = () => {
   const { updateModalStatus } = useCtx();
@@ -93,59 +94,57 @@ export const Home = () => {
 
   return (
     <div className="py-4">
-      {/* <h1 className="text-2xl font-bold">Homepage</h1> */}
-      <div>
-        <div className="flex items-center rounded shadow-md overflow-hidden max-w-xl relative dark:bg-gray-900 dark:text-gray-100">
-          <div className="self-stretch flex items-center px-3 flex-shrink-0 dark:bg-gray-700 dark:text-teal-400">
-            <BsClock className="h-8 w-8" />
-          </div>
-          <div className="p-4 flex justify-between w-full">
-            {!date ? (
+      <div className="flex items-center rounded shadow-md overflow-hidden max-w-xl relative dark:bg-gray-900 dark:text-gray-100">
+        <div className="self-stretch flex items-center px-3 flex-shrink-0 dark:bg-gray-700 dark:text-teal-400">
+          <BsClock className="h-8 w-8" />
+        </div>
+        <div className="p-4 flex justify-between w-full">
+          {!date ? (
+            <button
+              type="button"
+              className="px-8 py-3 font-semibold rounded dark:bg-gray-100 dark:text-gray-800"
+              onClick={() => {
+                updateModalStatus(
+                  true,
+                  <ClockIn
+                    clockIn={clockIn}
+                    disabled={status.loading || date}
+                    loading={status.loading}
+                  />
+                );
+              }}
+            >
+              Clock In
+            </button>
+          ) : (
+            <>
+              <div>
+                <h3 className="text-xl font-bold">Clocked In at</h3>
+                <p className="text-sm dark:text-gray-400">
+                  {convertDateTime(date)}
+                </p>
+              </div>
               <button
                 type="button"
                 className="px-8 py-3 font-semibold rounded dark:bg-gray-100 dark:text-gray-800"
                 onClick={() => {
                   updateModalStatus(
                     true,
-                    <ClockIn
-                      clockIn={clockIn}
-                      disabled={status.loading || date}
+                    <ClockOut
+                      clockOut={clockOut}
+                      disabled={status.loading || !date}
                       loading={status.loading}
                     />
                   );
                 }}
               >
-                Clock In
+                Clock Out
               </button>
-            ) : (
-              <>
-                <div>
-                  <h3 className="text-xl font-bold">Clocked In at</h3>
-                  <p className="text-sm dark:text-gray-400">
-                    {convertDateTime(date)}
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  className="px-8 py-3 font-semibold rounded dark:bg-gray-100 dark:text-gray-800"
-                  onClick={() => {
-                    updateModalStatus(
-                      true,
-                      <ClockOut
-                        clockOut={clockOut}
-                        disabled={status.loading || !date}
-                        loading={status.loading}
-                      />
-                    );
-                  }}
-                >
-                  Clock Out
-                </button>
-              </>
-            )}
-          </div>
+            </>
+          )}
         </div>
       </div>
+      <PendingOrders />
     </div>
   );
 };

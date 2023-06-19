@@ -11,9 +11,13 @@ const CoCharts = ({ id }) => {
     const resp = await api.get(`getSoldItemsQTY/${id}`, {
       withCredentials: "true",
     });
+
     if (resp) {
-      const labels = resp.data.quantities.map((data) => data.quantity);
-      const data = resp.data.quantities.map((data) => data._id);
+      const sortedQuantities = resp.data.quantities.sort(
+        (a, b) => a.quantity - b.quantity
+      );
+      const labels = sortedQuantities.map((data) => data.quantity);
+      const data = sortedQuantities.map((data) => data._id);
       setConfigLabels(labels);
       setConfigData(data);
     }

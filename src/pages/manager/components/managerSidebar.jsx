@@ -14,7 +14,7 @@ export function ManagerSidebar() {
   const JSX = managerSidebarLinks.map(({ title, active }) => (
     <div
       key={title}
-      className={`flex items-center w-full h-12 px-3 mt-2 cursor-pointer ${
+      className={`flex items-center w-full h-12 px-3 mt-1 cursor-pointer ${
         active && "bg-gray-900 text-white"
       }  rounded`}
       onClick={updateManagerSidebarLinks(title)}

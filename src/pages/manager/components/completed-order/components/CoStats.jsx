@@ -6,12 +6,13 @@ import api from "../../../../../config/AxiosBase";
 const CoStats = ({ id }) => {
   const [totalOrders, setTotalOrders] = useState();
   const [totalSales, setTotalSales] = useState();
+  const [totalExpense, setTotalExpense] = useState();
 
   const getTotalOrders = async () => {
     const resp = await api.get(`/getOrderByClocking/${id}`, {
       withCredentials: true,
     });
-    setTotalOrders(resp.data.data);
+    setTotalOrders(resp.data);
   };
 
   const getTotalSales = async () => {
@@ -21,10 +22,20 @@ const CoStats = ({ id }) => {
     setTotalSales(resp.data);
   };
 
+  const getTotalExpenses = async () => {
+    const resp = await api.get(`/getAllExpenses/${id}`, {
+      withCredentials: true,
+    });
+    setTotalExpense(resp.data);
+  };
+
   useEffect(() => {
     getTotalOrders();
     getTotalSales();
+    getTotalExpenses();
   }, [id]);
+
+  console.log(totalExpense);
 
   return (
     <section className="p-6 my-6 dark:text-gray-100">
@@ -34,10 +45,13 @@ const CoStats = ({ id }) => {
             <BiStats className="h-9 w-9 dark:text-gray-800" />
           </div>
           <div className="flex flex-col justify-center align-middle">
-            <p className="text-3xl font-semibold leadi">
-              {totalOrders?.length}
+            <p className="text-3xl font-semibold leading">
+              {totalOrders?.completedOrderTotal}{" "}
+              <span className=" text-base">
+                ({totalSales?.paymentDone} TRY)
+              </span>
             </p>
-            <p className="capitalize">Total Orders</p>
+            <p className="capitalize">Completed Orders</p>
           </div>
         </div>
         <div className="flex flex-1 p-4 space-x-4 rounded-lg md:space-x-6 dark:bg-gray-900 dark:text-gray-100 col-span-1">
@@ -45,8 +59,11 @@ const CoStats = ({ id }) => {
             <ImStatsDots className="h-9 w-9 dark:text-gray-800" />
           </div>
           <div className="flex flex-col justify-center align-middle">
-            <p className="text-3xl font-semibold leadi">{totalSales?.Sales}</p>
-            <p className="capitalize">Total Sales (TRY)</p>
+            <p className="text-3xl font-semibold leadi">
+              {totalOrders?.canceledOrderTotal}{" "}
+              <span className=" text-base">({totalSales?.cancelled} TRY)</span>
+            </p>
+            <p className="capitalize">Cancelled Orders</p>
           </div>
         </div>
         <div className="flex flex-1 p-4 space-x-4 rounded-lg md:space-x-6 dark:bg-gray-900 dark:text-gray-100 col-span-1">
@@ -54,8 +71,13 @@ const CoStats = ({ id }) => {
             <ImStatsBars className="h-9 w-9 dark:text-gray-800" />
           </div>
           <div className="flex flex-col justify-center align-middle">
-            <p className="text-3xl font-semibold leadi">DUMMY</p>
-            <p className="capitalize">Total Expense</p>
+            <p className="text-3xl font-semibold leadi">
+              {totalExpense?.expenseCountTotal}{" "}
+              <span className=" text-base">
+                ({totalExpense?.totalExpense} TRY)
+              </span>
+            </p>
+            <p className="capitalize">Expenses</p>
           </div>
         </div>
       </div>

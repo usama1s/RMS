@@ -2,46 +2,48 @@ import { useState, useEffect } from "react";
 import { PlusIcon } from "@heroicons/react/24/solid";
 import { useCtx } from "../../../../context/Ctx";
 import { AddExpense } from "./add-expenses";
-import { Loading } from "../../../../components/loading";
-import api from "../../../../config/AxiosBase";
 import { ExpensesListingsItems } from "./expenses-listing";
+import api from "../../../../config/AxiosBase";
 
 export const Expenses = () => {
   const { updateModalStatus, apiDone } = useCtx();
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [formattedData, setFormattedData] = useState();
+  const [clockingData, setClockingData] = useState();
+  const [selectedClocking, setSelectedClocking] = useState("all");
 
-  const getExpenses = async () => {
-    setLoading(true);
-    const resp = await api.get("/getAllExpenses", {
+  const getClockingsData = async () => {
+    const resp = await api.get("/getAllClockings", {
       withCredentials: true,
     });
-    if (resp.data.status !== "success") {
-      setError(true);
-    }
-    console.log(resp);
-    setFormattedData(resp.data.data.doc);
-    setLoading(false);
+    setClockingData(resp.data.data);
   };
+
+  const getExpenses = async () => {
+    const resp = await api.get(`/getAllExpenses/${selectedClocking}`, {
+      withCredentials: true,
+    });
+    setFormattedData(resp.data.data);
+  };
+
+  function convertTimestamp(timestamp) {
+    const date = new Date(timestamp);
+    const options = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+    };
+    return date.toLocaleDateString(undefined, options);
+  }
+
+  useEffect(() => {
+    getClockingsData();
+  }, [apiDone]);
 
   useEffect(() => {
     getExpenses();
-  }, [apiDone]);
-
-  if (error)
-    return (
-      <h1 className="text-xl font-semibold">
-        Error fetching payment methods..
-      </h1>
-    );
-
-  if (loading)
-    return (
-      <div className="h-[40vh]">
-        <Loading />
-      </div>
-    );
+  }, [selectedClocking]);
 
   return (
     <div>
@@ -51,6 +53,20 @@ export const Expenses = () => {
           onClick={() => updateModalStatus(true, <AddExpense />)}
           className="h-8 w-8 font-bold text-gray-900 cursor-pointer"
         />
+      </div>
+      <div className="flex justify-end">
+        <select
+          onChange={(e) => setSelectedClocking(e.target.value)}
+          className="bg-gray-900 border border-gray-300 text-gray-50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-fit p-1"
+        >
+          <option value="all">All</option>
+          {clockingData &&
+            clockingData?.map((item, index) => (
+              <option key={index + 1} value={item?.startDateTime}>
+                {convertTimestamp(item?.startDateTime)}
+              </option>
+            ))}
+        </select>
       </div>
       <div className="text-2xl">
         <ExpensesListingsItems formattedD={formattedData} />

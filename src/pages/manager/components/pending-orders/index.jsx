@@ -73,7 +73,8 @@ export const PendingOrders = () => {
   if (error) return <p>Something goes wrong.</p>;
 
   return (
-    <div>
+    <div className="mt-8">
+      <h1 className="text-xl font-bold">Pending Dine In Orders</h1>
       <main className="p-5 bg-light-blue">
         <div className="flex justify-center items-start my-2">
           <div className="w-full my-1">

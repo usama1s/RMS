@@ -39,10 +39,10 @@ export function CtxProvider({ children }) {
       title: "Home",
       active: true,
     },
-    {
-      title: "Pending Dine In Orders",
-      active: false,
-    },
+    // {
+    //   title: "Pending Dine In Orders",
+    //   active: false,
+    // },
     {
       title: "Lobbies",
       active: false,
@@ -72,7 +72,7 @@ export function CtxProvider({ children }) {
       active: false,
     },
     {
-      title: "Expenses",
+      title: "Manage Expenses",
       active: false,
     },
     // {

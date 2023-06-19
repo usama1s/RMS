@@ -18,6 +18,19 @@ export const ExpensesListingsItems = ({ formattedD }) => {
     updateModalStatus(true, <EditExpenses />);
   };
 
+  function convertToReadable(dateTimeString) {
+    const dateTime = new Date(dateTimeString);
+    const options = {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+    };
+    return dateTime.toLocaleString(undefined, options);
+  }
+
   return (
     <>
       {formattedD?.map((item, index) => (
@@ -28,6 +41,9 @@ export const ExpensesListingsItems = ({ formattedD }) => {
           <div>
             <h3 className="font-bold text-xl">{item?.title}</h3>
             <p className="text-sm font-semibold">Amount: {item?.amount}</p>
+            <p className="text-sm font-semibold">
+              Created At: {convertToReadable(item?.createdAt)}
+            </p>
           </div>
           <div className="absolute right-4 flex">
             <TrashIcon

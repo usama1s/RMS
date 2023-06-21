@@ -7,7 +7,7 @@ import CoStats from "./components/CoStats";
 import ItemPriceChart from "./components/ItemPriceChart";
 
 export const CompletedOrder = () => {
-  const { apiDone } = useCtx();
+  const { apiDone, selectedOrderType } = useCtx();
   const [loading, setLoading] = useState(false);
   const [formattedData, setFormattedData] = useState();
   const [clockingData, setClockingData] = useState();
@@ -144,7 +144,7 @@ export const CompletedOrder = () => {
       <DataTable
         columns={column}
         data={formattedData
-          ?.filter((item) => item.Status === "PaymentDone")
+          ?.filter((item) => item.Status === selectedOrderType)
           .sort((a, b) => a.createdAt - b.createdAt)}
         pagination
         fixedHeader

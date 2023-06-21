@@ -87,6 +87,11 @@ export function CtxProvider({ children }) {
   const [editedLobbyValue, setEditedLobbyValue] = useState(null);
   const [apiDone, setApiDone] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("");
+  const [selectedOrderType, setSelectedOrderType] = useState("PaymentDone");
+
+  const updateOrderType = (value) => {
+    setSelectedOrderType(value);
+  };
 
   const updatePaymentMethod = (value) => {
     setPaymentMethod(value);
@@ -190,6 +195,8 @@ export function CtxProvider({ children }) {
         apiDone,
         paymentMethod,
         updatePaymentMethod,
+        updateOrderType,
+        selectedOrderType,
       }}
     >
       {children}

@@ -8,6 +8,7 @@ import { WaiterOrder } from "../pages/waiter/components/orders";
 import { PlusCircleIcon } from "@heroicons/react/24/solid";
 import { Cart2Items } from "./cart2Items";
 import api from "../config/AxiosBase";
+import printJS from "print-js";
 
 export function Cart({ title }) {
   const {
@@ -55,9 +56,9 @@ export function Cart({ title }) {
     const dateTime = new Date(dateTimeString);
     const options = {
       // weekday: "long",
-      // year: "numeric",
-      // month: "long",
-      // day: "numeric",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
       hour: "numeric",
       minute: "numeric",
       // second: "numeric",
@@ -345,6 +346,52 @@ const PlaceOrderJSX = ({
     const resp = await api.patch("/makeDineInOrder", payload, {
       withCredentials: true,
     });
+
+    console.log(resp.data.OrderItems);
+
+    // printing code
+    const printableData = `
+      <html>
+        <head>
+          <style>
+            .logo {width: 200px;}
+            .header {display: flex; flex-direction: column; align-items: center;}
+            h2 { font-size: 18px; font-weight: bold; margin-top: -10px; }
+            h2 { font-size: 18px; font-weight: bold; }
+            p { font-size: 14px; margin-top: 0px; margin-bottom: 0px; }
+            .item-div {display: flex; justify-content: space-between;}
+            .item-div p {min-width: 24px; max-width: 105px;text-align: left;}
+            span {border-top-style: dotted; margin-top: 15px; display: block; display: flex; justify-content: end;}
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <img src="./public/logo.jpg" class="logo"/>
+          </div>
+          <h2>Order Details</h2>
+          <p>Order Placed At:<br/> ${resp.data.OrderItems[0].createdAt}</p>
+          <h2>Items</h2>
+          ${resp.data.OrderItems[0].items
+            .map(
+              (item) =>
+                `<div class="item-div"> <p>${item.Qty}</p><p style="margin-right:auto;">${item.Title}</p>  <p>${item.Price}</p></div>`
+            )
+            .join("")}
+            <span>Genel Toplam: {202002}</span>
+        </body>
+      </html>
+    `;
+
+    const printWindow = window.open("", "_blank");
+    printWindow.document.open();
+    printWindow.document.write(printableData);
+    printWindow.document.close();
+
+    // printWindow.onload = () => {
+    //   printWindow.print();
+    //   printWindow.close();
+    // };
+    // printing code
 
     localStorage.removeItem("seletedTable");
     localStorage.removeItem("seletedLobby");

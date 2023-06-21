@@ -36,6 +36,7 @@ export function WaiterHeader() {
   //     clearInterval(intervalId);
   //   };
   // }, []);
+  
   useEffect(() => {
     const intervalId = setInterval(() => {
       const currentDate = new Date();

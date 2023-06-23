@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { useCartCtx } from "../../../../context/CartCtx";
 import { useCtx } from "../../../../context/Ctx";
-import { Loading } from "../../../../components/loading";
 import api from "../../../../config/AxiosBase";
 
 export function PlaceOrderTakeaway() {
@@ -15,7 +14,6 @@ export function PlaceOrderTakeaway() {
     onSubmit: onSubmit,
   });
   const [formattedData, setFormattedData] = useState();
-  // const [status, setStatus] = useState({ loading: false, error: null });
   const { itemsOfCart, resetCart } = useCartCtx();
   const { activeWaiterTab, paymentMethod } = useCtx();
 
@@ -48,12 +46,10 @@ export function PlaceOrderTakeaway() {
       const resp = await api.post("/makeTakeAwayOrder", payload, {
         withCredentials: true,
       });
-      console.log(resp);
     } else {
       const resp = await api.post("/makeDineInOrder", payload, {
         withCredentials: true,
       });
-      console.log(resp);
     }
 
     resetCart();
@@ -119,7 +115,6 @@ export function PlaceOrderTakeaway() {
               className="inline-flex w-full items-center justify-center rounded-md bg-black px-3.5 py-2.5  font-regular leading-7 text-white  text-xl"
               type="submit"
             >
-              {/* {status.loading ? "Wait..." : "Place an order"} */}
               Place an order
             </button>
           </div>
@@ -128,12 +123,5 @@ export function PlaceOrderTakeaway() {
     </div>
   );
 
-  // if (lobbyLoading)
-  //   return (
-  //     <div>
-  //       <Loading />
-  //     </div>
-  //   );
-  // if (lobbyError) return <h1>Error</h1>;
   return formJSX;
 }

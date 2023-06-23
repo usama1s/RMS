@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CartItems } from "./cartItems";
 import { CartItems2 } from "./cartItems2";
 import { useCtx } from "../context/Ctx";
@@ -6,6 +6,7 @@ import { useCartCtx } from "../context/CartCtx";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import { WaiterOrder } from "../pages/waiter/components/orders";
 import { PlusCircleIcon } from "@heroicons/react/24/solid";
+import { AiTwotonePrinter } from "react-icons/ai";
 import { Cart2Items } from "./cart2Items";
 import api from "../config/AxiosBase";
 import printJS from "print-js";
@@ -112,6 +113,100 @@ export function Cart({ title }) {
     updateApiDoneStatus(!apiDone);
   };
 
+  const handleOrderPrint = () => {
+    apiItemsOfCart;
+    // printing code
+    const printableData = `
+      <html>
+        <head>
+          <style>
+            body {margin: 0px;}
+            .logo {width: 200px;}
+            .header {display: flex; flex-direction: column; align-items: center;}
+            h2 { font-size: 18px; font-weight: bold; margin-top: -10px; }
+            h2 { font-size: 18px; font-weight: bold; }
+            p { font-size: 14px; margin-top: 0px; margin-bottom: 0px; }
+            .item-div {display: flex; justify-content: space-between;}
+            .item-div p {min-width: 24px; max-width: 105px;text-align: left;}
+            span {border-top-style: dotted; margin-top: 15px; display: block; display: flex; justify-content: end;}
+            .bottom-text {display: flex; flex-direction: column; align-items: center; margin-top: 30px;}
+            .main-data {
+            display: flex;
+            gap: 10px;
+            text-align: left;
+            }
+            .left-side {
+              margin-top: 0px;
+              margin-bottom: 0px;
+              min-width: 80px;
+              text-align: right;
+            }
+            .right-side {
+              margin-top: 0px;
+              margin-bottom: 0px;
+              min-width: 100px;
+            }
+            </style>
+        </head>
+        <body>
+          <div class="header">
+            <img src="./public/logo.png" class="logo"/>
+          </div>
+          <h2>Order Details</h2>
+            <div class="main-data">
+              <p class="left-side">Bölüm:</p>
+              <p class="right-side">${apiItemsOfCart[0].lobby}</p>
+            </div>
+            <div class="main-data">
+              <p class="left-side">Masa:</p>
+              <p class="right-side">${apiItemsOfCart[0].tableNo}</p>
+            </div>
+            <div class="main-data">
+              <p class="left-side">sipariş verildi:</p>
+              <p class="right-side">${convertToReadable(
+                apiItemsOfCart[0].createdAt
+              )}</p>
+            </div>
+          <h3>Items</h3>
+          ${apiItemsOfCart[0].item
+            .flatMap((orderItem) =>
+              orderItem.items.map(
+                (item) =>
+                  `<div class="item-div"> <p>${item.Qty}</p><p style="margin-right:auto;">${item.Title}</p>  <p>${item.Price}</p></div>`
+              )
+            )
+            .join("")}
+            <span>Genel Toplam: ${apiItemsOfCart[0].totalPrice}</span>
+            <div class="bottom-text">
+              <p>^TEŞEKKÜRLER^</p>
+              <p>* FİNANSAL DEĞERİ YOKTUR *</p>
+            </div>
+        </body>
+      </html>
+    `;
+
+    const printOptions = {
+      printable: printableData,
+      type: "raw-html",
+      silent: true,
+    };
+
+    printJS(printOptions);
+
+    // const printWindow = window.open("", "_blank");
+    // printWindow.document.open();
+    // printWindow.document.write(printableData);
+    // printWindow.document.close();
+
+    // printWindow.onload = () => {
+    //   printWindow.print();
+    //   printWindow.close();
+    //   silent: true;
+    // };
+
+    // printing code
+  };
+
   return (
     <div
       onClick={(e) => {
@@ -174,14 +269,24 @@ export function Cart({ title }) {
               : null}
             <div className="flex justify-center gap-4">
               {modalStatus.status === false ? (
-                <button
-                  className={`items-center justify-center rounded-md shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)] px-2.5 py-2 text-base font-semibold leading-7 text-white`}
-                  onClick={() => {
-                    updateModalStatus(true, <UpdateStatusJSX />);
-                  }}
-                >
-                  <PlusCircleIcon className="h-6 w-6 cursor-pointer text-gray-800 hover:scale-110 duration-200" />
-                </button>
+                <div>
+                  <button
+                    className={`items-center justify-center rounded-md shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)] px-2.5 py-2 text-base font-semibold leading-7 text-white`}
+                    onClick={() => {
+                      updateModalStatus(true, <UpdateStatusJSX />);
+                    }}
+                  >
+                    <PlusCircleIcon className="h-6 w-6 cursor-pointer text-gray-800 hover:scale-110 duration-200" />
+                  </button>
+                  <button
+                    className={`items-center justify-center rounded-md shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)] px-2.5 py-2 text-base font-semibold leading-7 text-white`}
+                    onClick={() => {
+                      updateModalStatus(true, <UpdateStatusJSX />);
+                    }}
+                  >
+                    <AiTwotonePrinter className="h-6 w-6 cursor-pointer text-gray-800 hover:scale-110 duration-200" />
+                  </button>
+                </div>
               ) : null}
               {itemsOfCart.length !== 0 && (
                 <button
@@ -213,14 +318,24 @@ export function Cart({ title }) {
               : null}
             <div className="flex justify-center gap-4">
               {modalStatus.status === false ? (
-                <button
-                  className={`items-center justify-center rounded-md shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)] px-2.5 py-2 text-base font-semibold leading-7 text-white`}
-                  onClick={() => {
-                    updateModalStatus(true, <UpdateStatusJSX />);
-                  }}
-                >
-                  <PlusCircleIcon className="h-6 w-6 cursor-pointer text-gray-800 hover:scale-110 duration-200" />
-                </button>
+                <div className="flex gap-3">
+                  <button
+                    className={`items-center justify-center rounded-md shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)] px-2.5 py-2 text-base font-semibold leading-7 text-white`}
+                    onClick={() => {
+                      updateModalStatus(true, <UpdateStatusJSX />);
+                    }}
+                  >
+                    <PlusCircleIcon className="h-6 w-6 cursor-pointer text-gray-800 hover:scale-110 duration-200" />
+                  </button>
+                  <button
+                    className={`items-center justify-center rounded-md shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)] px-2.5 py-2 text-base font-semibold leading-7 text-white`}
+                    onClick={() => {
+                      handleOrderPrint();
+                    }}
+                  >
+                    <AiTwotonePrinter className="h-6 w-6 cursor-pointer text-gray-800 hover:scale-110 duration-200" />
+                  </button>
+                </div>
               ) : null}
               {itemsOfCart.length !== 0 && (
                 <button
@@ -274,7 +389,7 @@ export function Cart({ title }) {
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
               >
-                Close Order
+                Complete Order
               </button>
               {showTooltip && (
                 <div
@@ -282,7 +397,7 @@ export function Cart({ title }) {
                   onMouseEnter={handleTooltipMouseEnter}
                   onMouseLeave={handleTooltipMouseLeave}
                 >
-                  Clear items from the cart
+                  Proceed to checkout
                 </div>
               )}
             </div>
@@ -334,6 +449,20 @@ const PlaceOrderJSX = ({
     setSelectedItem(event.target.value);
   };
 
+  function convertToReadable(dateTimeString) {
+    const dateTime = new Date(dateTimeString);
+    const options = {
+      // weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      // second: "numeric",
+    };
+    return dateTime.toLocaleString(undefined, options);
+  }
+
   const placeOrder = async () => {
     const payload = {
       LobbyName: orderData.lobby || localStorage.getItem("seletedLobby"),
@@ -347,13 +476,12 @@ const PlaceOrderJSX = ({
       withCredentials: true,
     });
 
-    console.log(resp.data.OrderItems);
-
     // printing code
     const printableData = `
       <html>
         <head>
           <style>
+            body {margin: 0px;}
             .logo {width: 200px;}
             .header {display: flex; flex-direction: column; align-items: center;}
             h2 { font-size: 18px; font-weight: bold; margin-top: -10px; }
@@ -362,35 +490,81 @@ const PlaceOrderJSX = ({
             .item-div {display: flex; justify-content: space-between;}
             .item-div p {min-width: 24px; max-width: 105px;text-align: left;}
             span {border-top-style: dotted; margin-top: 15px; display: block; display: flex; justify-content: end;}
-          </style>
+            .bottom-text {display: flex; flex-direction: column; align-items: center; margin-top: 30px;}
+            .main-data {
+            display: flex;
+            gap: 10px;
+            text-align: left;
+            }
+
+            .left-side {
+              margin-top: 0px;
+              margin-bottom: 0px;
+              min-width: 80px;
+              text-align: right;
+            }
+
+            .right-side {
+              margin-top: 0px;
+              margin-bottom: 0px;
+              min-width: 100px;
+            }
+            </style>
         </head>
         <body>
           <div class="header">
-            <img src="./public/logo.jpg" class="logo"/>
+            <img src="./public/logo.png" class="logo"/>
           </div>
           <h2>Order Details</h2>
-          <p>Order Placed At:<br/> ${resp.data.OrderItems[0].createdAt}</p>
-          <h2>Items</h2>
-          ${resp.data.OrderItems[0].items
-            .map(
+            <div class="main-data">
+              <p class="left-side">Bölüm:</p>
+              <p class="right-side">${resp.data.LobbyName}</p>
+            </div>
+            <div class="main-data">
+              <p class="left-side">Masa:</p>
+              <p class="right-side">${resp.data.TableNo}</p>
+            </div>
+            <div class="main-data">
+              <p class="left-side">sipariş verildi:</p>
+              <p class="right-side">${convertToReadable(
+                resp.data.OrderItems[0].createdAt
+              )}</p>
+            </div>
+          <h3>Items</h3>
+          ${resp.data.OrderItems.flatMap((orderItem) =>
+            orderItem.items.map(
               (item) =>
                 `<div class="item-div"> <p>${item.Qty}</p><p style="margin-right:auto;">${item.Title}</p>  <p>${item.Price}</p></div>`
             )
-            .join("")}
-            <span>Genel Toplam: {202002}</span>
+          ).join("")}
+            <span>Genel Toplam: ${resp.data.TotalPrice}</span>
+            <div class="bottom-text">
+              <p>^TEŞEKKÜRLER^</p>
+              <p>* FİNANSAL DEĞERİ YOKTUR *</p>
+            </div>
         </body>
       </html>
     `;
 
-    const printWindow = window.open("", "_blank");
-    printWindow.document.open();
-    printWindow.document.write(printableData);
-    printWindow.document.close();
+    const printOptions = {
+      printable: printableData,
+      type: "raw-html",
+      silent: true,
+    };
+
+    printJS(printOptions);
+
+    // const printWindow = window.open("", "_blank");
+    // printWindow.document.open();
+    // printWindow.document.write(printableData);
+    // printWindow.document.close();
 
     // printWindow.onload = () => {
     //   printWindow.print();
     //   printWindow.close();
+    //   silent: true;
     // };
+
     // printing code
 
     localStorage.removeItem("seletedTable");
@@ -401,6 +575,10 @@ const PlaceOrderJSX = ({
     updateModalStatus(false);
     updateCartStatus(false);
   };
+
+  useEffect(() => {
+    getPaymentMethods();
+  }, []);
 
   return (
     <div className="flex flex-col gap-4">

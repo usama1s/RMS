@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useMediaQuery } from "react-responsive";
 import { useCtx } from "../../../context/Ctx";
 import { useNavigate } from "react-router";
+import { IoIosArrowUp } from "react-icons/io";
 import api from "../../../config/AxiosBase";
-import { IoIosArrowDown } from "react-icons/io";
 
 export function ManagerHeader() {
   const navigate = useNavigate();
-  const isTablet = useMediaQuery({ query: `(max-width:786px)` });
   const {
     managerSidebarToggle,
     updateManagerSidebarToggle,
@@ -98,8 +96,10 @@ export function ManagerHeader() {
             />
           </div>
           {profileData?.name}{" "}
-          <IoIosArrowDown
-            className={`${toggleDropdown != true ? "rotate-180" : ""} w-4 h-4 ml-2`}
+          <IoIosArrowUp
+            className={`${
+              toggleDropdown != true ? "rotate-180" : ""
+            } w-4 h-4 ml-2`}
           />
         </button>
         <div

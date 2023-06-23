@@ -20,7 +20,6 @@ export function ManagerOrderCards({ items }) {
       {items?.map((data) => (
         <div
           onClick={() => {
-            console.log("ccc", currDate);
             updateCartModalStatus(true, {
               price: data.price,
               slug: data._id,

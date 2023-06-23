@@ -83,80 +83,8 @@ const PendingOrders = () => {
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Something goes wrong.</p>;
 
-  // const data = [
-  //   {
-  //     items: [
-  //       {
-  //         Title: "dal soup",
-  //         Qty: 2,
-  //         Price: 85,
-  //         _id: "6492fc55c94f374162a0dc6c",
-  //       },
-  //       {
-  //         Title: "Lamb",
-  //         Qty: 2,
-  //         Price: 250,
-  //         _id: "6492fc55c94f374162a0dc6d",
-  //       },
-  //       {
-  //         Title: "Haidrabadi Biryai",
-  //         Qty: 2,
-  //         Price: 450,
-  //         _id: "6492fc55c94f374162a0dc6e",
-  //       },
-  //     ],
-  //     createdAt: "2023-06-21T13:34:13.116Z",
-  //     _id: "6492fc55c94f374162a0dc6b",
-  //   },
-  // ];
-  // const handlePrint = () => {
-  //   const printableData = `
-  //     <html>
-  //       <head>
-  //         <style>
-  //           .logo {width: 50px; height: 50px;}
-  //           .header {display: flex; flex-direction: column; align-items: center;}
-  //           h2 { font-size: 18px; font-weight: bold; }
-  //           h2 { font-size: 18px; font-weight: bold; }
-  //           p { font-size: 14px; }
-  //           .item-div {display: flex; justify-content: space-between;}
-  //           .item-div p {min-width: 50px; max-width:50px}
-  //         </style>
-  //       </head>
-  //       <body>
-  //         <div class="header">
-  //           <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" class="logo" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path fill="none" d="M0 0h24v24H0z"></path><path d="M8.1 13.34l2.83-2.83L3.91 3.5a4.008 4.008 0 000 5.66l4.19 4.18zm6.78-1.81c1.53.71 3.68.21 5.27-1.38 1.91-1.91 2.28-4.65.81-6.12-1.46-1.46-4.2-1.1-6.12.81-1.59 1.59-2.09 3.74-1.38 5.27L3.7 19.87l1.41 1.41L12 14.41l6.88 6.88 1.41-1.41L13.41 13l1.47-1.47z"></path></svg>
-  //           <h2>India Gate</h2>
-  //         </div>
-  //         <h2>Order Details</h2>
-  //         <p>Order Placed At:<br/> ${data[0].createdAt}</p>
-  //         <h2>Items</h2>
-  //         ${data[0].items
-  //           .map(
-  //             (item) =>
-  //               `<div class="item-div"><p>${item.Title}</p>  <p>${item.Qty}</p> <p>${item.Price}</p></div>`
-  //           )
-  //           .join("")}
-  //       </body>
-  //     </html>
-  //   `;
-
-  //   const printWindow = window.open("", "_blank");
-  //   printWindow.document.open();
-  //   printWindow.document.write(printableData);
-  //   printWindow.document.close();
-
-  //   printWindow.onload = () => {
-  //     printWindow.print();
-  //     printWindow.close();
-  //   };
-  // };
-
   return (
     <div>
-      {/* <button className="bg-red-500" onClick={() => handlePrint()}>
-        Print
-      </button> */}
       <main className="p-5 bg-light-blue">
         <div className="flex justify-center items-start my-2">
           <div className="w-full my-1">

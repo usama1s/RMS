@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { validation_schema_expenses } from "../../../../utils/validation_schema";
 import { useCtx } from "../../../../context/Ctx";
@@ -21,6 +21,8 @@ export const EditExpenses = () => {
     onSubmit: onSubmit,
   });
   const [status, setStatus] = useState({ loading: false, error: null });
+  const [formattedData, setFormattedData] = useState();
+  const [selectedItem, setSelectedItem] = useState("Cash");
 
   async function onSubmit(values, actions) {
     setStatus((prev) => ({ ...prev, loading: true }));
@@ -30,6 +32,7 @@ export const EditExpenses = () => {
         {
           title: values.title,
           amount: values.amount,
+          paymentMethod: selectedItem,
         },
         {
           withCredentials: true,
@@ -49,9 +52,24 @@ export const EditExpenses = () => {
       reset(actions);
     }
   }
+
   const reset = (actions) => {
     actions.resetForm({ title: "" });
     updateCategoryValue(null);
+  };
+
+  const getPaymentMethods = async () => {
+    const resp = await api.get("/getPaymentMethods", { withCredentials: true });
+
+    setFormattedData(resp.data.data.doc);
+  };
+
+  useEffect(() => {
+    getPaymentMethods();
+  }, [apiDone]);
+
+  const handleSelectChange = (event) => {
+    setSelectedItem(event.target.value);
   };
 
   return (
@@ -101,6 +119,32 @@ export const EditExpenses = () => {
             </div>
           </div>
           {status.error && <p className="text-red-500">{status.error}</p>}
+          <div>
+            <label className="mr-4 font-semibold">
+              Choose a payment method:
+            </label>
+            <select
+              value={selectedItem}
+              onChange={handleSelectChange}
+              className="border px-2 py-1 rounded-md"
+            >
+              {formattedData
+                ?.sort((a, b) => {
+                  if (a.title === "Cash") {
+                    return -1;
+                  } else if (b.title === "Cash") {
+                    return 1;
+                  } else {
+                    return a.title.localeCompare(b.title);
+                  }
+                })
+                .map((item) => (
+                  <option key={item._id} value={item.title}>
+                    {item.title}
+                  </option>
+                ))}
+            </select>
+          </div>
           <div>
             <button
               type="submit"

@@ -7,20 +7,27 @@ export const WAITER_SIDERBARLINKS_NORMAL = [
   { title: "Dine in", active: true },
   { title: "Take away", active: false },
 ];
-
 export const WAITER_SIDERBARLINKS_HEAD = [
   { title: "Dine in", active: true },
   { title: "Take away", active: false },
   { title: "Pending Orders", active: false },
 ];
+
 const Ctx = createContext();
+
 export function CtxProvider({ children }) {
   const [modalStatus, setModalStatus] = useState({ status: false, jsx: null });
-  // const user = localStorage.getItem(`${LOCAL_STORAGE_BASE}Data`);
-
   const [activeTab, setActiveTab] = useState("Home");
   const [activeWaiterTab, setActiveWaiterTab] = useState("Dine in");
   const [managerSidebarToggle, setManagerSidebarToggle] = useState(false);
+  const [authenticatedUser, setAuthenticatedUser] = useState();
+  const [authStatus, setAuthStatus] = useState(false);
+  const [editedCategoryValue, setEditCategoryValue] = useState(null);
+  const [editedItemValue, setEditedItemValue] = useState(null);
+  const [editedLobbyValue, setEditedLobbyValue] = useState(null);
+  const [apiDone, setApiDone] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [selectedOrderType, setSelectedOrderType] = useState("PaymentDone");
   const [waiterSidebarLinks, setWaiterSidebarLinks] = useState([
     { title: "Dine in", active: true },
     { title: "Take away", active: false },
@@ -67,10 +74,10 @@ export function CtxProvider({ children }) {
       title: "Completed Order",
       active: false,
     },
-    {
-      title: "Cancelled Order",
-      active: false,
-    },
+    // {
+    //   title: "Cancelled Order",
+    //   active: false,
+    // },
     {
       title: "Manage Expenses",
       active: false,
@@ -80,19 +87,10 @@ export function CtxProvider({ children }) {
     //   active: false,
     // },
   ]);
-  const [authenticatedUser, setAuthenticatedUser] = useState();
-  const [authStatus, setAuthStatus] = useState(false);
-  const [editedCategoryValue, setEditCategoryValue] = useState(null);
-  const [editedItemValue, setEditedItemValue] = useState(null);
-  const [editedLobbyValue, setEditedLobbyValue] = useState(null);
-  const [apiDone, setApiDone] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState("");
-  const [selectedOrderType, setSelectedOrderType] = useState("PaymentDone");
 
   const updateOrderType = (value) => {
     setSelectedOrderType(value);
   };
-
   const updatePaymentMethod = (value) => {
     setPaymentMethod(value);
   };
@@ -160,6 +158,7 @@ export function CtxProvider({ children }) {
     setAuthenticatedUser(localStorage.getItem("ADMIN"));
     setAuthStatus(true);
   }, []);
+
   return (
     <Ctx.Provider
       value={{

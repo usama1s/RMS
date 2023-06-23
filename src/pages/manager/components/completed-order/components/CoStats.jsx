@@ -5,7 +5,7 @@ import api from "../../../../../config/AxiosBase";
 import { useCtx } from "../../../../../context/Ctx";
 
 const CoStats = ({ id }) => {
-  const { selectedOrderType } = useCtx();
+  const { updateOrderType } = useCtx();
   const [totalOrders, setTotalOrders] = useState();
   const [totalSales, setTotalSales] = useState();
   const [totalExpense, setTotalExpense] = useState();
@@ -37,18 +37,16 @@ const CoStats = ({ id }) => {
     getTotalExpenses();
   }, [id]);
 
-  console.log(totalExpense);
-
   return (
     <section className="p-6 my-6 dark:text-gray-100">
       <div className="container flex flex-wrap gap-2 justify-between mx-auto ">
         <div
-          className="flex flex-1 p-4 rounded-lg md:space-x-6 dark:bg-gray-900 dark:text-gray-100 col-span-1 cursor-pointer"
+          className="flex flex-1 p-4 rounded-lg md:space-x-6 dark:bg-gray-900 dark:text-gray-100 col-span-1 cursor-pointer group hover:bg-gray-800"
           onClick={() => {
             updateOrderType("PaymentDone");
           }}
         >
-          <div className="flex justify-center p-2 align-middle rounded-lg sm:p-4 dark:bg-teal-400">
+          <div className="flex justify-center p-2 align-middle rounded-lg sm:p-4 dark:bg-teal-400 group-hover:scale-105 duration-200">
             <BiStats className="h-9 w-9 dark:text-gray-800" />
           </div>
           <div className="flex flex-col justify-center align-middle">
@@ -62,12 +60,12 @@ const CoStats = ({ id }) => {
           </div>
         </div>
         <div
-          className="flex flex-1 p-4 space-x-4 rounded-lg md:space-x-6 dark:bg-gray-900 dark:text-gray-100 col-span-1 cursor-pointer"
+          className="flex flex-1 p-4 space-x-4 rounded-lg md:space-x-6 dark:bg-gray-900 dark:text-gray-100 col-span-1 cursor-pointer group hover:bg-gray-800"
           onClick={() => {
-            updateOrderType("PaymentDone");
+            updateOrderType("cancelled");
           }}
         >
-          <div className="flex justify-center p-2 align-middle rounded-lg sm:p-4 dark:bg-teal-400">
+          <div className="flex justify-center p-2 align-middle rounded-lg sm:p-4 dark:bg-teal-400 group-hover:scale-105 duration-200">
             <ImStatsDots className="h-9 w-9 dark:text-gray-800" />
           </div>
           <div className="flex flex-col justify-center align-middle">
@@ -78,8 +76,8 @@ const CoStats = ({ id }) => {
             <p className="capitalize">Cancelled Orders</p>
           </div>
         </div>
-        <div className="flex flex-1 p-4 space-x-4 rounded-lg md:space-x-6 dark:bg-gray-900 dark:text-gray-100 col-span-1">
-          <div className="flex justify-center p-2 align-middle rounded-lg sm:p-4 dark:bg-teal-400">
+        <div className="flex flex-1 p-4 space-x-4 rounded-lg md:space-x-6 dark:bg-gray-900 dark:text-gray-100 col-span-1 cursor-pointer group hover:bg-gray-800">
+          <div className="flex justify-center p-2 align-middle rounded-lg sm:p-4 dark:bg-teal-400 group-hover:scale-105 duration-200">
             <ImStatsBars className="h-9 w-9 dark:text-gray-800" />
           </div>
           <div className="flex flex-col justify-center align-middle">

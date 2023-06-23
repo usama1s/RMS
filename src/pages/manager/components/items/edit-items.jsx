@@ -5,7 +5,15 @@ import { useCtx } from "../../../../context/Ctx";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import api from "../../../../config/AxiosBase";
 
-export function ManagerEditItem({ itemId }) {
+export function ManagerEditItem({
+  itemId,
+  title,
+  slug,
+  imageURL,
+  description,
+  price,
+  category,
+}) {
   const { updateModalStatus, apiDone, updateApiDoneStatus } = useCtx();
   const [formattedData, setFormattedData] = useState();
   const [photo, setPhoto] = useState("");
@@ -57,7 +65,6 @@ export function ManagerEditItem({ itemId }) {
         setStatus({ error: null, loading: false });
         updateModalStatus(false, null);
       } catch (e) {
-        console.log(e);
         setStatus((prev) => ({
           ...prev,
           loading: false,
@@ -85,7 +92,7 @@ export function ManagerEditItem({ itemId }) {
                 placeholder="Title"
                 name="title"
                 onChange={formik.handleChange}
-                value={formik.values.title}
+                value={formik.values.title || title}
                 onBlur={formik.handleBlur}
               ></input>
               {formik.touched.title && formik.errors.title ? (
@@ -105,7 +112,7 @@ export function ManagerEditItem({ itemId }) {
                 placeholder="Description"
                 name="description"
                 onChange={formik.handleChange}
-                value={formik.values.description}
+                value={formik.values.description || description}
                 onBlur={formik.handleBlur}
               ></textarea>
               {formik.touched.description && formik.errors.description ? (
@@ -128,7 +135,7 @@ export function ManagerEditItem({ itemId }) {
                 type="number"
                 name="price"
                 onChange={formik.handleChange}
-                value={formik.values.price}
+                value={formik.values.price || price}
                 onBlur={formik.handleBlur}
               />
               {formik.touched.price && formik.errors.price ? (
@@ -147,7 +154,7 @@ export function ManagerEditItem({ itemId }) {
             <select
               name="category"
               onChange={formik.handleChange}
-              value={formik.values.category}
+              value={formik.values.category || category}
               onBlur={formik.handleBlur}
             >
               {formattedData?.map((item, index) => (
@@ -172,8 +179,8 @@ export function ManagerEditItem({ itemId }) {
                   className="absolute top-0 left-0 opacity-0"
                   onChange={(e) => setPhoto(e.target.files[0])}
                 />
-
                 <FaCloudUploadAlt className="pointer-events-none w-full h-full text-gray-900 hover:scale-110 duration-200 cursor-pointer" />
+                <img src={imageURL} alt="dsadas" />
               </div>
             </div>
           </div>

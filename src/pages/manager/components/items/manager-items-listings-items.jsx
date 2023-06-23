@@ -50,7 +50,15 @@ export function ManagerItemsListingItems({ formattedD }) {
                   onClick={() => {
                     updateModalStatus(
                       true,
-                      <ManagerEditItem itemId={item?._id} />
+                      <ManagerEditItem
+                        itemId={item?._id}
+                        title={item?.title}
+                        slug={item?.slug}
+                        imageURL={item?.imageURL}
+                        description={item?.description}
+                        price={item?.price}
+                        category={item?.category}
+                      />
                     );
                   }}
                   className="h-6 w-6 mr-2 text-gray-900 cursor-pointer hover:scale-110 duration-200"

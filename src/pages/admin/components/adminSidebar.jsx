@@ -1,10 +1,8 @@
 import React from "react";
-import { useMediaQuery } from "react-responsive";
 import { useCtx } from "../../../context/Ctx";
 import { MdRestaurantMenu } from "react-icons/md";
 
 export function AdminSidebar() {
-  const isTablet = useMediaQuery({ query: `(max-width:786px)` });
   const { adminSidebarLinks, updateAdminSidebarLinks, managerSidebarToggle } =
     useCtx();
 
@@ -21,11 +19,7 @@ export function AdminSidebar() {
       </span>
     </div>
   ));
-  // ${
-  //   isTablet && managerSidebarToggle
-  //     ? "-translate-x-[100%] w-0"
-  //     : "translate-x-0  w-48"
-  // }
+
   return (
     <div
       className={`flex flex-col items-center ${

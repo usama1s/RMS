@@ -38,6 +38,7 @@ export const Expenses = () => {
   }
 
   useEffect(() => {
+    getExpenses();
     getClockingsData();
   }, [apiDone]);
 

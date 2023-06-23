@@ -35,8 +35,8 @@ export function ManagerContent() {
         return <PaymentMethods />;
       case "Completed Order":
         return <CompletedOrder />;
-      case "Cancelled Order":
-        return <CancelledOrder />;
+      // case "Cancelled Order":
+      //   return <CancelledOrder />;
       case "Manage Expenses":
         return <Expenses />;
       // case "Clocking System":

@@ -13,8 +13,8 @@ export const ExpensesListingsItems = ({ formattedD }) => {
     apiDone,
   } = useCtx();
 
-  const updateItemHandler = async (slug, title, amount) => {
-    await updateCategoryValue({ slug, title, amount });
+  const updateItemHandler = async (slug, title, amount, paymentMethod) => {
+    await updateCategoryValue({ slug, title, amount, paymentMethod });
     updateModalStatus(true, <EditExpenses />);
   };
 
@@ -42,6 +42,9 @@ export const ExpensesListingsItems = ({ formattedD }) => {
             <h3 className="font-bold text-xl">{item?.title}</h3>
             <p className="text-sm font-semibold">Amount: {item?.amount}</p>
             <p className="text-sm font-semibold">
+              Payment Method: {item?.paymentMethod}
+            </p>
+            <p className="text-sm font-semibold">
               Created At: {convertToReadable(item?.createdAt)}
             </p>
           </div>
@@ -62,7 +65,12 @@ export const ExpensesListingsItems = ({ formattedD }) => {
             />
             <PencilIcon
               onClick={() => {
-                updateItemHandler(item?._id, item?.title, item?.amount);
+                updateItemHandler(
+                  item?._id,
+                  item?.title,
+                  item?.amount,
+                  item?.paymentMethod
+                );
               }}
               className="h-6 w-6 mr-4 text-gray-900 cursor-pointer hover:scale-110 duration-200"
             />

@@ -22,11 +22,8 @@ export function Cart({ title }) {
     cartStatus,
     itemsOfCart,
     apiItemsOfCart,
-    cartTotalPrice,
-    TotalPriceOfCart,
     orderData,
     resetCart,
-    onItemAddFromAPI,
     onClearCart,
     resetApiCart,
   } = useCartCtx();
@@ -149,7 +146,7 @@ export function Cart({ title }) {
         </head>
         <body>
           <div class="header">
-            <img src="./public/logo.png" class="logo"/>
+            <img src="/logo.png" class="logo"/>
           </div>
           <h2>Order Details</h2>
             <div class="main-data">
@@ -356,14 +353,14 @@ export function Cart({ title }) {
                   >
                     <PlusCircleIcon className="h-6 w-6 cursor-pointer text-gray-800 hover:scale-110 duration-200" />
                   </button>
-                  <button
+                  {/* <button
                     className={`items-center justify-center rounded-md shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)] px-2.5 py-2 text-base font-semibold leading-7 text-white`}
                     onClick={() => {
                       updateModalStatus(true, <UpdateStatusJSX />);
                     }}
                   >
                     <AiTwotonePrinter className="h-6 w-6 cursor-pointer text-gray-800 hover:scale-110 duration-200" />
-                  </button>
+                  </button> */}
                 </div>
               ) : null}
               {itemsOfCart.length !== 0 && (
@@ -385,7 +382,7 @@ export function Cart({ title }) {
                 TRY
               </span>
             </div>
-            {apiItemsOfCart.length >= 1 ? (
+            {apiItemsOfCart && apiItemsOfCart.length >= 1 ? (
               <Cart2Items data={apiItemsOfCart} />
             ) : null}
             {apiItemsOfCart.length !== 0 && <hr className="my-5" />}
@@ -558,6 +555,11 @@ const PlaceOrderJSX = ({
       withCredentials: true,
     });
 
+    localStorage.removeItem("seletedTable");
+    localStorage.removeItem("seletedLobby");
+    resetCart();
+    resetApiCart();
+
     // printing code
     const printableData = `
       <html>
@@ -595,7 +597,7 @@ const PlaceOrderJSX = ({
         </head>
         <body>
           <div class="header">
-            <img src="./public/logo.png" class="logo"/>
+            <img src="/logo.png" class="logo"/>
           </div>
           <h2>Order Details</h2>
             <div class="main-data">
@@ -649,10 +651,6 @@ const PlaceOrderJSX = ({
 
     // printing code
 
-    localStorage.removeItem("seletedTable");
-    localStorage.removeItem("seletedLobby");
-    resetCart();
-    resetApiCart();
     updateApiDoneStatus(!apiDone);
     updateModalStatus(false);
     updateCartStatus(false);

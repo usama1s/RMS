@@ -14,7 +14,8 @@ const PendingOrders = () => {
   const [orderDetail, setOrderDetail] = useState();
   const [isOpen, setIsOpen] = useState({});
   const { updateModalStatus, updateApiDoneStatus, apiDone } = useCtx();
-  const { onItemAddFromAPI, updateCartStatus, addOrderData } = useCartCtx();
+  const { onItemAddFromAPI, updateCartStatus, addOrderData, resetApiCart } =
+    useCartCtx();
 
   const getLobbies = async () => {
     setIsLoading(true);
@@ -134,6 +135,7 @@ const PendingOrders = () => {
                                   i.tableNumber
                                 );
                                 localStorage.removeItem("orderId");
+                                resetApiCart();
                                 addOrderData(item.lobbyName, i.tableNumber);
                                 updateModalStatus(
                                   true,
@@ -166,6 +168,7 @@ const PendingOrders = () => {
                                   "seletedTable",
                                   i.tableNumber
                                 );
+                                resetApiCart();
                                 addOrderData(item.lobbyName, i.tableNumber);
                                 getSingleOrders(
                                   item.lobbyName,

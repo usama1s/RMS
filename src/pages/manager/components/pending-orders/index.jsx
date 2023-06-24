@@ -53,8 +53,6 @@ export const PendingOrders = () => {
       totalPrice: resp.data.data[0].TotalPrice,
     };
 
-    console.log({ transformObj });
-
     updateCartStatus(true, null);
     onItemAddFromAPI(transformObj);
   };

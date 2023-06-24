@@ -5,6 +5,7 @@ import { useCtx } from "../context/Ctx";
 import { useCartCtx } from "../context/CartCtx";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import { WaiterOrder } from "../pages/waiter/components/orders";
+import { HiOutlineSwitchHorizontal } from "react-icons/hi";
 import { PlusCircleIcon } from "@heroicons/react/24/solid";
 import { AiTwotonePrinter } from "react-icons/ai";
 import { Cart2Items } from "./cart2Items";
@@ -12,6 +13,9 @@ import api from "../config/AxiosBase";
 import printJS from "print-js";
 
 export function Cart({ title }) {
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [cartSwitch, setCartSwitch] = useState(false);
+
   const {
     updatePaymentMethod,
     updateCartStatus,
@@ -33,9 +37,6 @@ export function Cart({ title }) {
     apiDone,
     modalStatus,
   } = useCtx();
-
-  const [showTooltip, setShowTooltip] = useState(false);
-  const [cartSwitch, setCartSwitch] = useState(false);
 
   const handleMouseEnter = () => {
     setShowTooltip(true);
@@ -104,18 +105,16 @@ export function Cart({ title }) {
       slug: apiItemsOfCart[0]?.slug,
     };
 
+    console.log({ payload });
+
     const resp = await api.post("/makeDineInOrderPending", payload, {
       withCredentials: true,
     });
 
-    localStorage.setItem("orderId", resp?.data._id);
-    onClearCart();
-    updateApiDoneStatus(!apiDone);
-  };
+    const currentTime = Date.now();
+    const date = new Date(currentTime);
+    const readableDate = date.toLocaleString();
 
-  const handleOrderPrint = () => {
-    apiItemsOfCart;
-    // printing code
     const printableData = `
       <html>
         <head>
@@ -155,28 +154,23 @@ export function Cart({ title }) {
           <h2>Order Details</h2>
             <div class="main-data">
               <p class="left-side">Bölüm:</p>
-              <p class="right-side">${apiItemsOfCart[0].lobby}</p>
+              <p class="right-side">${payload.LobbyName}</p>
             </div>
             <div class="main-data">
               <p class="left-side">Masa:</p>
-              <p class="right-side">${apiItemsOfCart[0].tableNo}</p>
+              <p class="right-side">${payload.TableNo}</p>
             </div>
             <div class="main-data">
               <p class="left-side">sipariş verildi:</p>
-              <p class="right-side">${convertToReadable(
-                apiItemsOfCart[0].createdAt
-              )}</p>
+              <p class="right-side">${readableDate}</p>
             </div>
           <h3>Items</h3>
-          ${apiItemsOfCart[0].item
-            .flatMap((orderItem) =>
-              orderItem.items.map(
-                (item) =>
-                  `<div class="item-div"> <p>${item.Qty}</p><p style="margin-right:auto;">${item.Title}</p>  <p>${item.Price}</p></div>`
-              )
+          ${payload.items
+            .map(
+              (item) =>
+                `<div class="item-div"> <p>${item.Qty}</p><p style="margin-right:auto;">${item.Title}</div>`
             )
             .join("")}
-            <span>Genel Toplam: ${apiItemsOfCart[0].totalPrice}</span>
             <div class="bottom-text">
               <p>^TEŞEKKÜRLER^</p>
               <p>* FİNANSAL DEĞERİ YOKTUR *</p>
@@ -193,19 +187,103 @@ export function Cart({ title }) {
 
     printJS(printOptions);
 
-    // const printWindow = window.open("", "_blank");
-    // printWindow.document.open();
-    // printWindow.document.write(printableData);
-    // printWindow.document.close();
-
-    // printWindow.onload = () => {
-    //   printWindow.print();
-    //   printWindow.close();
-    //   silent: true;
-    // };
-
-    // printing code
+    localStorage.setItem("orderId", resp?.data._id);
+    onClearCart();
+    updateApiDoneStatus(!apiDone);
   };
+
+  // const handleOrderPrint = () => {
+  //   // printing code
+  //   const printableData = `
+  //     <html>
+  //       <head>
+  //         <style>
+  //           body {margin: 0px;}
+  //           .logo {width: 200px;}
+  //           .header {display: flex; flex-direction: column; align-items: center;}
+  //           h2 { font-size: 18px; font-weight: bold; margin-top: -10px; }
+  //           h2 { font-size: 18px; font-weight: bold; }
+  //           p { font-size: 14px; margin-top: 0px; margin-bottom: 0px; }
+  //           .item-div {display: flex; justify-content: space-between;}
+  //           .item-div p {min-width: 24px; max-width: 105px;text-align: left;}
+  //           span {border-top-style: dotted; margin-top: 15px; display: block; display: flex; justify-content: end;}
+  //           .bottom-text {display: flex; flex-direction: column; align-items: center; margin-top: 30px;}
+  //           .main-data {
+  //           display: flex;
+  //           gap: 10px;
+  //           text-align: left;
+  //           }
+  //           .left-side {
+  //             margin-top: 0px;
+  //             margin-bottom: 0px;
+  //             min-width: 80px;
+  //             text-align: right;
+  //           }
+  //           .right-side {
+  //             margin-top: 0px;
+  //             margin-bottom: 0px;
+  //             min-width: 100px;
+  //           }
+  //           </style>
+  //       </head>
+  //       <body>
+  //         <div class="header">
+  //           <img src="./public/logo.png" class="logo"/>
+  //         </div>
+  //         <h2>Order Details</h2>
+  //           <div class="main-data">
+  //             <p class="left-side">Bölüm:</p>
+  //             <p class="right-side">${apiItemsOfCart[0].lobby}</p>
+  //           </div>
+  //           <div class="main-data">
+  //             <p class="left-side">Masa:</p>
+  //             <p class="right-side">${apiItemsOfCart[0].tableNo}</p>
+  //           </div>
+  //           <div class="main-data">
+  //             <p class="left-side">sipariş verildi:</p>
+  //             <p class="right-side">${convertToReadable(
+  //               apiItemsOfCart[0].createdAt
+  //             )}</p>
+  //           </div>
+  //         <h3>Items</h3>
+  //         ${apiItemsOfCart[0].item
+  //           .flatMap((orderItem) =>
+  //             orderItem.items.map(
+  //               (item) =>
+  //                 `<div class="item-div"> <p>${item.Qty}</p><p style="margin-right:auto;">${item.Title}</p>  <p>${item.Price}</p></div>`
+  //             )
+  //           )
+  //           .join("")}
+  //           <span>Genel Toplam: ${apiItemsOfCart[0].totalPrice}</span>
+  //           <div class="bottom-text">
+  //             <p>^TEŞEKKÜRLER^</p>
+  //             <p>* FİNANSAL DEĞERİ YOKTUR *</p>
+  //           </div>
+  //       </body>
+  //     </html>
+  //   `;
+
+  //   const printOptions = {
+  //     printable: printableData,
+  //     type: "raw-html",
+  //     silent: true,
+  //   };
+
+  //   printJS(printOptions);
+
+  //   // const printWindow = window.open("", "_blank");
+  //   // printWindow.document.open();
+  //   // printWindow.document.write(printableData);
+  //   // printWindow.document.close();
+
+  //   // printWindow.onload = () => {
+  //   //   printWindow.print();
+  //   //   printWindow.close();
+  //   //   silent: true;
+  //   // };
+
+  //   // printing code
+  // };
 
   return (
     <div
@@ -232,7 +310,7 @@ export function Cart({ title }) {
                 cancelOrderHandler();
               }}
               disabled={apiItemsOfCart.length <= 0}
-              className={`w-fit items-center justify-center rounded-md bg-black px-2.5 py-2 text-base font-semibold leading-7 text-white`}
+              className={`w-fit items-center justify-center rounded-md bg-red-500 hover:bg-red-700 px-2.5 py-2 text-base font-semibold leading-7 text-white`}
             >
               Cancel Order
             </button>
@@ -327,14 +405,14 @@ export function Cart({ title }) {
                   >
                     <PlusCircleIcon className="h-6 w-6 cursor-pointer text-gray-800 hover:scale-110 duration-200" />
                   </button>
-                  <button
+                  {/* <button
                     className={`items-center justify-center rounded-md shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)] px-2.5 py-2 text-base font-semibold leading-7 text-white`}
                     onClick={() => {
                       handleOrderPrint();
                     }}
                   >
                     <AiTwotonePrinter className="h-6 w-6 cursor-pointer text-gray-800 hover:scale-110 duration-200" />
-                  </button>
+                  </button> */}
                 </div>
               ) : null}
               {itemsOfCart.length !== 0 && (
@@ -351,12 +429,16 @@ export function Cart({ title }) {
           </div>
         )}
         <button
-          className="items-center justify-center rounded-md bg-black px-2.5 py-2 text-base font-semibold leading-7 text-white w-fit"
+          className="items-center justify-center rounded-md bg-black px-2.5 py-2 text-base font-semibold leading-7 text-white w-fit hover:scale-105 duration-200"
           onClick={() => {
             setCartSwitch(!cartSwitch);
           }}
         >
-          Detailed Cart
+          <HiOutlineSwitchHorizontal
+            onClick={() => {
+              setCartSwitch(!cartSwitch);
+            }}
+          />
         </button>
         <div className="flex items-center justify-between px-2 m-1">
           <h1 className="text-base font-regular">
@@ -385,7 +467,7 @@ export function Cart({ title }) {
                   );
                 }}
                 disabled={itemsOfCart.length <= 0 && apiItemsOfCart.length <= 0}
-                className="items-center justify-center rounded-md bg-black px-2.5 py-2 text-base font-semibold leading-7 text-white"
+                className="items-center justify-center rounded-md bg-green-500 hover:bg-green-700 px-2.5 py-2 text-base font-semibold leading-7 text-white"
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
               >

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import LineChart from "./LineChart";
-import { UserData } from "./Data";
 import api from "../../../../../config/AxiosBase";
 
 const CoCharts = ({ id }) => {

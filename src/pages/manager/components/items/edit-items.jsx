@@ -77,6 +77,8 @@ export function ManagerEditItem({
     }
   }
 
+  console.log(photo);
+
   const formJSX = (
     <div>
       <h1 className="text-2xl font-bold">Update Item</h1>
@@ -171,16 +173,37 @@ export function ManagerEditItem({
           </div>
           <div className="flex flex-col">
             <div className="flex justify-center items-center gap-4">
-              {photo ? <span>{photo?.name}</span> : <span>Upload Image</span>}
-              <div className="w-8 h-8 relative overflow-hidden">
-                <input
-                  ref={inputRef}
-                  type="file"
-                  className="absolute top-0 left-0 opacity-0"
-                  onChange={(e) => setPhoto(e.target.files[0])}
-                />
-                <FaCloudUploadAlt className="pointer-events-none w-full h-full text-gray-900 hover:scale-110 duration-200 cursor-pointer" />
-                <img src={imageURL} alt="dsadas" />
+              <div className="h-full overflow-hidden flex justify-between gap-4 w-full">
+                <div className="flex items-center gap-5">
+                  {photo ? (
+                    <span>{photo?.name}</span>
+                  ) : (
+                    <span>Upload Image</span>
+                  )}
+                  <input
+                    ref={inputRef}
+                    type="file"
+                    className="opacity-0"
+                    onChange={(e) => setPhoto(e.target.files[0])}
+                    style={{ display: "none" }}
+                  />
+                  <FaCloudUploadAlt
+                    className="w-8 h-8 text-gray-900 hover:scale-110 duration-200 cursor-pointer"
+                    onClick={() => inputRef.current.click()}
+                  />
+                </div>
+
+                {!photo ? (
+                  <img
+                    src={
+                      imageURL
+                        ? imageURL
+                        : "https://www.shutterstock.com/image-vector/default-image-icon-vector-missing-260nw-2086941550.jpg"
+                    }
+                    alt="no image found for this item"
+                    className="w-[100px] rounded-md"
+                  />
+                ) : null}
               </div>
             </div>
           </div>

@@ -15,6 +15,8 @@ export function ManagerItemsListingItems({ formattedD }) {
     updateItemValue({ title, slug, imageURL, description, price, category });
   };
 
+  console.log({ propData });
+
   return (
     <>
       {propData?.map((item, index) => (
@@ -54,7 +56,7 @@ export function ManagerItemsListingItems({ formattedD }) {
                         itemId={item?._id}
                         title={item?.title}
                         slug={item?.slug}
-                        imageURL={item?.imageURL}
+                        imageURL={item?.photo}
                         description={item?.description}
                         price={item?.price}
                         category={item?.category}

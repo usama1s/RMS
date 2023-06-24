@@ -22,6 +22,7 @@ export const CancelledOrder = () => {
       withCredentials: true,
     });
     setFormattedData(resp.data.data);
+    console.log(resp.data.data);
   };
 
   function convertTimestamp(timestamp) {

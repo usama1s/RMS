@@ -5,6 +5,7 @@ import { ClockIn } from "./components/clockin";
 import { ClockOut } from "./components/clockout";
 import { Loading } from "../../../../components/loading";
 import { PendingOrders } from "../pending-orders";
+import HomeStats from "./components/home-stats";
 
 export const Home = () => {
   const { updateModalStatus } = useCtx();
@@ -144,6 +145,7 @@ export const Home = () => {
           )}
         </div>
       </div>
+      <HomeStats />
       <PendingOrders />
     </div>
   );

@@ -183,7 +183,6 @@ export function ManagerAddItem() {
                   type="file"
                   className="absolute top-0 left-0 opacity-0"
                   onChange={(e) => {
-                    console.log(e.target.files[0]);
                     setPhoto(e.target.files[0]);
                   }}
                 />

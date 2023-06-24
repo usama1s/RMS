@@ -4,42 +4,53 @@ import { ImStatsDots, ImStatsBars } from "react-icons/im";
 import api from "../../../../../config/AxiosBase";
 import { useCtx } from "../../../../../context/Ctx";
 
-const CoStats = ({ id }) => {
+const HomeStats = ({ id }) => {
   const { updateOrderType } = useCtx();
   const [totalOrders, setTotalOrders] = useState();
   const [totalSales, setTotalSales] = useState();
   const [totalExpense, setTotalExpense] = useState();
+  const [clockingData, setClockingData] = useState();
+
+  const getClockingsData = async () => {
+    const resp = await api.get("/getAllClockings", {
+      withCredentials: true,
+    });
+    setClockingData(resp.data.data[0].startDateTime);
+  };
 
   const getTotalOrders = async () => {
-    const resp = await api.get(`/getOrderByClocking/${id}`, {
+    const resp = await api.get(`/getOrderByClocking/${clockingData}`, {
       withCredentials: true,
     });
     setTotalOrders(resp.data);
-    console.log(resp.data.paymentCounts);
   };
 
   const getTotalSales = async () => {
-    const resp = await api.get(`/getSoldItemsSales/${id}`, {
+    const resp = await api.get(`/getSoldItemsSales/${clockingData}`, {
       withCredentials: true,
     });
     setTotalSales(resp.data);
   };
 
   const getTotalExpenses = async () => {
-    const resp = await api.get(`/getAllExpenses/${id}`, {
+    const resp = await api.get(`/getAllExpenses/${clockingData}`, {
       withCredentials: true,
     });
     setTotalExpense(resp.data);
   };
 
   useEffect(() => {
+    getClockingsData();
+  }, []);
+
+  useEffect(() => {
     getTotalOrders();
-    getTotalSales();
     getTotalExpenses();
-  }, [id]);
+    getTotalSales();
+  }, [clockingData]);
 
   return (
-    <section className="p-6 my-6 dark:text-gray-100">
+    <section className="py-6 my-6 dark:text-gray-100">
       <div className="container flex flex-wrap gap-2 justify-between mx-auto ">
         <div
           className="flex flex-1 p-4 rounded-lg md:space-x-6 dark:bg-gray-900 dark:text-gray-100 col-span-1 cursor-pointer group hover:bg-gray-800"
@@ -94,7 +105,7 @@ const CoStats = ({ id }) => {
       </div>
       <div className="mt-4 flex flex-1 p-4 space-x-4 rounded-lg md:space-x-6 dark:bg-gray-900 dark:text-gray-100 col-span-1">
         {totalOrders?.paymentCounts.map((item, index) => (
-          <div className="flex gap-4">
+          <div className="flex gap-4" key={index + 1}>
             <p>{item._id}</p>
             <p className="flex justify-center px-2 align-middle rounded-lg dark:bg-teal-400 group-hover:scale-105 duration-200 text-gray-900 font-semibold">
               {item.totalPriceSum} TL
@@ -106,4 +117,4 @@ const CoStats = ({ id }) => {
   );
 };
 
-export default CoStats;
+export default HomeStats;

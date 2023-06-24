@@ -25,6 +25,7 @@ export const CompletedOrder = () => {
       withCredentials: true,
     });
     setFormattedData(resp.data.data);
+    
   };
 
   function convertTimestamp(timestamp) {

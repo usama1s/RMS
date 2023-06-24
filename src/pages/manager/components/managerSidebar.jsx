@@ -1,10 +1,8 @@
 import React from "react";
-import { useMediaQuery } from "react-responsive";
 import { useCtx } from "../../../context/Ctx";
 import { MdRestaurantMenu } from "react-icons/md";
 
 export function ManagerSidebar() {
-  const isTablet = useMediaQuery({ query: `(max-width:786px)` });
   const {
     managerSidebarLinks,
     updateManagerSidebarLinks,

@@ -10,8 +10,6 @@ export function ManagerEditWaiter({ waiterId }) {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
 
-  console.log({ waiterRole });
-
   async function onSubmit() {
     setStatus({ loading: true, error: null });
     setStatus((prev) => ({ ...prev, loading: true }));

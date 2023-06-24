@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { BiStats } from "react-icons/bi";
 import { ImStatsDots, ImStatsBars } from "react-icons/im";
-import api from "../../../../../config/AxiosBase";
 import { useCtx } from "../../../../../context/Ctx";
+import api from "../../../../../config/AxiosBase";
 
 const CoStats = ({ id }) => {
   const { updateOrderType } = useCtx();
@@ -15,7 +15,6 @@ const CoStats = ({ id }) => {
       withCredentials: true,
     });
     setTotalOrders(resp.data);
-    console.log(resp.data.paymentCounts);
   };
 
   const getTotalSales = async () => {
@@ -94,7 +93,7 @@ const CoStats = ({ id }) => {
       </div>
       <div className="mt-4 flex flex-1 p-4 space-x-4 rounded-lg md:space-x-6 dark:bg-gray-900 dark:text-gray-100 col-span-1">
         {totalOrders?.paymentCounts.map((item, index) => (
-          <div className="flex gap-4">
+          <div className="flex gap-4" key={index + 1}>
             <p>{item._id}</p>
             <p className="flex justify-center px-2 align-middle rounded-lg dark:bg-teal-400 group-hover:scale-105 duration-200 text-gray-900 font-semibold">
               {item.totalPriceSum} TL

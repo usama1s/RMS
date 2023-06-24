@@ -71,7 +71,6 @@ export function Cart({ title }) {
       TableNo: apiItemsOfCart[0]?.tableNo,
     };
 
-    console.log({ payload });
     const resp = await api.patch(
       `/cancelOrder/${apiItemsOfCart[0].slug}`,
       payload,
@@ -102,8 +101,6 @@ export function Cart({ title }) {
       slug: apiItemsOfCart[0]?.slug,
     };
 
-    console.log({ payload });
-
     const resp = await api.post("/makeDineInOrderPending", payload, {
       withCredentials: true,
     });
@@ -119,11 +116,11 @@ export function Cart({ title }) {
             body {margin: 0px;}
             .logo {width: 200px;}
             .header {display: flex; flex-direction: column; align-items: center;}
-            h2 { font-size: 18px; font-weight: bold; margin-top: -10px; }
-            h2 { font-size: 18px; font-weight: bold; }
-            p { font-size: 14px; margin-top: 0px; margin-bottom: 0px; }
+            h2 { font-size: 20px; font-weight: bold; margin-top: -10px; }
+            h2 { font-size: 20px; font-weight: bold; }
+            p { font-size: 18px; margin-top: 0px; margin-bottom: 0px; }
             .item-div {display: flex; justify-content: space-between;}
-            .item-div p {min-width: 24px; max-width: 105px;text-align: left;}
+            .item-div p {min-width: 24px; max-width: 105px;text-align: left; font-size: 18px;}
             span {border-top-style: dotted; margin-top: 15px; display: block; display: flex; justify-content: end;}
             .bottom-text {display: flex; flex-direction: column; align-items: center; margin-top: 30px;}
             .main-data {
@@ -568,11 +565,11 @@ const PlaceOrderJSX = ({
             body {margin: 0px;}
             .logo {width: 200px;}
             .header {display: flex; flex-direction: column; align-items: center;}
-            h2 { font-size: 18px; font-weight: bold; margin-top: -10px; }
-            h2 { font-size: 18px; font-weight: bold; }
-            p { font-size: 14px; margin-top: 0px; margin-bottom: 0px; }
+            h2 { font-size: 20px; font-weight: bold; margin-top: -10px; }
+            h2 { font-size: 20px; font-weight: bold; }
+            p { font-size: 16px; margin-top: 0px; margin-bottom: 0px; }
             .item-div {display: flex; justify-content: space-between;}
-            .item-div p {min-width: 24px; max-width: 105px;text-align: left;}
+            .item-div p {min-width: 24px; max-width: 105px;text-align: left; font-size: 16px;}
             span {border-top-style: dotted; margin-top: 15px; display: block; display: flex; justify-content: end;}
             .bottom-text {display: flex; flex-direction: column; align-items: center; margin-top: 30px;}
             .main-data {
@@ -580,14 +577,12 @@ const PlaceOrderJSX = ({
             gap: 10px;
             text-align: left;
             }
-
             .left-side {
               margin-top: 0px;
               margin-bottom: 0px;
               min-width: 80px;
               text-align: right;
             }
-
             .right-side {
               margin-top: 0px;
               margin-bottom: 0px;

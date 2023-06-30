@@ -39,6 +39,8 @@ export function AdminManagerSection() {
       <h1 className="text-xl font-semibold">Error fetching menu items..</h1>
     );
 
+  console.log(formattedData);
+
   return (
     <div>
       <div className="flex items-center justify-between py-4">
@@ -65,6 +67,12 @@ export function AdminManagerSection() {
                     <span className="font-bold">Branch:</span>{" "}
                     <span className="bg-green-500 p-1 text-xs rounded-sm text-white">
                       {data.branchName}
+                    </span>
+                  </p>
+                  <p className="text-base font-normal">
+                    <span className="font-bold">Name:</span>{" "}
+                    <span className="bg-gray-900 p-1 text-xs rounded-sm text-white">
+                      {data.name}
                     </span>
                   </p>
                 </div>

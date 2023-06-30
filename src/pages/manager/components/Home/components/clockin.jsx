@@ -1,6 +1,8 @@
 import { useCtx } from "../../../../../context/Ctx";
+
 export function ClockIn({ clockIn, disabled, loading }) {
   const { updateModalStatus } = useCtx();
+
   return (
     <div className="flex flex-col">
       <span className=" font-semibold">Clock In Confirmation</span>

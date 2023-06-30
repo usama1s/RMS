@@ -40,6 +40,8 @@ const PendingOrders = () => {
     setOrdersList(resp.data.data);
   };
 
+  console.log({ ordersList });
+
   const getSingleOrders = async (lobbyName, tableNo, orderId) => {
     const resp = await api.get(
       `/getSingleOrder/${lobbyName}/${tableNo}/${orderId}`,

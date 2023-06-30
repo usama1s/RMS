@@ -52,9 +52,9 @@ export function PaymentMethods() {
       </div>
       <div className="text-2xl">
         <PaymentMethodsListingsItems formattedD={formattedData} />
-        {error && (
+        {!formattedData && error && (
           <div>
-            <h1 className="text-2xl font-normal">
+            <h1 className="font-bold text-xl">
               No Payment Methods right now. Add a payment method to proceed.
             </h1>
           </div>

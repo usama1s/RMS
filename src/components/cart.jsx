@@ -115,6 +115,7 @@ export function Cart({ title }) {
             body {margin: 0px;}
             .logo {width: 200px;}
             .header {display: flex; flex-direction: column; align-items: center; margin-bottom: -20px;}
+            .branch-name {font-size: 20px; font-weight: bold;}
             h2 { font-size: 20px; font-weight: bold; margin-top: -10px; }
             h2 { font-size: 20px; font-weight: bold; }
             p { font-size: 18px; margin-top: 0px; margin-bottom: 0px; }
@@ -144,6 +145,7 @@ export function Cart({ title }) {
         <body>
           <div class="header">
             <img src="/logo.png" class="logo"/>
+            <p class="branch-name">${localStorage.getItem("branchName")}</p>
           </div>
           <h2>Order Details</h2>
             <div class="main-data">
@@ -173,17 +175,17 @@ export function Cart({ title }) {
       </html>
     `;
 
-    const printOptions = {
-      printable: printableData,
-      type: "raw-html",
-      silent: true,
-    };
+    // const printOptions = {
+    //   printable: printableData,
+    //   type: "raw-html",
+    //   silent: true,
+    // };
 
-    printJS(printOptions);
+    // printJS(printOptions);
 
-    // const printWindow = window.open("", "_blank");
-    // printWindow.document.open();
-    // printWindow.document.write(printableData);
+    const printWindow = window.open("", "_blank");
+    printWindow.document.open();
+    printWindow.document.write(printableData);
     // printWindow.document.close();
 
     localStorage.setItem("orderId", resp?.data._id);
@@ -355,14 +357,6 @@ export function Cart({ title }) {
                   >
                     <PlusCircleIcon className="h-6 w-6 cursor-pointer text-gray-800 hover:scale-110 duration-200" />
                   </button>
-                  {/* <button
-                    className={`items-center justify-center rounded-md shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)] px-2.5 py-2 text-base font-semibold leading-7 text-white`}
-                    onClick={() => {
-                      updateModalStatus(true, <UpdateStatusJSX />);
-                    }}
-                  >
-                    <AiTwotonePrinter className="h-6 w-6 cursor-pointer text-gray-800 hover:scale-110 duration-200" />
-                  </button> */}
                 </div>
               ) : null}
               {itemsOfCart.length !== 0 && (
@@ -404,14 +398,6 @@ export function Cart({ title }) {
                   >
                     <PlusCircleIcon className="h-6 w-6 cursor-pointer text-gray-800 hover:scale-110 duration-200" />
                   </button>
-                  {/* <button
-                    className={`items-center justify-center rounded-md shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)] px-2.5 py-2 text-base font-semibold leading-7 text-white`}
-                    onClick={() => {
-                      handleOrderPrint();
-                    }}
-                  >
-                    <AiTwotonePrinter className="h-6 w-6 cursor-pointer text-gray-800 hover:scale-110 duration-200" />
-                  </button> */}
                 </div>
               ) : null}
               {itemsOfCart.length !== 0 && (

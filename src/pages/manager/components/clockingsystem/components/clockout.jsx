@@ -1,6 +1,8 @@
 import { useCtx } from "../../../../../context/Ctx";
+
 export function ClockOut({ clockOut, disabled, loading }) {
   const { updateModalStatus } = useCtx();
+
   return (
     <div>
       <h2>

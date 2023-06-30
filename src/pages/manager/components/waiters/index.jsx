@@ -14,23 +14,22 @@ export function ManagersWaiterSection() {
   const [formattedData, setFormattedData] = useState();
 
   const getWaiters = async () => {
-    setLoading(true);
-    const resp = await api.get("/getAllWaiters", { withCredentials: true });
-    if (resp.data.status !== "success") {
+    try {
+      setLoading(true);
+      const resp = await api.get("/getAllWaiters", { withCredentials: true });
+
+      setFormattedData(resp.data.data);
+    } catch (err) {
       setError(true);
+    } finally {
+      setLoading(false);
     }
-    setFormattedData(resp.data.data);
-    setLoading(false);
   };
 
   useEffect(() => {
     getWaiters();
   }, [apiDone]);
 
-  if (error)
-    return (
-      <h1 className="text-xl font-semibold">Error fetching menu items..</h1>
-    );
   if (loading)
     return (
       <div className="h-[40vh]">
@@ -48,7 +47,7 @@ export function ManagersWaiterSection() {
         />
       </div>
       <div className="w-full flex flex-col gap-5">
-        {formattedData?.length <= 0 && (
+        {!formattedData && error && (
           <h1 className="font-bold text-xl">
             No Waiters right now. Add waiters to proceed.
           </h1>
@@ -62,7 +61,9 @@ export function ManagersWaiterSection() {
               <div className="flex-1">
                 <h2 className="text-xl font-bold">
                   Username:
-                  <span className="font-semibold">{data.userName}</span>
+                  <span className="ml-1 font-semibold bg-green-500 text-white p-1 rounded-md text-sm">
+                    {data.userName}
+                  </span>
                 </h2>
                 <p className="text-sm font-normal">
                   <span className="font-bold">Name:</span> {data.name}

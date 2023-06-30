@@ -12,9 +12,12 @@ export const Expenses = () => {
   const [selectedClocking, setSelectedClocking] = useState("all");
 
   const getClockingsData = async () => {
-    const resp = await api.get("/getAllClockings", {
-      withCredentials: true,
-    });
+    const resp = await api.get(
+      `/getAllClockings/${localStorage.getItem("managerId")}`,
+      {
+        withCredentials: true,
+      }
+    );
     setClockingData(resp.data.data);
   };
 
@@ -24,8 +27,6 @@ export const Expenses = () => {
     });
     setFormattedData(resp.data.data);
   };
-
-  console.log(formattedData);
 
   function convertTimestamp(timestamp) {
     const date = new Date(timestamp);
@@ -75,7 +76,7 @@ export const Expenses = () => {
         <ExpensesListingsItems formattedD={formattedData} />
         {formattedData?.length === 0 && (
           <div>
-            <h1 className="text-2xl font-normal">
+            <h1 className="font-bold text-xl">
               No Expense is added. Add a expense to proceed.
             </h1>
           </div>

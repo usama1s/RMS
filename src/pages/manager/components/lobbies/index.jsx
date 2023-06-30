@@ -50,8 +50,8 @@ export function Lobbies() {
       </div>
       <div className="text-2xl">
         <ManagerLobbiesListingsItems formattedD={formattedData} />
-        {error && (
-          <h1 className="text-2xl font-normal ">
+        {!formattedData && error && (
+          <h1 className="font-bold text-xl">
             No Lobbies right now. Add Lobbies to proceed.
           </h1>
         )}

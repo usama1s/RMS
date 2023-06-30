@@ -6,15 +6,24 @@ import { ClockOut } from "./components/clockout";
 import { Loading } from "../../../../components/loading";
 import { PendingOrders } from "../pending-orders";
 import HomeStats from "./components/home-stats";
+import api from "../../../../config/AxiosBase";
 
 export const Home = () => {
   const { updateModalStatus } = useCtx();
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState({ loading: false, error: null });
   const [formattedData, setFormattedData] = useState();
-  const [date, setDate] = useState("");
-  const [dateId, setDateId] = useState("");
+  const [clockingData, setClockingData] = useState();
+
+  const getClockingsData = async () => {
+    const resp = await api.get(
+      `/getAllClockings/${localStorage.getItem("managerId")}`,
+      {
+        withCredentials: true,
+      }
+    );
+
+    setClockingData(resp.data.data[0]);
+  };
 
   const clockIn = async () => {
     setStatus({ loading: true, error: null });
@@ -28,9 +37,7 @@ export const Home = () => {
       if (data.message !== "Check-in successful!") {
         setStatus({ loading: false, error: "Error updating the status." });
       } else {
-        setFormattedData(data.newClocking.startDateTime);
-        localStorage.setItem("ClockInDate", data.newClocking.startDateTime);
-        localStorage.setItem("ClockInId", data.newClocking._id);
+        setFormattedData(data);
         setStatus({ loading: false, error: null });
       }
     } catch (error) {
@@ -41,28 +48,20 @@ export const Home = () => {
   const clockOut = async () => {
     setStatus({ loading: true, error: null });
     try {
-      const response = await fetch("http://localhost:5000/checkOut/" + dateId, {
-        method: "PATCH",
-        credentials: "include",
-      });
-      const data = await response.json();
-      setFormattedData("");
-      localStorage.removeItem("ClockInDate");
-      localStorage.removeItem("ClockInId");
+      const response = await fetch(
+        "http://localhost:5000/checkOut/" + clockingData?._id,
+        {
+          method: "PATCH",
+          credentials: "include",
+        }
+      );
+      await response.json();
+      setFormattedData(null);
       setStatus({ loading: false, error: null });
     } catch (error) {
       setStatus({ loading: false, error: "Error updating the status." });
     }
   };
-
-  if (loading)
-    return (
-      <div className="flex items-center justify-center h-[20vh]">
-        <Loading />
-      </div>
-    );
-  if (error)
-    return <h1>{error?.message ? error?.message : "Error right now.."}</h1>;
 
   function convertDateTime(dateTimeString) {
     const dateTime = new Date(dateTimeString);
@@ -87,10 +86,7 @@ export const Home = () => {
   }
 
   useEffect(() => {
-    const storedData = localStorage.getItem("ClockInDate");
-    const storedId = localStorage.getItem("ClockInId");
-    setDate(storedData);
-    setDateId(storedId);
+    getClockingsData();
   }, [formattedData]);
 
   return (
@@ -100,7 +96,7 @@ export const Home = () => {
           <BsClock className="h-8 w-8" />
         </div>
         <div className="p-4 flex justify-between w-full">
-          {!date ? (
+          {clockingData && clockingData?.endDateTime !== null ? (
             <button
               type="button"
               className="px-8 py-3 font-semibold rounded dark:bg-gray-100 dark:text-gray-800"
@@ -109,7 +105,7 @@ export const Home = () => {
                   true,
                   <ClockIn
                     clockIn={clockIn}
-                    disabled={status.loading || date}
+                    disabled={status.loading}
                     loading={status.loading}
                   />
                 );
@@ -122,7 +118,7 @@ export const Home = () => {
               <div>
                 <h3 className="text-xl font-bold">Clocked In at</h3>
                 <p className="text-sm dark:text-gray-400">
-                  {convertDateTime(date)}
+                  {convertDateTime(clockingData?.startDateTime)}
                 </p>
               </div>
               <button
@@ -133,7 +129,7 @@ export const Home = () => {
                     true,
                     <ClockOut
                       clockOut={clockOut}
-                      disabled={status.loading || !date}
+                      disabled={status.loading}
                       loading={status.loading}
                     />
                   );

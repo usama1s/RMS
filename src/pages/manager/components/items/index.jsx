@@ -50,9 +50,9 @@ export function ManagerItems() {
       </div>
       <div className="text-2xl flex flex-col gap-2">
         <ManagerItemsListingItems formattedD={formattedData} />
-        {error && (
+        {!formattedData && error && (
           <div>
-            <h1 className="text-2xl font-normal">
+            <h1 className="font-bold text-xl">
               No Menu items right now. Add menu items to proceed.
             </h1>
           </div>

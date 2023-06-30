@@ -52,8 +52,8 @@ export function ManagerCategory() {
       </div>
       <div className="text-2xl">
         <ManagerCategoriesListingsItems formattedD={formattedData} />
-        {error && (
-          <h1 className="text-2xl font-normal">
+        {!formattedData && error && (
+          <h1 className="text-xl font-bold">
             No Categories right now. Add Categories to proceed.
           </h1>
         )}

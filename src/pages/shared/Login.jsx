@@ -38,8 +38,6 @@ const Login = () => {
         withCredentials: true,
       });
 
-      console.log("Login => ", response.data.data);
-
       localStorage.setItem("ADMIN", response.data.data.role);
       localStorage.setItem("SubRole", response.data.data.subRole);
       localStorage.setItem("branchName", response.data.data.branch);

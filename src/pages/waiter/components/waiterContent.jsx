@@ -13,7 +13,12 @@ export function WaiterContent() {
   const [subRole, setSubRole] = useState("");
 
   const getClockIn = async () => {
-    const resp = await api.get("/getAllClockings", { withCredentials: true });
+    const resp = await api.get(
+      `/getAllClockings/${localStorage.getItem("managerId")}`,
+      {
+        withCredentials: true,
+      }
+    );
     setClockInData(resp.data.data[0]);
   };
 
@@ -58,11 +63,13 @@ export function WaiterContent() {
     }
   };
 
+  console.log(clockInData.status);
+
   return (
     <div className={"w-full px-4 lg:px-6 overflow-x-hidden"}>
       <WaiterHeader />
 
-      {clockInData.managerId === localStorage.getItem("managerId") &&
+      {clockInData.managerId?._id === localStorage.getItem("managerId") &&
       clockInData.status != true ? (
         <h2>Ask manager to clock in.</h2>
       ) : subRole && subRole === "Regular Waiter" ? (

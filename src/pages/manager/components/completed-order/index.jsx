@@ -14,9 +14,12 @@ export const CompletedOrder = () => {
   const [selectedClocking, setSelectedClocking] = useState("all");
 
   const getClockingsData = async () => {
-    const resp = await api.get("/getAllClockings", {
-      withCredentials: true,
-    });
+    const resp = await api.get(
+      `/getAllClockings/${localStorage.getItem("managerId")}`,
+      {
+        withCredentials: true,
+      }
+    );
     setClockingData(resp.data.data);
   };
 
@@ -25,7 +28,6 @@ export const CompletedOrder = () => {
       withCredentials: true,
     });
     setFormattedData(resp.data.data);
-    
   };
 
   function convertTimestamp(timestamp) {

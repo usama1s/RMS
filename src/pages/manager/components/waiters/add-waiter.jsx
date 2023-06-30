@@ -32,6 +32,7 @@ export function AddWaiters() {
           waiterRole: values.subRole,
           userName: values.username,
           password: values.password,
+          branchName: localStorage.getItem("branchName"),
         },
         {
           withCredentials: true,

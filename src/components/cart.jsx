@@ -7,7 +7,6 @@ import { XMarkIcon } from "@heroicons/react/24/solid";
 import { WaiterOrder } from "../pages/waiter/components/orders";
 import { HiOutlineSwitchHorizontal } from "react-icons/hi";
 import { PlusCircleIcon } from "@heroicons/react/24/solid";
-import { AiTwotonePrinter } from "react-icons/ai";
 import { Cart2Items } from "./cart2Items";
 import api from "../config/AxiosBase";
 import printJS from "print-js";
@@ -17,7 +16,6 @@ export function Cart({ title }) {
   const [cartSwitch, setCartSwitch] = useState(false);
 
   const {
-    updatePaymentMethod,
     updateCartStatus,
     cartStatus,
     itemsOfCart,
@@ -99,6 +97,7 @@ export function Cart({ title }) {
       TableNo: localStorage.getItem("seletedTable") * 1,
       items: newArray,
       slug: apiItemsOfCart[0]?.slug,
+      managerId: localStorage.getItem("managerId"),
     };
 
     const resp = await api.post("/makeDineInOrderPending", payload, {
@@ -115,23 +114,24 @@ export function Cart({ title }) {
           <style>
             body {margin: 0px;}
             .logo {width: 200px;}
-            .header {display: flex; flex-direction: column; align-items: center;}
+            .header {display: flex; flex-direction: column; align-items: center; margin-bottom: -20px;}
             h2 { font-size: 20px; font-weight: bold; margin-top: -10px; }
             h2 { font-size: 20px; font-weight: bold; }
             p { font-size: 18px; margin-top: 0px; margin-bottom: 0px; }
-            .item-div {display: flex; justify-content: space-between;}
-            .item-div p {min-width: 24px; max-width: 105px;text-align: left; font-size: 18px;}
+            .item-div {display: flex; gap: 10px; justify-content: space-between;}
+            .item-div p {min-width: max-content; max-width: max-content; text-align: left; font-size: 18px;}
             span {border-top-style: dotted; margin-top: 15px; display: block; display: flex; justify-content: end;}
             .bottom-text {display: flex; flex-direction: column; align-items: center; margin-top: 30px;}
+            .bottom-text p {font-size: 16px;}
             .main-data {
-            display: flex;
-            gap: 10px;
-            text-align: left;
+              display: flex;
+              gap: 10px;
+              text-align: left;
             }
             .left-side {
               margin-top: 0px;
               margin-bottom: 0px;
-              min-width: 80px;
+              min-width: 105px;
               text-align: right;
             }
             .right-side {
@@ -166,8 +166,8 @@ export function Cart({ title }) {
             )
             .join("")}
             <div class="bottom-text">
-              <p>^TEŞEKKÜRLER^</p>
-              <p>* FİNANSAL DEĞERİ YOKTUR *</p>
+              <p style={max-width: fit-content; font-size: 15px;}>^TEŞEKKÜRLER^</p>
+              <p style={max-width: fit-content; font-size: 15px;}>* FİNANSAL DEĞERİ YOKTUR *</p>
             </div>
         </body>
       </html>
@@ -180,6 +180,11 @@ export function Cart({ title }) {
     };
 
     printJS(printOptions);
+
+    // const printWindow = window.open("", "_blank");
+    // printWindow.document.open();
+    // printWindow.document.write(printableData);
+    // printWindow.document.close();
 
     localStorage.setItem("orderId", resp?.data._id);
     onClearCart();
@@ -513,11 +518,15 @@ const PlaceOrderJSX = ({
 
   const getPaymentMethods = async () => {
     setLoading(true);
-    const resp = await api.get("/getPaymentMethods", { withCredentials: true });
+    const resp = await api.get(
+      `/getPaymentMethods/${localStorage.getItem("managerId")}`,
+      { withCredentials: true }
+    );
     if (resp.data.status !== "success") {
       setError(true);
     }
-    setResp(resp.data.data.doc);
+    console.log(resp);
+    setResp(resp.data.data);
     setLoading(false);
   };
 

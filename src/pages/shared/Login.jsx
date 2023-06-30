@@ -38,9 +38,17 @@ const Login = () => {
         withCredentials: true,
       });
 
+      console.log("Login => ", response.data.data);
+
       localStorage.setItem("ADMIN", response.data.data.role);
       localStorage.setItem("SubRole", response.data.data.subRole);
-
+      localStorage.setItem("branchName", response.data.data.branch);
+      if (response.data.data.role === "MANAGER") {
+        localStorage.setItem("managerId", response.data.data.user);
+      } else if (response.data.data.role === "WAITER") {
+        localStorage.setItem("managerId", response.data.data.managerId);
+        localStorage.getItem("waiterId", response.data.data.user);
+      }
       setAuthenticatedUser(response.data.data.role);
       setStatus({
         loading: false,

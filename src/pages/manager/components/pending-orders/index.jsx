@@ -15,16 +15,19 @@ export const PendingOrders = () => {
 
   const getLobbies = async () => {
     setIsLoading(true);
-    const resp = await api.get("/getLobbies", {
-      withCredentials: true,
-    });
+    const resp = await api.get(
+      `/getLobbies/${localStorage.getItem("managerId")}`,
+      {
+        withCredentials: true,
+      }
+    );
     if (resp.data.status !== "success") {
       setError(true);
     }
 
-    setFormattedData(resp.data.data.doc);
-    setIsOpen(resp.data.data.doc[0]?.lobbyName);
-    setActive(resp.data.data.doc[0]?.lobbyName);
+    setFormattedData(resp.data.data);
+    setIsOpen(resp.data.data?.lobbyName);
+    setActive(resp.data.data?.lobbyName);
     setIsLoading(false);
   };
 
@@ -33,7 +36,7 @@ export const PendingOrders = () => {
       withCredentials: true,
     });
 
-    setOrdersList(resp.data.data.doc);
+    setOrdersList(resp.data.data);
   };
 
   const getSingleOrders = async (lobbyName, tableNo, orderId) => {

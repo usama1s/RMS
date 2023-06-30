@@ -14,12 +14,18 @@ export function WaiterOrder() {
 
   const getCategories = async () => {
     setLoading(true);
-    const resp = await api.get("/getAllCategories", { withCredentials: true });
+    const resp = await api.get(
+      `/getAllCategories/${localStorage.getItem("managerId")}`,
+      { withCredentials: true }
+    );
     if (resp.data.status !== "success") {
       setError(true);
     }
-    setFormattedData(resp.data.data.doc);
-    setActive(resp.data.data.doc[0]._id);
+
+    console.log(resp.data.data[0]?._id);
+
+    setFormattedData(resp.data.data);
+    setActive(resp.data.data[0]?._id);
     setLoading(false);
   };
 
@@ -30,6 +36,8 @@ export function WaiterOrder() {
     if (resp.data.status !== "success") {
       setError(true);
     }
+
+    console.log("Item by category", resp);
     setItems(resp.data.data);
   };
 

@@ -19,16 +19,16 @@ const PendingOrders = () => {
 
   const getLobbies = async () => {
     setIsLoading(true);
-    const resp = await api.get("/getLobbies", {
-      withCredentials: true,
-    });
-    if (resp.data.status !== "success") {
-      setError(true);
-    }
+    const resp = await api.get(
+      `/getLobbies/${localStorage.getItem("managerId")}`,
+      {
+        withCredentials: true,
+      }
+    );
 
-    setFormattedData(resp.data.data.doc);
-    setIsOpen(resp.data.data.doc[0]?.lobbyName);
-    setActive(resp.data.data.doc[0]?.lobbyName);
+    setFormattedData(resp.data.data);
+    setIsOpen(resp.data.data?.lobbyName);
+    setActive(resp.data.data?.lobbyName);
     setIsLoading(false);
   };
 
@@ -37,7 +37,7 @@ const PendingOrders = () => {
       withCredentials: true,
     });
 
-    setOrdersList(resp.data.data.doc);
+    setOrdersList(resp.data.data);
   };
 
   const getSingleOrders = async (lobbyName, tableNo, orderId) => {
@@ -48,13 +48,15 @@ const PendingOrders = () => {
       }
     );
 
+    console.log("Pending Order SingleOrder", resp);
+
     const transformObj = {
-      slug: resp.data.data[0]._id,
-      createdAt: resp.data.data[0].createdAt,
-      lobby: resp.data.data[0].LobbyName,
-      tableNo: resp.data.data[0].TableNo,
-      item: resp.data.data[0].OrderItems,
-      totalPrice: resp.data.data[0].TotalPrice,
+      slug: resp?.data.data[0]._id,
+      createdAt: resp?.data.data[0].createdAt,
+      lobby: resp?.data.data[0].LobbyName,
+      tableNo: resp?.data.data[0].TableNo,
+      item: resp?.data.data[0].OrderItems,
+      totalPrice: resp?.data.data[0].TotalPrice,
     };
 
     onItemAddFromAPI(transformObj);

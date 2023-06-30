@@ -7,29 +7,30 @@ import { Loading } from "../../../../components/loading";
 import api from "../../../../config/AxiosBase";
 
 export function Lobbies() {
+  const id = localStorage.getItem("managerId");
   const { updateModalStatus, apiDone } = useCtx();
   const [formattedData, setFormattedData] = useState();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
   const getLobbies = async () => {
-    setLoading(true);
-    const resp = await api.get("/getLobbies", { withCredentials: true });
-    if (resp.data.status !== "success") {
+    try {
+      setLoading(true);
+      const resp = await api.get(`/getLobbies/${id}`, {
+        withCredentials: true,
+      });
+
+      setFormattedData(resp.data.data);
+    } catch (err) {
       setError(true);
+    } finally {
+      setLoading(false);
     }
-    setFormattedData(resp.data.data.doc);
-    setLoading(false);
   };
 
   useEffect(() => {
     getLobbies();
   }, [apiDone]);
-
-  if (error)
-    return (
-      <h1 className="text-xl font-semibold">Error fetching categories..</h1>
-    );
 
   if (loading)
     return (
@@ -49,12 +50,10 @@ export function Lobbies() {
       </div>
       <div className="text-2xl">
         <ManagerLobbiesListingsItems formattedD={formattedData} />
-        {formattedData?.length === 0 && (
-          <div>
-            <h1 className="text-2xl font-normal ">
-              No Lobbies right now. Add Lobbies to proceed.
-            </h1>
-          </div>
+        {error && (
+          <h1 className="text-2xl font-normal ">
+            No Lobbies right now. Add Lobbies to proceed.
+          </h1>
         )}
       </div>
     </div>

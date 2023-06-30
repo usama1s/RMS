@@ -59,9 +59,12 @@ export const EditExpenses = () => {
   };
 
   const getPaymentMethods = async () => {
-    const resp = await api.get("/getPaymentMethods", { withCredentials: true });
+    const resp = await api.get(
+      `/getPaymentMethods/${localStorage.getItem("managerId")}`,
+      { withCredentials: true }
+    );
 
-    setFormattedData(resp.data.data.doc);
+    setFormattedData(resp.data.data);
   };
 
   useEffect(() => {

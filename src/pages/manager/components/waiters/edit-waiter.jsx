@@ -6,7 +6,7 @@ export function ManagerEditWaiter({ waiterId }) {
   const [status, setStatus] = useState({ loading: false, error: null });
   const { updateApiDoneStatus, updateModalStatus, apiDone } = useCtx();
   const [name, setName] = useState("");
-  const [waiterRole, setWaiterRole] = useState("");
+  const [waiterRole, setWaiterRole] = useState("Head Waiter");
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
 

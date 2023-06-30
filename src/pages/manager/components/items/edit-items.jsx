@@ -34,7 +34,10 @@ export function ManagerEditItem({
 
   const getCategories = async () => {
     setLoading(true);
-    const resp = await api.get("/getAllCategories", { withCredentials: true });
+    const resp = await api.get(
+      `/getAllCategories/${localStorage.getItem("managerId")}`,
+      { withCredentials: true }
+    );
     if (resp.data.status !== "success") {
       setError(true);
     }

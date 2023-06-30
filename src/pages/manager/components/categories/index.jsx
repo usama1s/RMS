@@ -13,23 +13,27 @@ export function ManagerCategory() {
   const [formattedData, setFormattedData] = useState();
 
   const getCategories = async () => {
-    setLoading(true);
-    const resp = await api.get("/getAllCategories", { withCredentials: true });
-    if (resp.data.status !== "success") {
+    try {
+      setLoading(true);
+      const resp = await api.get(
+        `/getAllCategories/${localStorage.getItem("managerId")}`,
+        {
+          withCredentials: true,
+        }
+      );
+
+      setFormattedData(resp.data.data);
+    } catch (err) {
       setError(true);
+    } finally {
+      setLoading(false);
     }
-    setFormattedData(resp.data.data.doc);
-    setLoading(false);
   };
 
   useEffect(() => {
     getCategories();
   }, [apiDone]);
 
-  if (error)
-    return (
-      <h1 className="text-xl font-semibold">Error fetching categories..</h1>
-    );
   if (loading)
     return (
       <div className="h-[40vh]">
@@ -48,12 +52,10 @@ export function ManagerCategory() {
       </div>
       <div className="text-2xl">
         <ManagerCategoriesListingsItems formattedD={formattedData} />
-        {formattedData?.length === 0 && (
-          <div>
-            <h1 className="text-2xl font-normal">
-              No Categories right now. Add Categories to proceed.
-            </h1>
-          </div>
+        {error && (
+          <h1 className="text-2xl font-normal">
+            No Categories right now. Add Categories to proceed.
+          </h1>
         )}
       </div>
     </div>

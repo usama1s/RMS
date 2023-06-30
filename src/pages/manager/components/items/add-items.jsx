@@ -26,13 +26,18 @@ export function ManagerAddItem() {
     onSubmit: onSubmit,
   });
 
+  console.log("formik", formik.values);
+
   const getCategories = async () => {
     setLoading(true);
-    const resp = await api.get("/getAllCategories", { withCredentials: true });
+    const resp = await api.get(
+      `/getAllCategories/${localStorage.getItem("managerId")}`,
+      { withCredentials: true }
+    );
     if (resp.data.status !== "success") {
       setError(true);
     }
-    setFormattedData(resp.data.data.doc);
+    setFormattedData(resp.data.data);
     setLoading(false);
   };
 
@@ -159,7 +164,10 @@ export function ManagerAddItem() {
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
             >
-              {formattedData?.map((item, index) => (
+              <option value="" disabled selected>
+                Select a category
+              </option>
+              {formattedData?.map((item) => (
                 <option
                   key={item?.categoryName}
                   value={`${item?.categoryName}:${item?._id}`}

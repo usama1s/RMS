@@ -25,6 +25,8 @@ export const Expenses = () => {
     setFormattedData(resp.data.data);
   };
 
+  console.log(formattedData);
+
   function convertTimestamp(timestamp) {
     const date = new Date(timestamp);
     const options = {

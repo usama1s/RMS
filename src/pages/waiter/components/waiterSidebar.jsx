@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useCtx } from "../../../context/Ctx";
 import { MdRestaurantMenu } from "react-icons/md";
+import api from "../../../config/AxiosBase";
 
 export function WaiterSidebar() {
+  const [profileData, setProfileData] = useState();
   const {
     waiterSidebarLinks,
     headWaiterSidebarLinks,
@@ -12,6 +14,19 @@ export function WaiterSidebar() {
   } = useCtx();
 
   let JSX;
+
+  const getMe = async () => {
+    try {
+      const resp = await api.get("/me", { withCredentials: true });
+      setProfileData(resp.data.data.doc);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    getMe();
+  }, []);
 
   const role = localStorage.getItem("SubRole");
   if (role !== "Head Waiter") {
@@ -54,6 +69,9 @@ export function WaiterSidebar() {
         <MdRestaurantMenu className="w-6 h-6 sm:w-8 sm:h-8" />
         <span className="text-xs sm:text-lg font-bold">India Gate</span>
       </div>
+      <span className="text-xs sm:text-sm font-bold">
+        {localStorage.getItem("branchName")}
+      </span>
       <div className="w-full px-2">
         <div className="flex flex-col items-center w-full mt-2 border-t border-gray-300">
           {JSX}

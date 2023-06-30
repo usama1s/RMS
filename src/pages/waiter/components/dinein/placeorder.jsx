@@ -20,9 +20,12 @@ export function PlaceOrderDinein() {
   const { activeWaiterTab, paymentMethod } = useCtx();
 
   const getLobbies = async () => {
-    const resp = await api.get("/getLobbies", {
-      withCredentials: true,
-    });
+    const resp = await api.get(
+      `/getLobbies/${localStorage.getItem("managerId")}`,
+      {
+        withCredentials: true,
+      }
+    );
     if (resp.data.status !== "success") {
       setError(true);
     }

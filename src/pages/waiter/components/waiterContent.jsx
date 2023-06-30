@@ -43,6 +43,8 @@ export function WaiterContent() {
     }
   };
 
+  console.log(clockInData);
+
   const renderWaiterContentHead = (slug) => {
     switch (slug) {
       case "Dine in":
@@ -60,7 +62,8 @@ export function WaiterContent() {
     <div className={"w-full px-4 lg:px-6 overflow-x-hidden"}>
       <WaiterHeader />
 
-      {clockInData.status != true ? (
+      {clockInData.managerId === localStorage.getItem("managerId") &&
+      clockInData.status != true ? (
         <h2>Ask manager to clock in.</h2>
       ) : subRole && subRole === "Regular Waiter" ? (
         renderWaiterContentNormal(activeWaiterTab)

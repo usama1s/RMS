@@ -13,23 +13,24 @@ export function ManagerItems() {
   const [error, setError] = useState(false);
 
   const getItems = async () => {
-    setLoading(true);
-    const resp = await api.get("/getItems", { withCredentials: true });
-    if (resp.data.status !== "success") {
+    try {
+      setLoading(true);
+      const resp = await api.get("/getItems", {
+        withCredentials: true,
+      });
+
+      console.log(resp);
+      setFormattedData(resp.data.data);
+    } catch (err) {
       setError(true);
+    } finally {
+      setLoading(false);
     }
-    setFormattedData(resp.data.data.doc);
-    setLoading(false);
   };
 
   useEffect(() => {
     getItems();
   }, [apiDone]);
-
-  if (error)
-    return (
-      <h1 className="text-xl font-semibold">Error fetching menu items..</h1>
-    );
 
   if (loading)
     return (
@@ -49,7 +50,7 @@ export function ManagerItems() {
       </div>
       <div className="text-2xl flex flex-col gap-2">
         <ManagerItemsListingItems formattedD={formattedData} />
-        {formattedData?.length === 0 && (
+        {error && (
           <div>
             <h1 className="text-2xl font-normal">
               No Menu items right now. Add menu items to proceed.

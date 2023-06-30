@@ -9,6 +9,7 @@ const CoStats = ({ id }) => {
   const [totalOrders, setTotalOrders] = useState();
   const [totalSales, setTotalSales] = useState();
   const [totalExpense, setTotalExpense] = useState();
+  const [tabs, setTabs] = useState(1);
 
   const getTotalOrders = async () => {
     const resp = await api.get(`/getOrderByClocking/${id}`, {
@@ -44,6 +45,7 @@ const CoStats = ({ id }) => {
           className="flex flex-1 p-4 rounded-lg md:space-x-6 dark:bg-gray-900 dark:text-gray-100 col-span-1 cursor-pointer group hover:bg-gray-800"
           onClick={() => {
             updateOrderType("PaymentDone");
+            setTabs(1);
           }}
         >
           <div className="flex justify-center p-2 align-middle rounded-lg sm:p-4 dark:bg-teal-400 group-hover:scale-105 duration-200">
@@ -63,6 +65,7 @@ const CoStats = ({ id }) => {
           className="flex flex-1 p-4 space-x-4 rounded-lg md:space-x-6 dark:bg-gray-900 dark:text-gray-100 col-span-1 cursor-pointer group hover:bg-gray-800"
           onClick={() => {
             updateOrderType("cancelled");
+            setTabs(2);
           }}
         >
           <div className="flex justify-center p-2 align-middle rounded-lg sm:p-4 dark:bg-teal-400 group-hover:scale-105 duration-200">
@@ -76,7 +79,13 @@ const CoStats = ({ id }) => {
             <p className="capitalize">Cancelled Orders</p>
           </div>
         </div>
-        <div className="flex flex-1 p-4 space-x-4 rounded-lg md:space-x-6 dark:bg-gray-900 dark:text-gray-100 col-span-1 cursor-pointer group hover:bg-gray-800">
+        <div
+          className="flex flex-1 p-4 space-x-4 rounded-lg md:space-x-6 dark:bg-gray-900 dark:text-gray-100 col-span-1 cursor-pointer group hover:bg-gray-800"
+          onClick={() => {
+            updateOrderType("");
+            setTabs(3);
+          }}
+        >
           <div className="flex justify-center p-2 align-middle rounded-lg sm:p-4 dark:bg-teal-400 group-hover:scale-105 duration-200">
             <ImStatsBars className="h-9 w-9 dark:text-gray-800" />
           </div>
@@ -91,16 +100,37 @@ const CoStats = ({ id }) => {
           </div>
         </div>
       </div>
-      <div className="mt-4 flex flex-1 p-4 space-x-4 rounded-lg md:space-x-6 dark:bg-gray-900 dark:text-gray-100 col-span-1">
-        {totalOrders?.paymentCounts.map((item, index) => (
-          <div className="flex gap-4" key={index + 1}>
-            <p>{item._id}</p>
-            <p className="flex justify-center px-2 align-middle rounded-lg dark:bg-teal-400 group-hover:scale-105 duration-200 text-gray-900 font-semibold">
-              {item.totalPriceSum} TL
-            </p>
+      {/* Payment Methods Stats */}
+      {tabs === 1 && (
+        <div className="mt-4">
+          <p className="text-gray-900 font-semibold mb-0">Completed Orders</p>
+          <div className="flex flex-1 p-4 space-x-4 rounded-lg md:space-x-6 dark:bg-gray-900 dark:text-gray-100 col-span-1">
+            {totalOrders?.paymentCounts.map((item, index) => (
+              <div className="flex gap-4" key={index + 1}>
+                <p>{item._id}</p>
+                <p className="flex justify-center px-2 align-middle rounded-lg dark:bg-teal-400 group-hover:scale-105 duration-200 text-gray-900 font-semibold">
+                  {item.totalPriceSum} TL
+                </p>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </div>
+      )}
+      {tabs === 3 && (
+        <div className="mt-4">
+          <p className="text-gray-900 font-semibold mb-0">Expenses</p>
+          <div className="flex flex-1 p-4 space-x-4 rounded-lg md:space-x-6 dark:bg-gray-900 dark:text-gray-100 col-span-1">
+            {totalExpense?.paymentCounts.map((item, index) => (
+              <div className="flex gap-4" key={index + 1}>
+                <p>{item._id}</p>
+                <p className="flex justify-center px-2 align-middle rounded-lg dark:bg-teal-400 group-hover:scale-105 duration-200 text-gray-900 font-semibold">
+                  {item.totalAmount} TL
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </section>
   );
 };

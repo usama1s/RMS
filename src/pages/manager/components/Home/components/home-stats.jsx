@@ -18,6 +18,8 @@ const HomeStats = ({ id }) => {
     setClockingData(resp.data.data[0].startDateTime);
   };
 
+  console.log(clockingData);
+
   const getTotalOrders = async () => {
     const resp = await api.get(`/getOrderByClocking/${clockingData}`, {
       withCredentials: true,

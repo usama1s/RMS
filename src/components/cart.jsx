@@ -175,17 +175,17 @@ export function Cart({ title }) {
       </html>
     `;
 
-    // const printOptions = {
-    //   printable: printableData,
-    //   type: "raw-html",
-    //   silent: true,
-    // };
+    const printOptions = {
+      printable: printableData,
+      type: "raw-html",
+      silent: true,
+    };
 
-    // printJS(printOptions);
+    printJS(printOptions);
 
-    const printWindow = window.open("", "_blank");
-    printWindow.document.open();
-    printWindow.document.write(printableData);
+    // const printWindow = window.open("", "_blank");
+    // printWindow.document.open();
+    // printWindow.document.write(printableData);
     // printWindow.document.close();
 
     localStorage.setItem("orderId", resp?.data._id);

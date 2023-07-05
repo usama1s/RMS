@@ -14,25 +14,30 @@ export const PendingOrders = () => {
   const { onItemAddFromAPI, updateCartStatus, addOrderData } = useCartCtx();
 
   const getLobbies = async () => {
-    setIsLoading(true);
-    const resp = await api.get(
-      `/getLobbies/${localStorage.getItem("managerId")}`,
-      {
-        withCredentials: true,
-      }
-    );
-    if (resp.data.status !== "success") {
-      setError(true);
-    }
+    try {
+      setIsLoading(true);
+      const resp = await api.get(
+        `/getLobbies/${localStorage.getItem("managerId")}`,
+        {
+          withCredentials: true,
+        }
+      );
 
-    setFormattedData(resp.data.data);
-    setIsOpen(resp.data.data?.lobbyName);
-    setActive(resp.data.data?.lobbyName);
-    setIsLoading(false);
+      setFormattedData(resp.data.data);
+      setIsOpen(resp.data.data?.lobbyName);
+      setActive(resp.data.data?.lobbyName);
+    } catch (err) {
+      console.log(err.response.data.message);
+      if (err.response.data.message === "No lobby found") {
+        setError(true);
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const getOrders = async () => {
-    const resp = await api.get("/getAllOrders", {
+    const resp = await api.get("/getAllOrdersByManager", {
       withCredentials: true,
     });
 
@@ -71,7 +76,7 @@ export const PendingOrders = () => {
   };
 
   if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Something goes wrong.</p>;
+  if (error) return <p>No Lobby Found.</p>;
 
   return (
     <div className="mt-8">
@@ -89,7 +94,7 @@ export const PendingOrders = () => {
                     >
                       <span>{item.lobbyName}</span>
                       <svg
-                        className={`fill-current text-purple-700 h-6 w-6 transform transition-transform duration-500 ${
+                        className={`fill-current text-gray-700 h-6 w-6 transform transition-transform duration-500 ${
                           isOpen === item.lobbyName ? "rotate-180" : ""
                         }`}
                         viewBox="0 0 20 20"

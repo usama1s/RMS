@@ -18,18 +18,23 @@ const PendingOrders = () => {
     useCartCtx();
 
   const getLobbies = async () => {
-    setIsLoading(true);
-    const resp = await api.get(
-      `/getLobbies/${localStorage.getItem("managerId")}`,
-      {
-        withCredentials: true,
-      }
-    );
+    try {
+      setIsLoading(true);
+      const resp = await api.get(
+        `/getLobbies/${localStorage.getItem("managerId")}`,
+        {
+          withCredentials: true,
+        }
+      );
 
-    setFormattedData(resp.data.data);
-    setIsOpen(resp.data.data?.lobbyName);
-    setActive(resp.data.data?.lobbyName);
-    setIsLoading(false);
+      setFormattedData(resp.data.data);
+      setIsOpen(resp.data.data?.lobbyName);
+      setActive(resp.data.data?.lobbyName);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const getOrders = async () => {
@@ -39,8 +44,6 @@ const PendingOrders = () => {
 
     setOrdersList(resp.data.data);
   };
-
-  console.log({ ordersList });
 
   const getSingleOrders = async (lobbyName, tableNo, orderId) => {
     const resp = await api.get(
@@ -103,7 +106,7 @@ const PendingOrders = () => {
                     >
                       <span>{item.lobbyName}</span>
                       <svg
-                        className={`fill-current text-purple-700 h-6 w-6 transform transition-transform duration-500 ${
+                        className={`fill-current text-gray-700 h-6 w-6 transform transition-transform duration-500 ${
                           isOpen === item.lobbyName ? "rotate-180" : ""
                         }`}
                         viewBox="0 0 20 20"

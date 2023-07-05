@@ -19,7 +19,7 @@ export function ManagerHeader() {
   const logout = async () => {
     try {
       await api.get("/signout", { withCredentials: true });
-      updateManagerSidebarLinks("Pending Orders")();
+      updateManagerSidebarLinks("Home")();
       setAuthenticatedUser(null);
       localStorage.removeItem("ADMIN");
       navigate("/global-signin");

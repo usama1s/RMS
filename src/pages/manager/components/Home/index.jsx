@@ -96,7 +96,7 @@ export const Home = () => {
           <BsClock className="h-8 w-8" />
         </div>
         <div className="p-4 flex justify-between w-full">
-          {clockingData && clockingData?.endDateTime !== null ? (
+          {clockingData?.endDateTime !== null ? (
             <button
               type="button"
               className="px-8 py-3 font-semibold rounded dark:bg-gray-100 dark:text-gray-800"

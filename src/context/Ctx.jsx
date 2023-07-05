@@ -46,10 +46,6 @@ export function CtxProvider({ children }) {
       title: "Home",
       active: true,
     },
-    // {
-    //   title: "Pending Dine In Orders",
-    //   active: false,
-    // },
     {
       title: "Lobbies",
       active: false,
@@ -84,6 +80,10 @@ export function CtxProvider({ children }) {
     },
     // {
     //   title: "Clocking System",
+    //   active: false,
+    // },
+    // {
+    //   title: "Pending Dine In Orders",
     //   active: false,
     // },
   ]);

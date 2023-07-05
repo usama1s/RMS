@@ -1,18 +1,18 @@
 import React from "react";
 import { ManagerHeader } from "./managerHeader";
 import { useCtx } from "../../../context/Ctx";
-import { ManagersWaiterSection } from "./waiters";
-import { ManagerCategory } from "./categories";
 import { Modal } from "../../../components/modal";
-import { ManagerItems } from "./items";
+import { Home } from "./Home";
 import { Lobbies } from "./lobbies";
-// import { ClockingSystem } from "./clockingsystem";
+import { ManagerCategory } from "./categories";
+import { ManagerItems } from "./items";
+import { ManagersWaiterSection } from "./waiters";
 import { PaymentMethods } from "./payment-methods";
 import { CompletedOrder } from "./completed-order";
-import { CancelledOrder } from "./cancelled-order";
-import { PendingOrders } from "./pending-orders";
-import { Home } from "./Home";
 import { Expenses } from "./expenses";
+// import { ClockingSystem } from "./clockingsystem";
+// import { CancelledOrder } from "./cancelled-order";
+// import { PendingOrders } from "./pending-orders";
 
 export function ManagerContent() {
   const { activeTab, modalStatus } = useCtx();
@@ -21,8 +21,6 @@ export function ManagerContent() {
     switch (slug) {
       case "Home":
         return <Home />;
-      // case "Pending Dine In Orders":
-      //   return <PendingOrders />;
       case "Lobbies":
         return <Lobbies />;
       case "Categories":
@@ -35,10 +33,12 @@ export function ManagerContent() {
         return <PaymentMethods />;
       case "Completed Order":
         return <CompletedOrder />;
-      // case "Cancelled Order":
-      //   return <CancelledOrder />;
       case "Manage Expenses":
         return <Expenses />;
+      // case "Cancelled Order":
+      //   return <CancelledOrder />;
+      // case "Pending Dine In Orders":
+      //   return <PendingOrders />;
       // case "Clocking System":
       //   return <ClockingSystem />;
     }

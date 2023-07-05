@@ -144,7 +144,7 @@ export function AddWaiters() {
               disabled={status.loading}
               className="inline-flex w-full items-center justify-center rounded-md bg-gray-900/100 px-3.5 py-2.5  font-regular leading-7 text-white  text-xl"
             >
-              {status.loading ? "Adding..." : "Add an item."}
+              {status.loading ? "Adding..." : "Add waiter."}
             </button>
           </div>
         </div>

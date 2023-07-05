@@ -39,8 +39,6 @@ export function AdminManagerSection() {
       <h1 className="text-xl font-semibold">Error fetching menu items..</h1>
     );
 
-  console.log(formattedData);
-
   return (
     <div>
       <div className="flex items-center justify-between py-4">

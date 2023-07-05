@@ -91,7 +91,12 @@ export function ManagersWaiterSection() {
                   onClick={() =>
                     updateModalStatus(
                       true,
-                      <ManagerEditWaiter waiterId={data?._id} />
+                      <ManagerEditWaiter
+                        waiterId={data?._id}
+                        wr_userName={data?.userName}
+                        wr_name={data?.name}
+                        wr_role={data?.waiterRole}
+                      />
                     )
                   }
                   className="h-6 w-6 mr-2 text-gray-900 cursor-pointer hover:scale-110 duration-200"

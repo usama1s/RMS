@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { useCtx } from "../../../../context/Ctx";
 import api from "../../../../config/AxiosBase";
 
-export function ManagerEditWaiter({ waiterId }) {
+export function ManagerEditWaiter({ waiterId, wr_userName, wr_name, wr_role }) {
   const [status, setStatus] = useState({ loading: false, error: null });
   const { updateApiDoneStatus, updateModalStatus, apiDone } = useCtx();
-  const [name, setName] = useState("");
-  const [waiterRole, setWaiterRole] = useState("Head Waiter");
-  const [userName, setUserName] = useState("");
+  const [name, setName] = useState(wr_name);
+  const [waiterRole, setWaiterRole] = useState(wr_role);
+  const [userName, setUserName] = useState(wr_userName);
   const [password, setPassword] = useState("");
 
   async function onSubmit() {
@@ -65,12 +65,15 @@ export function ManagerEditWaiter({ waiterId }) {
             </label>
             <div className="mt-1">
               <select
-                className="flex  h-10 w-full rounded-md border border-gray-300 bg-transparent py-2 px-3 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent py-2 px-3 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
                 placeholder="Waiter's Role"
                 name="subRole"
                 onChange={(e) => setWaiterRole(e.target.value)}
                 value={waiterRole}
               >
+                <option value="" disabled selected>
+                  Select a category
+                </option>
                 <option value="Head Waiter">Head Waiter</option>
                 <option value="Chef">CHEF</option>
                 <option value="Regular Waiter">Regular Waiter</option>

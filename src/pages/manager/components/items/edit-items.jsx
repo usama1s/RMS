@@ -18,15 +18,14 @@ export function ManagerEditItem({
   const [formattedData, setFormattedData] = useState();
   const [photo, setPhoto] = useState("");
   const [loading, setLoading] = useState(false);
-  const [categoryId, setCategoryId] = useState("");
   const [status, setStatus] = useState({ loading: false, error: null });
   const inputRef = useRef();
   const formik = useFormik({
     initialValues: {
-      title: "",
-      price: 0,
-      description: "",
-      category: "",
+      title: title,
+      price: price,
+      description: description,
+      category: category,
     },
     validationSchema: validation_schema_food_items,
     onSubmit: onSubmit,
@@ -41,7 +40,7 @@ export function ManagerEditItem({
     if (resp.data.status !== "success") {
       setError(true);
     }
-    setFormattedData(resp.data.data.doc);
+    setFormattedData(resp.data.data);
     setLoading(false);
   };
 
@@ -52,35 +51,33 @@ export function ManagerEditItem({
   async function onSubmit(values, actions) {
     setStatus((prev) => ({ ...prev, loading: true, error: null }));
 
-    if (photo) {
-      const formData = new FormData();
-      formData.append("title", values.title);
-      formData.append("description", values.description);
-      formData.append("price", values.price);
-      formData.append("category", values.category);
-      formData.append("photo", photo);
+    const formData = new FormData();
 
-      try {
-        await api.patch("/editItem/" + itemId, formData, {
-          withCredentials: true,
-        });
-        updateApiDoneStatus(!apiDone);
-        setStatus({ error: null, loading: false });
-        updateModalStatus(false, null);
-      } catch (e) {
-        setStatus((prev) => ({
-          ...prev,
-          loading: false,
-          error: `Error adding the item.`,
-        }));
-        updateModalStatus(null, false);
-      }
-    } else {
-      console.log("No file found");
+    formData.append("title", values.title);
+    formData.append("description", values.description);
+    formData.append("price", values.price);
+    formData.append("category", values.category);
+
+    if (photo) {
+      formData.append("photo", photo);
+    }
+
+    try {
+      await api.patch("/editItem/" + itemId, formData, {
+        withCredentials: true,
+      });
+      updateApiDoneStatus(!apiDone);
+      setStatus({ error: null, loading: false });
+      updateModalStatus(false, null);
+    } catch (e) {
+      setStatus((prev) => ({
+        ...prev,
+        loading: false,
+        error: `Error adding the item.`,
+      }));
+      updateModalStatus(null, false);
     }
   }
-
-  console.log(photo);
 
   const formJSX = (
     <div>
@@ -97,7 +94,7 @@ export function ManagerEditItem({
                 placeholder="Title"
                 name="title"
                 onChange={formik.handleChange}
-                value={formik.values.title || title}
+                value={formik.values.title}
                 onBlur={formik.handleBlur}
               ></input>
               {formik.touched.title && formik.errors.title ? (
@@ -117,7 +114,7 @@ export function ManagerEditItem({
                 placeholder="Description"
                 name="description"
                 onChange={formik.handleChange}
-                value={formik.values.description || description}
+                value={formik.values.description}
                 onBlur={formik.handleBlur}
               ></textarea>
               {formik.touched.description && formik.errors.description ? (
@@ -140,7 +137,7 @@ export function ManagerEditItem({
                 type="number"
                 name="price"
                 onChange={formik.handleChange}
-                value={formik.values.price || price}
+                value={formik.values.price}
                 onBlur={formik.handleBlur}
               />
               {formik.touched.price && formik.errors.price ? (
@@ -159,10 +156,10 @@ export function ManagerEditItem({
             <select
               name="category"
               onChange={formik.handleChange}
-              value={formik.values.category || category}
+              value={formik.values.category}
               onBlur={formik.handleBlur}
             >
-              {formattedData?.map((item, index) => (
+              {formattedData?.map((item) => (
                 <option key={item?.categoryName} value={item?.categoryName}>
                   {item?.categoryName}
                 </option>
@@ -225,5 +222,5 @@ export function ManagerEditItem({
     </div>
   );
 
-  return <div>{loading ? <h1>Loading...</h1> : formJSX}</div>;
+  // return <div>{loading ? <h1>Loading...</h1> : formJSX}</div>;
 }

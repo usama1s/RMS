@@ -65,7 +65,7 @@ export function Cart({ title }) {
 
   const cancelOrderHandler = async () => {
     const payload = {
-      LobbyName: apiItemsOfCart[0]?.lobby,
+      LobbyId: localStorage.getItem("selectedLobbyId")?.toString(),
       TableNo: apiItemsOfCart[0]?.tableNo,
     };
 
@@ -94,6 +94,7 @@ export function Cart({ title }) {
 
     const payload = {
       LobbyName: localStorage.getItem("seletedLobby")?.toString(),
+      LobbyId: localStorage.getItem("selectedLobbyId")?.toString(),
       TableNo: localStorage.getItem("seletedTable") * 1,
       items: newArray,
       slug: apiItemsOfCart[0]?.slug,
@@ -537,6 +538,7 @@ const PlaceOrderJSX = ({
   const placeOrder = async () => {
     const payload = {
       LobbyName: orderData.lobby || localStorage.getItem("seletedLobby"),
+      LobbyId: localStorage.getItem("selectedLobbyId")?.toString(),
       TableNo: orderData.table || localStorage.getItem("seletedTable") * 1,
       PaymentMethod: selectedItem,
       Price: selectedAmount,

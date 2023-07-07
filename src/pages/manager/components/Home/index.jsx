@@ -9,7 +9,7 @@ import HomeStats from "./components/home-stats";
 import api from "../../../../config/AxiosBase";
 
 export const Home = () => {
-  const { updateModalStatus } = useCtx();
+  const { updateModalStatus, updateManagerClocking } = useCtx();
   const [status, setStatus] = useState({ loading: false, error: null });
   const [formattedData, setFormattedData] = useState();
   const [clockingData, setClockingData] = useState();
@@ -21,7 +21,7 @@ export const Home = () => {
         withCredentials: true,
       }
     );
-
+    updateManagerClocking(resp.data.data[0]);
     setClockingData(resp.data.data[0]);
   };
 

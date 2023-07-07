@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ManagerHeader } from "./managerHeader";
 import { useCtx } from "../../../context/Ctx";
 import { Modal } from "../../../components/modal";
@@ -10,6 +10,7 @@ import { ManagersWaiterSection } from "./waiters";
 import { PaymentMethods } from "./payment-methods";
 import { CompletedOrder } from "./completed-order";
 import { Expenses } from "./expenses";
+import api from "../../../config/AxiosBase";
 // import { ClockingSystem } from "./clockingsystem";
 // import { CancelledOrder } from "./cancelled-order";
 // import { PendingOrders } from "./pending-orders";

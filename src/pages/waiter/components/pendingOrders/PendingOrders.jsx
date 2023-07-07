@@ -53,8 +53,6 @@ const PendingOrders = () => {
       }
     );
 
-    console.log("Pending Order SingleOrder", resp);
-
     const transformObj = {
       slug: resp?.data.data[0]._id,
       createdAt: resp?.data.data[0].createdAt,
@@ -140,6 +138,10 @@ const PendingOrders = () => {
                                 localStorage.setItem(
                                   "seletedTable",
                                   i.tableNumber
+                                );
+                                localStorage.setItem(
+                                  "selectedLobbyId",
+                                  item._id
                                 );
                                 localStorage.removeItem("orderId");
                                 resetApiCart();

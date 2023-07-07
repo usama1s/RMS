@@ -8,7 +8,8 @@ import { ManagerEditWaiter } from "./edit-waiter";
 import api from "../../../../config/AxiosBase";
 
 export function ManagersWaiterSection() {
-  const { updateModalStatus, apiDone, updateApiDoneStatus } = useCtx();
+  const { updateModalStatus, apiDone, updateApiDoneStatus, managerClocking } =
+    useCtx();
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formattedData, setFormattedData] = useState();
@@ -72,36 +73,40 @@ export function ManagersWaiterSection() {
                   <span className="font-bold">Role:</span> {data.waiterRole}
                 </p>
               </div>
-              <div className="flex mr-1">
-                <TrashIcon
-                  onClick={async () =>
-                    updateModalStatus(
-                      true,
-                      <DeleteItemJSX
-                        slug={data?._id}
-                        updateModalStatus={updateModalStatus}
-                        updateApiDoneStatus={updateApiDoneStatus}
-                        apiDone={apiDone}
-                      />
-                    )
-                  }
-                  className="h-6 w-6 mr-4 text-gray-900 cursor-pointer hover:scale-110 duration-200"
-                />
-                <PencilIcon
-                  onClick={() =>
-                    updateModalStatus(
-                      true,
-                      <ManagerEditWaiter
-                        waiterId={data?._id}
-                        wr_userName={data?.userName}
-                        wr_name={data?.name}
-                        wr_role={data?.waiterRole}
-                      />
-                    )
-                  }
-                  className="h-6 w-6 mr-2 text-gray-900 cursor-pointer hover:scale-110 duration-200"
-                />
-              </div>
+              {managerClocking?.managerId._id ===
+                localStorage.getItem("managerId") &&
+              managerClocking.status !== true ? (
+                <div className="flex mr-1">
+                  <TrashIcon
+                    onClick={async () =>
+                      updateModalStatus(
+                        true,
+                        <DeleteItemJSX
+                          slug={data?._id}
+                          updateModalStatus={updateModalStatus}
+                          updateApiDoneStatus={updateApiDoneStatus}
+                          apiDone={apiDone}
+                        />
+                      )
+                    }
+                    className="h-6 w-6 mr-4 text-gray-900 cursor-pointer hover:scale-110 duration-200"
+                  />
+                  <PencilIcon
+                    onClick={() =>
+                      updateModalStatus(
+                        true,
+                        <ManagerEditWaiter
+                          waiterId={data?._id}
+                          wr_userName={data?.userName}
+                          wr_name={data?.name}
+                          wr_role={data?.waiterRole}
+                        />
+                      )
+                    }
+                    className="h-6 w-6 mr-2 text-gray-900 cursor-pointer hover:scale-110 duration-200"
+                  />
+                </div>
+              ) : null}
             </div>
           </div>
         ))}

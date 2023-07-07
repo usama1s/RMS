@@ -5,7 +5,8 @@ import { useCtx } from "../../../../context/Ctx";
 import api from "../../../../config/AxiosBase";
 
 export function ManagerLobbiesListingsItems({ formattedD }) {
-  const { updateModalStatus, updateApiDoneStatus, apiDone } = useCtx();
+  const { updateModalStatus, updateApiDoneStatus, apiDone, managerClocking } =
+    useCtx();
   const [propData, setPropData] = useState(formattedD);
 
   return (
@@ -24,31 +25,35 @@ export function ManagerLobbiesListingsItems({ formattedD }) {
               </span>
             </p>
           </div>
-          <div className="absolute right-4 flex">
-            <TrashIcon
-              onClick={async () =>
-                updateModalStatus(
-                  true,
-                  <DeleteItemJSX
-                    slug={item?._id}
-                    updateModalStatus={updateModalStatus}
-                    updateApiDoneStatus={updateApiDoneStatus}
-                    apiDone={apiDone}
-                  />
-                )
-              }
-              className="h-6 w-6 mr-4 text-gray-900 cursor-pointer hover:scale-110 duration-200"
-            />
-            <PencilIcon
-              onClick={() =>
-                updateModalStatus(
-                  true,
-                  <ManagerEditLobby lobbyId={item?._id} />
-                )
-              }
-              className="h-6 w-6 mr-4 text-gray-900 cursor-pointer hover:scale-110 duration-200"
-            />
-          </div>
+          {managerClocking?.managerId._id ===
+            localStorage.getItem("managerId") &&
+          managerClocking.status !== true ? (
+            <div className="absolute right-4 flex">
+              <TrashIcon
+                onClick={async () =>
+                  updateModalStatus(
+                    true,
+                    <DeleteItemJSX
+                      slug={item?._id}
+                      updateModalStatus={updateModalStatus}
+                      updateApiDoneStatus={updateApiDoneStatus}
+                      apiDone={apiDone}
+                    />
+                  )
+                }
+                className="h-6 w-6 mr-4 text-gray-900 cursor-pointer hover:scale-110 duration-200"
+              />
+              <PencilIcon
+                onClick={() =>
+                  updateModalStatus(
+                    true,
+                    <ManagerEditLobby lobbyId={item?._id} />
+                  )
+                }
+                className="h-6 w-6 mr-4 text-gray-900 cursor-pointer hover:scale-110 duration-200"
+              />
+            </div>
+          ) : null}
         </div>
       ))}
     </>

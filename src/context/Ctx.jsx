@@ -28,6 +28,7 @@ export function CtxProvider({ children }) {
   const [apiDone, setApiDone] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("");
   const [selectedOrderType, setSelectedOrderType] = useState("PaymentDone");
+  const [managerClocking, setManagerClocking] = useState();
   const [waiterSidebarLinks, setWaiterSidebarLinks] = useState([
     { title: "Dine in", active: true },
     { title: "Take away", active: false },
@@ -70,14 +71,14 @@ export function CtxProvider({ children }) {
       title: "Completed Order",
       active: false,
     },
-    // {
-    //   title: "Cancelled Order",
-    //   active: false,
-    // },
     {
       title: "Manage Expenses",
       active: false,
     },
+    // {
+    //   title: "Cancelled Order",
+    //   active: false,
+    // },
     // {
     //   title: "Clocking System",
     //   active: false,
@@ -88,6 +89,9 @@ export function CtxProvider({ children }) {
     // },
   ]);
 
+  const updateManagerClocking = (value) => {
+    setManagerClocking(value);
+  };
   const updateOrderType = (value) => {
     setSelectedOrderType(value);
   };
@@ -196,6 +200,8 @@ export function CtxProvider({ children }) {
         updatePaymentMethod,
         updateOrderType,
         selectedOrderType,
+        managerClocking,
+        updateManagerClocking,
       }}
     >
       {children}

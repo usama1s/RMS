@@ -6,8 +6,13 @@ import { Loading } from "../../../../components/loading";
 import api from "../../../../config/AxiosBase";
 
 export function ManagerItemsListingItems({ formattedD }) {
-  const { updateItemValue, updateModalStatus, updateApiDoneStatus, apiDone } =
-    useCtx();
+  const {
+    updateItemValue,
+    updateModalStatus,
+    updateApiDoneStatus,
+    apiDone,
+    managerClocking,
+  } = useCtx();
   const [propData, setPropData] = useState(formattedD);
 
   const updateItemHandler = async () => {
@@ -31,39 +36,43 @@ export function ManagerItemsListingItems({ formattedD }) {
           <div className="flex-1 p-4">
             <div className="flex items-center justify-between w-full ">
               <h3 className="font-bold text-xl p-1 ">{item?.title}</h3>
-              <div className="flex ">
-                <TrashIcon
-                  onClick={async () => {
-                    updateModalStatus(
-                      true,
-                      <DeleteItemJSX
-                        slug={item?._id}
-                        updateModalStatus={updateModalStatus}
-                        updateApiDoneStatus={updateApiDoneStatus}
-                        apiDone={apiDone}
-                      />
-                    );
-                  }}
-                  className="h-6 w-6 mr-4 text-gray-900 cursor-pointer hover:scale-110 duration-200"
-                />
-                <PencilIcon
-                  onClick={() => {
-                    updateModalStatus(
-                      true,
-                      <ManagerEditItem
-                        itemId={item?._id}
-                        title={item?.title}
-                        slug={item?.slug}
-                        imageURL={item?.photo}
-                        description={item?.description}
-                        price={item?.price}
-                        category={item?.category}
-                      />
-                    );
-                  }}
-                  className="h-6 w-6 mr-2 text-gray-900 cursor-pointer hover:scale-110 duration-200"
-                />
-              </div>
+              {managerClocking?.managerId._id ===
+                localStorage.getItem("managerId") &&
+              managerClocking.status !== true ? (
+                <div className="flex">
+                  <TrashIcon
+                    onClick={async () => {
+                      updateModalStatus(
+                        true,
+                        <DeleteItemJSX
+                          slug={item?._id}
+                          updateModalStatus={updateModalStatus}
+                          updateApiDoneStatus={updateApiDoneStatus}
+                          apiDone={apiDone}
+                        />
+                      );
+                    }}
+                    className="h-6 w-6 mr-4 text-gray-900 cursor-pointer hover:scale-110 duration-200"
+                  />
+                  <PencilIcon
+                    onClick={() => {
+                      updateModalStatus(
+                        true,
+                        <ManagerEditItem
+                          itemId={item?._id}
+                          title={item?.title}
+                          slug={item?.slug}
+                          imageURL={item?.photo}
+                          description={item?.description}
+                          price={item?.price}
+                          category={item?.category}
+                        />
+                      );
+                    }}
+                    className="h-6 w-6 mr-2 text-gray-900 cursor-pointer hover:scale-110 duration-200"
+                  />
+                </div>
+              ) : null}
             </div>
             <p className="pt-2 text-sm truncate break-words">
               <span className="font-semibold text-base mr-1"> Category:</span>

@@ -33,14 +33,6 @@ export function Cart({ title }) {
     modalStatus,
   } = useCtx();
 
-  const handleMouseEnter = () => {
-    setShowTooltip(true);
-  };
-
-  const handleMouseLeave = () => {
-    setShowTooltip(false);
-  };
-
   const handleTooltipMouseEnter = () => {
     setShowTooltip(true);
   };
@@ -452,10 +444,12 @@ export function Cart({ title }) {
                     />
                   );
                 }}
-                disabled={itemsOfCart.length <= 0 && apiItemsOfCart.length <= 0}
-                className="items-center justify-center rounded-md bg-green-500 hover:bg-green-700 px-2.5 py-2 text-base font-semibold leading-7 text-white"
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
+                disabled={apiItemsOfCart.length === 0}
+                className={`${
+                  apiItemsOfCart.length === 0
+                    ? "bg-green-300 hover:bg-green-300 cursor-not-allowed"
+                    : "bg-green-500 hover:bg-green-700"
+                } items-center justify-center rounded-md px-2.5 py-2 text-base font-semibold leading-7 text-white`}
               >
                 Complete Order
               </button>

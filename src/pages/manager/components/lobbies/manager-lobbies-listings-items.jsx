@@ -47,7 +47,7 @@ export function ManagerLobbiesListingsItems({ formattedD }) {
                 onClick={() =>
                   updateModalStatus(
                     true,
-                    <ManagerEditLobby lobbyId={item?._id} />
+                    <ManagerEditLobby lobbyId={item?._id} lobbyName={item.lobbyName} numberOfTables={item?.noOfTables} />
                   )
                 }
                 className="h-6 w-6 mr-4 text-gray-900 cursor-pointer hover:scale-110 duration-200"

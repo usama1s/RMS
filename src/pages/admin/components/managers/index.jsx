@@ -91,7 +91,7 @@ export function AdminManagerSection() {
                     onClick={() =>
                       updateModalStatus(
                         true,
-                        <EditManager branchId={data._id} />
+                        <EditManager branchId={data._id} branchNames={data?.branchName} branchEmail={data?.email} names={data?.name}/>
                       )
                     }
                     className="h-6 w-6 mr-2 text-gray-900 cursor-pointer hover:scale-110 duration-200"

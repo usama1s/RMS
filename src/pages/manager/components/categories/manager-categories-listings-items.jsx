@@ -41,7 +41,7 @@ export function ManagerCategoriesListingsItems({ formattedD }) {
                 onClick={() =>
                   updateModalStatus(
                     true,
-                    <ManagerEditCategory categoryId={item?._id} />
+                    <ManagerEditCategory categoryId={item?._id} categoryName={item?.categoryName}  />
                   )
                 }
                 className="h-6 w-6 mr-4 text-gray-900 cursor-pointer hover:scale-110 duration-200"

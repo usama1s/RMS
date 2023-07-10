@@ -7,8 +7,9 @@ import { WaiterOrder } from "../orders";
 const PendingOrders = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
-  const [formattedData, setFormattedData] = useState(false);
+  const [formattedData, setFormattedData] = useState();
   const [ordersList, setOrdersList] = useState();
+  const [noLobbyError, setNoLobbyError] = useState("");
   const [active, setActive] = useState("");
   const [toggleDetail, setToggleDetail] = useState(false);
   const [orderDetail, setOrderDetail] = useState();
@@ -31,11 +32,14 @@ const PendingOrders = () => {
       setIsOpen(resp.data.data?.lobbyName);
       setActive(resp.data.data?.lobbyName);
     } catch (err) {
-      console.log(err);
+      console.log(err.response.data.message);
+      setNoLobbyError(err.response.data.message)
     } finally {
       setIsLoading(false);
     }
   };
+
+  console.log("lobbies", noLobbyError)
 
   const getOrders = async () => {
     const resp = await api.get("/getAllOrders", {
@@ -87,7 +91,8 @@ const PendingOrders = () => {
   };
 
   if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Something goes wrong.</p>;
+  if (error) return <p>Something went wrong.</p>;
+  if (noLobbyError) return <p>No Lobbies Found</p>
 
   return (
     <div>

@@ -68,7 +68,6 @@ export function WaiterContent() {
   return (
     <div className={"w-full px-4 lg:px-6 overflow-x-hidden"}>
       <WaiterHeader />
-
       {clockInData.managerId?._id === localStorage.getItem("managerId") &&
       clockInData.status != true ? (
         <h2>Ask manager to clock in.</h2>
@@ -81,7 +80,6 @@ export function WaiterContent() {
       ) : (
         ""
       )}
-
       {modalStatus.status && <Modal />}
     </div>
   );

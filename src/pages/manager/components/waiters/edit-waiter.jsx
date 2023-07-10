@@ -118,7 +118,7 @@ export function ManagerEditWaiter({ waiterId, wr_userName, wr_name, wr_role }) {
                 onSubmit();
               }}
             >
-              {status.loading ? "Updating..." : "Update."}
+              {status.loading ? "Updating..." : "Update"}
             </button>
           </div>
         </div>

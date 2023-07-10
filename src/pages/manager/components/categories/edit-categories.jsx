@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { useCtx } from "../../../../context/Ctx";
 import api from "../../../../config/AxiosBase";
 
-export function ManagerEditCategory({ categoryId }) {
+export function ManagerEditCategory({ categoryId, categoryName }) {
   const [status, setStatus] = useState({ loading: false, error: null });
   const { updateApiDoneStatus, updateModalStatus, apiDone } = useCtx();
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState(categoryName);
 
   async function onSubmit() {
     setStatus({ loading: true, error: null });
@@ -61,7 +61,7 @@ export function ManagerEditCategory({ categoryId }) {
                 onSubmit();
               }}
             >
-              {status.loading ? "Updating..." : "Update."}
+              {status.loading ? "Updating..." : "Update"}
             </button>
           </div>
         </div>

@@ -214,7 +214,7 @@ export function ManagerEditItem({
               disabled={status.loading}
               className="inline-flex w-full items-center justify-center rounded-md bg-gray-900/100 px-3.5 py-2.5  font-regular leading-7 text-white text-xl"
             >
-              {status.loading ? "Updating..." : "Update item."}
+              {status.loading ? "Updating..." : "Update item"}
             </button>
           </div>
         </div>
@@ -222,5 +222,5 @@ export function ManagerEditItem({
     </div>
   );
 
-  // return <div>{loading ? <h1>Loading...</h1> : formJSX}</div>;
+  return <div>{loading ? <h1>Loading...</h1> : formJSX}</div>;
 }

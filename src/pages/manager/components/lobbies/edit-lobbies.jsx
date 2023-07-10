@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { useCtx } from "../../../../context/Ctx";
 import api from "../../../../config/AxiosBase";
 
-export function ManagerEditLobby({ lobbyId }) {
+export function ManagerEditLobby({ lobbyId, lobbyName, numberOfTables }) {
   const [status, setStatus] = useState({ loading: false, error: null });
   const { updateApiDoneStatus, updateModalStatus, apiDone } = useCtx();
-  const [title, setTitle] = useState();
-  const [noOfTables, setNoOfTables] = useState();
+  const [title, setTitle] = useState(lobbyName);
+  const [noOfTables, setNoOfTables] = useState(numberOfTables);
 
   async function onSubmit() {
     setStatus({ loading: true, error: null });

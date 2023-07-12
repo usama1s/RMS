@@ -1,7 +1,9 @@
 import axios from "axios";
 
-// const BASE_URL = "http://localhost:5000";
-const BASE_URL = "https://rms-backend-production.up.railway.app/";
+// export const url = "http://localhost:5001";
+export const url = "https://rms-backend-production.up.railway.app/";
+
+const BASE_URL = url;
 
 const api = axios.create({
   baseURL: BASE_URL,

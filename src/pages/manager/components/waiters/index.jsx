@@ -22,6 +22,7 @@ export function ManagersWaiterSection() {
       setFormattedData(resp.data.data);
     } catch (err) {
       setError(true);
+      setFormattedData();
     } finally {
       setLoading(false);
     }

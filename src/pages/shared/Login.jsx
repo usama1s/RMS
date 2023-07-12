@@ -53,10 +53,10 @@ const Login = () => {
         error: null,
       });
     } catch (e) {
-      console.log(e?.message);
+      console.log(e);
       setStatus({
         loading: false,
-        error: e?.message ? e?.message : "Error authenticating the user.",
+        error: e ? e.response.data.error : "Error authenticating the user.",
       });
     }
   }

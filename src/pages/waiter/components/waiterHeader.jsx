@@ -18,6 +18,7 @@ export function WaiterHeader() {
       navigate("/global-signin");
       setAuthenticatedUser(null);
       localStorage.removeItem("ADMIN");
+      localStorage.clear();
     } catch (e) {
       console.log(e);
     }

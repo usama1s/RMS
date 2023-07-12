@@ -212,7 +212,7 @@ export function ManagerEditItem({
             <button
               type="submit"
               disabled={status.loading}
-              className="inline-flex w-full items-center justify-center rounded-md bg-gray-900/100 px-3.5 py-2.5  font-regular leading-7 text-white text-xl"
+              className="inline-flex w-full items-center justify-center rounded-md bg-gray-900/100 px-3.5 py-2.5  font-regular leading-7 text-white text-xl hover:cursor-pointer"
             >
               {status.loading ? "Updating..." : "Update item"}
             </button>

@@ -19,8 +19,6 @@ export function AddWaiters() {
     onSubmit: onSubmit,
   });
 
-  console.log(formik.values);
-
   async function onSubmit(values) {
     setStatus({ loading: true, error: null });
 
@@ -44,7 +42,7 @@ export function AddWaiters() {
       updateApiDoneStatus(!apiDone);
     } catch (e) {
       console.log(e);
-      setStatus({ loading: false, error: e?.message ? e?.message : null });
+      setStatus({ loading: false, error: e ? e?.response.data.error : null });
     }
   }
 
@@ -67,7 +65,7 @@ export function AddWaiters() {
                 onBlur={formik.handleBlur}
               />
               {formik.touched.waiterName && formik.errors.waiterName ? (
-                <p className="my-2">{formik.errors.waiterName}</p>
+                <p className="my-2 text-red-500">{formik.errors.waiterName}</p>
               ) : (
                 ""
               )}
@@ -91,7 +89,7 @@ export function AddWaiters() {
                 <option value="Regular Waiter">Regular Waiter</option>
               </select>
               {formik.touched.subRole && formik.errors.subRole ? (
-                <p className="my-2">{formik.errors.subRole}</p>
+                <p className="my-2 text-red-500">{formik.errors.subRole}</p>
               ) : (
                 ""
               )}
@@ -111,7 +109,7 @@ export function AddWaiters() {
                 onBlur={formik.handleBlur}
               />
               {formik.touched.username && formik.errors.username ? (
-                <p className="my-2">{formik.errors.username}</p>
+                <p className="my-2 text-red-500">{formik.errors.username}</p>
               ) : (
                 ""
               )}
@@ -131,13 +129,13 @@ export function AddWaiters() {
                 onBlur={formik.handleBlur}
               />
               {formik.touched.password && formik.errors.password ? (
-                <p className="my-2">{formik.errors.password}</p>
+                <p className="my-2 text-red-500 ">{formik.errors.password}</p>
               ) : (
                 ""
               )}
             </div>
           </div>
-          {status.error && <h2>{status.error}</h2>}
+          {status.error && <p className="text-red-500">{status.error}</p>}
           <div>
             <button
               type="submit"

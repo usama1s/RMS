@@ -77,7 +77,7 @@ export function ManagerAddCategories() {
               disabled={status.loading}
               className="inline-flex w-full items-center justify-center rounded-md bg-gray-900/100 px-3.5 py-2.5 text-base font-semibold leading-7 text-white"
             >
-              {status.loading ? "Adding..." : "Add an item."}
+              {status.loading ? "Adding..." : "Add an item"}
             </button>
           </div>
         </div>

@@ -21,10 +21,10 @@ export function ManagerCategory() {
           withCredentials: true,
         }
       );
-
       setFormattedData(resp.data.data);
     } catch (err) {
       setError(true);
+      setFormattedData();
     } finally {
       setLoading(false);
     }
@@ -47,7 +47,7 @@ export function ManagerCategory() {
         <h1 className="font-bold text-2xl">Categories</h1>
         <PlusIcon
           onClick={() => updateModalStatus(true, <ManagerAddCategories />)}
-          className="h-8 w-8 font-bold text-gray-900"
+          className="h-8 w-8 font-bold text-gray-900 hover:cursor-pointer"
         />
       </div>
       <div className="text-2xl">

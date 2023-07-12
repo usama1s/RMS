@@ -12,16 +12,29 @@ export function AdminManagerSection() {
   const [formattedData, setFormattedData] = useState();
   const [loading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [noBranches, setNoBranches] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const getBranches = async () => {
-    setIsLoading(true);
-    const resp = await api.get("/getAllBranches", { withCredentials: true });
-    if (resp.data.status !== "success") {
-      setError(true);
+    try {
+      setIsLoading(true);
+      const resp = await api.get("/getAllBranches", { withCredentials: true });
+      if (resp.data.status !== "success") {
+        setError(true);
+      }
+      setNoBranches(false);
+      setFormattedData(resp.data.data);
+    } catch (e) {
+      console.log(e.response.data.message);
+      setNoBranches(true);
+      setErrorMessage(e.response.data.message);
+      setFormattedData();
+    } finally {
+      setIsLoading(false);
     }
-    setFormattedData(resp.data.data);
-    setIsLoading(false);
   };
+
+  console.log("Branch Name", noBranches);
 
   useEffect(() => {
     getBranches();
@@ -45,9 +58,10 @@ export function AdminManagerSection() {
         <h1 className="text-2xl font-bold">Branches</h1>
         <PlusIcon
           onClick={() => updateModalStatus(true, <AdminAddManagers />)}
-          className="h-8 w-8 text-gray-900"
+          className="h-8 w-8 text-gray-900 hover:cursor-pointer"
         />
       </div>
+      {noBranches && <p>{errorMessage}</p>}
       <div className="w-full">
         {formattedData?.length <= 0 && (
           <h1 className="font-bold text-xl">No Branches right now.</h1>
@@ -76,22 +90,27 @@ export function AdminManagerSection() {
                 </div>
                 <div className="flex mr-1">
                   <TrashIcon
-                    onClick={() =>
+                    onClick={() => {
                       updateModalStatus(
                         true,
                         <DeleteItemJSX
                           updateModalStatus={updateModalStatus}
                           slug={data._id}
                         />
-                      )
-                    }
+                      );
+                    }}
                     className="h-6 w-6 mr-4 text-gray-900 cursor-pointer hover:scale-110 duration-200"
                   />
                   <PencilIcon
                     onClick={() =>
                       updateModalStatus(
                         true,
-                        <EditManager branchId={data._id} branchNames={data?.branchName} branchEmail={data?.email} names={data?.name}/>
+                        <EditManager
+                          branchId={data._id}
+                          branchNames={data?.branchName}
+                          branchEmail={data?.email}
+                          names={data?.name}
+                        />
                       )
                     }
                     className="h-6 w-6 mr-2 text-gray-900 cursor-pointer hover:scale-110 duration-200"

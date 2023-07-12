@@ -21,10 +21,10 @@ export function PaymentMethods() {
           withCredentials: true,
         }
       );
-
       setFormattedData(resp.data.data);
     } catch (err) {
       setError(true);
+      setFormattedData();
     } finally {
       setLoading(false);
     }
@@ -47,7 +47,7 @@ export function PaymentMethods() {
         <h1 className="font-bold text-2xl">Payment Methods</h1>
         <PlusIcon
           onClick={() => updateModalStatus(true, <AddPaymentMethod />)}
-          className="h-8 w-8 font-bold text-gray-900"
+          className="h-8 w-8 font-bold text-gray-900 hover:cursor-pointer"
         />
       </div>
       <div className="text-2xl">

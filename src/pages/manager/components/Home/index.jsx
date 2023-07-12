@@ -6,7 +6,7 @@ import { ClockOut } from "./components/clockout";
 import { Loading } from "../../../../components/loading";
 import { PendingOrders } from "../pending-orders";
 import HomeStats from "./components/home-stats";
-import api from "../../../../config/AxiosBase";
+import api, { url } from "../../../../config/AxiosBase";
 
 export const Home = () => {
   const { updateModalStatus, updateManagerClocking } = useCtx();
@@ -28,7 +28,7 @@ export const Home = () => {
   const clockIn = async () => {
     setStatus({ loading: true, error: null });
     try {
-      const response = await fetch("http://localhost:5000/checkIn", {
+      const response = await fetch(`${url}/checkIn`, {
         method: "POST",
         credentials: "include",
       });
@@ -48,13 +48,11 @@ export const Home = () => {
   const clockOut = async () => {
     setStatus({ loading: true, error: null });
     try {
-      const response = await fetch(
-        "http://localhost:5000/checkOut/" + clockingData?._id,
-        {
-          method: "PATCH",
-          credentials: "include",
-        }
-      );
+      url;
+      const response = await fetch(`${url}/checkOut/` + clockingData?._id, {
+        method: "PATCH",
+        credentials: "include",
+      });
       await response.json();
       setFormattedData(null);
       setStatus({ loading: false, error: null });

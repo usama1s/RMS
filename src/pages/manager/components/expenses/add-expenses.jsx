@@ -11,12 +11,15 @@ export const AddExpense = () => {
   const [selectedItem, setSelectedItem] = useState("Cash");
 
   const getPaymentMethods = async () => {
-    const resp = await api.get(
-      `/getPaymentMethods/${localStorage.getItem("managerId")}`,
-      { withCredentials: true }
-    );
-
-    setFormattedData(resp.data.data);
+    try {
+      const resp = await api.get(
+        `/getPaymentMethods/${localStorage.getItem("managerId")}`,
+        { withCredentials: true }
+      );
+      setFormattedData(resp.data.data);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   useEffect(() => {
@@ -54,7 +57,7 @@ export const AddExpense = () => {
       setStatus((prev) => ({
         ...prev,
         loading: false,
-        error: `Error adding the item.`,
+        error: e ? e.response.data.error : null,
       }));
     } finally {
       reset(actions);
@@ -76,7 +79,7 @@ export const AddExpense = () => {
         <div className="space-y-5">
           <div>
             <label className="text-lg font-medium text-gray-900">
-              Enter Expense Title.
+              Enter Expense Title
             </label>
             <div className="mt-1">
               <input
@@ -94,10 +97,9 @@ export const AddExpense = () => {
               )}
             </div>
           </div>
-          {status.error && <p className="text-red-500">{status.error}</p>}
           <div>
             <label className="text-lg font-medium text-gray-900">
-              Enter Expense Amount.
+              Enter Expense Amount
             </label>
             <div className="mt-1">
               <input
@@ -146,9 +148,9 @@ export const AddExpense = () => {
             <button
               type="submit"
               disabled={status.loading}
-              className="inline-flex w-full items-center justify-center rounded-md bg-gray-900/100 px-3.5 py-2.5 text-base font-semibold leading-7 text-white"
+              className="inline-flex w-full items-center justify-center rounded-md bg-gray-900/100 px-3.5 py-2.5 text-base font-semibold leading-7 text-white hover:cursor-pointer"
             >
-              {status.loading ? "Adding..." : "Add an expense."}
+              {status.loading ? "Adding..." : "Add an expense"}
             </button>
           </div>
         </div>

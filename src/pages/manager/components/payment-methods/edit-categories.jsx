@@ -82,9 +82,9 @@ export function EditPaymentMethods() {
             <button
               type="submit"
               disabled={status.loading}
-              className="inline-flex w-full items-center justify-center rounded-md bg-black px-3.5 py-2.5 text-base font-semibold leading-7 text-white"
+              className="inline-flex w-full items-center justify-center rounded-md bg-black px-3.5 py-2.5 text-base font-semibold leading-7 text-white hover:cursor-pointer"
             >
-              {status.loading ? "Updating..." : "Update."}
+              {status.loading ? "Updating..." : "Update"}
             </button>
           </div>
         </div>

@@ -50,7 +50,7 @@ export function AdminAddManagers() {
   };
   const formJSX = (
     <div>
-      <h1 className="font-bold text-2xl py-3">Add Branches.</h1>
+      <h1 className="font-bold text-2xl py-3">Add Branches</h1>
       <form onSubmit={formik.handleSubmit}>
         <div className="space-y-5">
           <div>
@@ -141,7 +141,7 @@ export function AdminAddManagers() {
               type="submit"
               disabled={status.loading}
             >
-              {status.loading ? "Adding..." : "Add Branch."}
+              {status.loading ? "Adding..." : "Add Branch"}
             </button>
           </div>
         </div>

@@ -36,8 +36,9 @@ export function ManagerItemsListingItems({ formattedD }) {
           <div className="flex-1 p-4">
             <div className="flex items-center justify-between w-full ">
               <h3 className="font-bold text-xl p-1 ">{item?.title}</h3>
-              {managerClocking?.managerId._id ===
+              {(managerClocking?.managerId._id ===
                 localStorage.getItem("managerId") &&
+                managerClocking === undefined) ||
               managerClocking.status !== true ? (
                 <div className="flex">
                   <TrashIcon

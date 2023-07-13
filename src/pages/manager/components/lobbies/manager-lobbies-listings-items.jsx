@@ -9,6 +9,8 @@ export function ManagerLobbiesListingsItems({ formattedD }) {
     useCtx();
   const [propData, setPropData] = useState(formattedD);
 
+  console.log(managerClocking)
+
   return (
     <>
       {propData?.map((item, index) => (
@@ -26,8 +28,8 @@ export function ManagerLobbiesListingsItems({ formattedD }) {
             </p>
           </div>
           {managerClocking?.managerId._id ===
-            localStorage.getItem("managerId") &&
-          managerClocking.status !== true ? (
+            localStorage.getItem("managerId") && managerClocking === undefined ||
+          managerClocking?.status !== true ? (
             <div className="absolute right-4 flex">
               <TrashIcon
                 onClick={async () =>
@@ -47,7 +49,11 @@ export function ManagerLobbiesListingsItems({ formattedD }) {
                 onClick={() =>
                   updateModalStatus(
                     true,
-                    <ManagerEditLobby lobbyId={item?._id} lobbyName={item.lobbyName} numberOfTables={item?.noOfTables} />
+                    <ManagerEditLobby
+                      lobbyId={item?._id}
+                      lobbyName={item.lobbyName}
+                      numberOfTables={item?.noOfTables}
+                    />
                   )
                 }
                 className="h-6 w-6 mr-4 text-gray-900 cursor-pointer hover:scale-110 duration-200"

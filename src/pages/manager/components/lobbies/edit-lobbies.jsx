@@ -81,7 +81,7 @@ export function ManagerEditLobby({ lobbyId, lobbyName, numberOfTables }) {
                 onSubmit();
               }}
             >
-              {status.loading ? "Editing..." : "Edit"}
+              {status.loading ? "Updating..." : "Update"}
             </button>
           </div>
         </div>

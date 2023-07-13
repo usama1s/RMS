@@ -182,7 +182,18 @@ const HomeStats = () => {
             </div>
           )}
         </section>
-      ) : <p className="my-5">Please clockIn to see all the details</p>}
+      ) : (
+        <div className="rounded p-2 bg-yellow-500 mt-2 shadow-md">
+          <p className="my-5 text-black text-lg">
+            Please clock in to start today’s session.
+            <br />
+            Make sure you start the session only once in a day to avoid
+            confusions later on in the stats and sales management.. Clock in
+            once you are going to start the sales in the morning and clock out
+            after you end your work day in the night.
+          </p>
+        </div>
+      )}
     </>
   );
 };

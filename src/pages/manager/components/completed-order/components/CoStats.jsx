@@ -4,7 +4,7 @@ import { ImStatsDots, ImStatsBars } from "react-icons/im";
 import { useCtx } from "../../../../../context/Ctx";
 import api from "../../../../../config/AxiosBase";
 
-const CoStats = ({ id }) => {
+const CoStats = ({ id, setShowExpenseTable, setShowOrderTable }) => {
   const { updateOrderType } = useCtx();
   const [totalOrders, setTotalOrders] = useState();
   const [totalSales, setTotalSales] = useState();
@@ -44,6 +44,8 @@ const CoStats = ({ id }) => {
         <div
           className="flex flex-1 p-4 rounded-lg md:space-x-6 dark:bg-gray-900 dark:text-gray-100 col-span-1 cursor-pointer group hover:bg-gray-800"
           onClick={() => {
+            setShowExpenseTable(false);
+            setShowOrderTable(true);
             updateOrderType("PaymentDone");
             setTabs(1);
           }}
@@ -64,6 +66,8 @@ const CoStats = ({ id }) => {
         <div
           className="flex flex-1 p-4 space-x-4 rounded-lg md:space-x-6 dark:bg-gray-900 dark:text-gray-100 col-span-1 cursor-pointer group hover:bg-gray-800"
           onClick={() => {
+            setShowExpenseTable(false);
+            setShowOrderTable(true);
             updateOrderType("cancelled");
             setTabs(2);
           }}
@@ -82,6 +86,8 @@ const CoStats = ({ id }) => {
         <div
           className="flex flex-1 p-4 space-x-4 rounded-lg md:space-x-6 dark:bg-gray-900 dark:text-gray-100 col-span-1 cursor-pointer group hover:bg-gray-800"
           onClick={() => {
+            setShowExpenseTable(true);
+            setShowOrderTable(false);
             updateOrderType("");
             setTabs(3);
           }}

@@ -92,7 +92,7 @@ export function WaiterLogin({ url, type }) {
       console.log(e?.message);
       setStatus({
         loading: false,
-        error: e?.message ? e?.message : "Error authenticating the user.",
+        error: e ? e?.response.data.error : "Error authenticating the user.",
       });
     }
   }
@@ -105,7 +105,7 @@ export function WaiterLogin({ url, type }) {
       <div className="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
           <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
-            {type} Login.
+            {type} Login
           </h1>
           <form
             className="space-y-4 md:space-y-6"
@@ -127,7 +127,7 @@ export function WaiterLogin({ url, type }) {
                 onBlur={formik.handleBlur}
               />
               {formik.touched.email && formik.errors.email ? (
-                <p className="my-2">{formik.errors.email}</p>
+                <p className="my-2 text-red-500">{formik.errors.email}</p>
               ) : (
                 ""
               )}
@@ -149,7 +149,7 @@ export function WaiterLogin({ url, type }) {
                 onBlur={formik.handleBlur}
               />
               {formik.touched.password && formik.errors.password ? (
-                <p className="my-2">{formik.errors.password}</p>
+                <p className="my-2 text-red-500">{formik.errors.password}</p>
               ) : (
                 ""
               )}

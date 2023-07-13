@@ -7,6 +7,7 @@ import { Loading } from "../../../../components/loading";
 import { PendingOrders } from "../pending-orders";
 import HomeStats from "./components/home-stats";
 import api, { url } from "../../../../config/AxiosBase";
+import { AddExpense } from "../expenses/add-expenses";
 
 export const Home = () => {
   const { updateModalStatus, updateManagerClocking } = useCtx();
@@ -89,55 +90,63 @@ export const Home = () => {
 
   return (
     <div className="py-4">
-      <div className="flex items-center rounded shadow-md overflow-hidden max-w-xl relative dark:bg-gray-900 dark:text-gray-100">
-        <div className="self-stretch flex items-center px-3 flex-shrink-0 dark:bg-gray-700 dark:text-teal-400">
-          <BsClock className="h-8 w-8" />
-        </div>
-        <div className="p-4 flex justify-between w-full">
-          {clockingData?.endDateTime !== null ? (
-            <button
-              type="button"
-              className="px-8 py-3 font-semibold rounded dark:bg-gray-100 dark:text-gray-800"
-              onClick={() => {
-                updateModalStatus(
-                  true,
-                  <ClockIn
-                    clockIn={clockIn}
-                    disabled={status.loading}
-                    loading={status.loading}
-                  />
-                );
-              }}
-            >
-              Clock In
-            </button>
-          ) : (
-            <>
-              <div>
-                <h3 className="text-xl font-bold">Clocked In at</h3>
-                <p className="text-sm dark:text-gray-400">
-                  {convertDateTime(clockingData?.startDateTime)}
-                </p>
-              </div>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center w-[50%] rounded shadow-md overflow-hidden max-w-xl relative dark:bg-gray-900 dark:text-gray-100">
+          <div className="self-stretch flex items-center px-3 flex-shrink-0 dark:bg-gray-700 dark:text-teal-400">
+            <BsClock className="h-8 w-8" />
+          </div>
+          <div className="p-4 flex justify-between w-full">
+            {clockingData?.endDateTime !== null ? (
               <button
                 type="button"
                 className="px-8 py-3 font-semibold rounded dark:bg-gray-100 dark:text-gray-800"
                 onClick={() => {
                   updateModalStatus(
                     true,
-                    <ClockOut
-                      clockOut={clockOut}
+                    <ClockIn
+                      clockIn={clockIn}
                       disabled={status.loading}
                       loading={status.loading}
                     />
                   );
                 }}
               >
-                Clock Out
+                Clock In
               </button>
-            </>
-          )}
+            ) : (
+              <>
+                <div>
+                  <h3 className="text-xl font-bold">Clocked In at</h3>
+                  <p className="text-sm dark:text-gray-400">
+                    {convertDateTime(clockingData?.startDateTime)}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  className="px-8 py-3 font-semibold rounded dark:bg-gray-100 dark:text-gray-800"
+                  onClick={() => {
+                    updateModalStatus(
+                      true,
+                      <ClockOut
+                        clockOut={clockOut}
+                        disabled={status.loading}
+                        loading={status.loading}
+                      />
+                    );
+                  }}
+                >
+                  Clock Out
+                </button>
+              </>
+            )}
+          </div>
         </div>
+        <button
+          className="px-8 py-3 font-semibold rounded dark:bg-gray-100 dark:text-gray-800 shadow-md hover:bg-gray-200"
+          onClick={() => updateModalStatus(true, <AddExpense />)}
+        >
+          Add Expense
+        </button>
       </div>
       <HomeStats />
       <PendingOrders />

@@ -71,10 +71,10 @@ export function CtxProvider({ children }) {
       title: "Completed Order",
       active: false,
     },
-    {
-      title: "Manage Expenses",
-      active: false,
-    },
+    // {
+    //   title: "Manage Expenses",
+    //   active: false,
+    // },
     // {
     //   title: "Cancelled Order",
     //   active: false,

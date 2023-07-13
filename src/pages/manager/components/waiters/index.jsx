@@ -75,7 +75,7 @@ export function ManagersWaiterSection() {
                 </p>
               </div>
               {managerClocking?.managerId._id ===
-                localStorage.getItem("managerId") &&
+                localStorage.getItem("managerId") && managerClocking === undefined ||
               managerClocking.status !== true ? (
                 <div className="flex mr-1">
                   <TrashIcon

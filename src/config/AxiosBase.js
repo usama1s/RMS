@@ -1,6 +1,6 @@
 import axios from "axios";
 
-// export const url = "http://localhost:5001";
+// export const url = "http://localhost:5000";
 export const url = "https://rms-backend-production.up.railway.app/";
 
 const BASE_URL = url;

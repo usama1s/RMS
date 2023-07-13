@@ -29,9 +29,10 @@ export function PaymentMethodsListingsItems({ formattedD }) {
           <div>
             <h3 className="font-bold text-xl">{item?.title}</h3>
           </div>
-          {managerClocking?.managerId._id ===
+          {(managerClocking?.managerId._id ===
             localStorage.getItem("managerId") &&
-          managerClocking.status !== true ? (
+            managerClocking === undefined) ||
+          managerClocking?.status !== true ? (
             <div className="absolute right-4 flex">
               <TrashIcon
                 onClick={async () =>

@@ -40,7 +40,7 @@ export function AdminAddManagers() {
       console.log(e);
       setStatus({
         loading: false,
-        error: e?.message ? e?.message : "Error creating the user.",
+        error: e ? e?.response.data.error : "Error creating the user.",
       });
     }
   }
@@ -67,7 +67,7 @@ export function AdminAddManagers() {
                 onBlur={formik.handleBlur}
               ></input>
               {formik.touched.branchName && formik.errors.branchName ? (
-                <p className="my-2">{formik.errors.branchName}</p>
+                <p className="my-2 text-red-500">{formik.errors.branchName}</p>
               ) : (
                 ""
               )}
@@ -87,7 +87,7 @@ export function AdminAddManagers() {
                 onBlur={formik.handleBlur}
               ></input>
               {formik.touched.managerName && formik.errors.managerName ? (
-                <p className="my-2">{formik.errors.managerName}</p>
+                <p className="my-2 text-red-500">{formik.errors.managerName}</p>
               ) : (
                 ""
               )}
@@ -107,7 +107,7 @@ export function AdminAddManagers() {
                 onBlur={formik.handleBlur}
               ></input>
               {formik.touched.email && formik.errors.email ? (
-                <p className="my-2">{formik.errors.email}</p>
+                <p className="my-2 text-red-500">{formik.errors.email}</p>
               ) : (
                 ""
               )}
@@ -127,7 +127,7 @@ export function AdminAddManagers() {
                 onBlur={formik.handleBlur}
               ></input>
               {formik.touched.password && formik.errors.password ? (
-                <p className="my-2">{formik.errors.password}</p>
+                <p className="my-2 text-red-500">{formik.errors.password}</p>
               ) : (
                 ""
               )}

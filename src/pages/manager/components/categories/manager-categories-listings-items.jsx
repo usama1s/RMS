@@ -20,8 +20,8 @@ export function ManagerCategoriesListingsItems({ formattedD }) {
             <h3 className="font-bold text-xl">{item?.categoryName}</h3>
           </div>
           {managerClocking?.managerId._id ===
-            localStorage.getItem("managerId") &&
-          managerClocking.status !== true ? (
+            localStorage.getItem("managerId") && managerClocking === undefined ||
+          managerClocking?.status !== true ? (
             <div className="absolute right-4 flex">
               <TrashIcon
                 onClick={async () =>

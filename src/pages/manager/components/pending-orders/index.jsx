@@ -11,8 +11,7 @@ export const PendingOrders = () => {
   const [active, setActive] = useState("");
   const [isOpen, setIsOpen] = useState({});
   const { apiDone, managerClocking } = useCtx();
-  const { onItemAddFromAPI, updateCartStatus, addOrderData } =
-    useCartCtx();
+  const { onItemAddFromAPI, updateCartStatus, addOrderData } = useCartCtx();
 
   const getLobbies = async () => {
     try {
@@ -79,11 +78,9 @@ export const PendingOrders = () => {
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>No Lobby Found.</p>;
 
-  console.log(managerClocking)
-
   return (
     <>
-      {managerClocking?.status !== false ? (
+      {managerClocking && managerClocking?.status !== false ? (
         <>
           {" "}
           <div className="mt-8">

@@ -70,7 +70,8 @@ export function ManagerLogin({ url, type }) {
       console.log(e?.message);
       setStatus({
         loading: false,
-        error: e?.message ? e?.message : "Error authenticating the user.",
+        error: e ? e?.response.data.error : "Error authenticating the user",
+
       });
     }
   }

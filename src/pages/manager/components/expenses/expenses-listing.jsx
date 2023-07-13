@@ -49,9 +49,9 @@ export const ExpensesListingsItems = ({ formattedD }) => {
               Created At: {convertToReadable(item?.createdAt)}
             </p>
           </div>
-          {managerClocking?.managerId._id ===
-            localStorage.getItem("managerId") &&
-          managerClocking.status !== true ? (
+          {/* {managerClocking?.managerId._id ===
+            localStorage.getItem("managerId") && managerClocking === undefined ||
+          managerClocking?.status !== true ?  (
             <div className="absolute right-4 flex">
               <TrashIcon
                 onClick={async () =>
@@ -79,7 +79,7 @@ export const ExpensesListingsItems = ({ formattedD }) => {
                 className="h-6 w-6 mr-4 text-gray-900 cursor-pointer hover:scale-110 duration-200"
               />
             </div>
-          ) : null}
+          ) : null} */}
         </div>
       ))}
     </>

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useReducer } from "react";
 import { useCtx } from "../../../../../context/Ctx";
 import { BiStats } from "react-icons/bi";
 import { ImStatsDots, ImStatsBars } from "react-icons/im";
+import { BsInfoCircleFill } from "react-icons/bs";
 import api from "../../../../../config/AxiosBase";
 
 const fetchData = async (url) => {
@@ -152,7 +153,7 @@ const HomeStats = () => {
           {tabs === 1 && (
             <div className="mt-4">
               <p className="text-gray-900 font-semibold mb-0">
-                Completed Orders
+                Branch Statistics
               </p>
               <div className="flex flex-1 p-4 space-x-4 rounded-lg md:space-x-6 dark:bg-gray-900 dark:text-gray-100 col-span-1">
                 {totalOrders?.paymentCounts.map((item, index) => (
@@ -184,13 +185,21 @@ const HomeStats = () => {
         </section>
       ) : (
         <div className="rounded p-2 bg-yellow-500 mt-2 shadow-md">
-          <p className="my-5 text-black text-lg">
-            Please clock in to start today’s session.
-            <br />
-            Make sure you start the session only once in a day to avoid
-            confusions later on in the stats and sales management.. Clock in
-            once you are going to start the sales in the morning and clock out
-            after you end your work day in the night.
+          <p className="my-5 text-black text-base leading-7">
+            Please <span className="font-semibold">Clock In</span> to start
+            today’s session.
+            <span className="flex items-center gap-2">
+              <BsInfoCircleFill />
+              Make sure you start the session only once in a day to avoid
+              confusions later on in the stats and sales management.
+            </span>
+            <span className="flex items-center gap-2">
+              <BsInfoCircleFill />
+              <span className="font-semibold">Clock In</span> once you are going
+              to start the sales in the morning and{" "}
+              <span className="font-semibold">Clock Out</span> after you end
+              your work day in the night.
+            </span>
           </p>
         </div>
       )}

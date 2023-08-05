@@ -68,7 +68,7 @@ export function CtxProvider({ children }) {
       active: false,
     },
     {
-      title: "Completed Order",
+      title: "Branch Statistics",
       active: false,
     },
     // {

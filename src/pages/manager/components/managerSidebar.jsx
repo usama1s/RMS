@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useCtx } from "../../../context/Ctx";
-import { MdRestaurantMenu } from "react-icons/md";
 import api from "../../../config/AxiosBase";
 
 export function ManagerSidebar() {
@@ -46,14 +45,17 @@ export function ManagerSidebar() {
     >
       <div className="flex flex-col justify-center items-center w-full h-16">
         <div className="flex gap-1 sm:gap-2 items-center">
-          <MdRestaurantMenu className="w-6 h-6 sm:w-8 sm:h-8" />
-          <span className="text-xs sm:text-lg font-bold">India Gate</span>
+          <img
+            src="/assets/indiagateLogo.png"
+            alt="indiagate logo"
+            className="w-32 mt-14"
+          />
         </div>
-        <span className="text-xs sm:text-sm font-bold">
+        <span className="text-xs sm:text-sm font-bold text-[#CBA03B]">
           {profileData?.branchName}
         </span>
       </div>
-      <div className="w-full px-2">
+      <div className="w-full px-2 mt-12">
         <div className="flex flex-col items-center w-full mt-1 border-t border-gray-300">
           {JSX}
         </div>

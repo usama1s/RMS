@@ -29,32 +29,36 @@ export function PaymentMethodsListingsItems({ formattedD }) {
           <div>
             <h3 className="font-bold text-xl">{item?.title}</h3>
           </div>
-          {(managerClocking?.managerId._id ===
-            localStorage.getItem("managerId") &&
-            managerClocking === undefined) ||
-          managerClocking?.status !== true ? (
-            <div className="absolute right-4 flex">
-              <TrashIcon
-                onClick={async () =>
-                  updateModalStatus(
-                    true,
-                    <DeleteItemJSX
-                      slug={item?._id}
-                      updateModalStatus={updateModalStatus}
-                      updateApiDoneStatus={updateApiDoneStatus}
-                      apiDone={apiDone}
-                    />
-                  )
-                }
-                className="h-6 w-6 mr-4 text-gray-900 cursor-pointer hover:scale-110 duration-200"
-              />
-              <PencilIcon
-                onClick={() => {
-                  updateItemHandler(item?._id, item?.title);
-                }}
-                className="h-6 w-6 mr-4 text-gray-900 cursor-pointer hover:scale-110 duration-200"
-              />
-            </div>
+          {item?.cashStatus !== true ? (
+            <>
+              {(managerClocking?.managerId._id ===
+                localStorage.getItem("managerId") &&
+                managerClocking === undefined) ||
+              managerClocking?.status !== true ? (
+                <div className="absolute right-4 flex">
+                  <TrashIcon
+                    onClick={async () =>
+                      updateModalStatus(
+                        true,
+                        <DeleteItemJSX
+                          slug={item?._id}
+                          updateModalStatus={updateModalStatus}
+                          updateApiDoneStatus={updateApiDoneStatus}
+                          apiDone={apiDone}
+                        />
+                      )
+                    }
+                    className="h-6 w-6 mr-4 text-gray-900 cursor-pointer hover:scale-110 duration-200"
+                  />
+                  <PencilIcon
+                    onClick={() => {
+                      updateItemHandler(item?._id, item?.title);
+                    }}
+                    className="h-6 w-6 mr-4 text-gray-900 cursor-pointer hover:scale-110 duration-200"
+                  />
+                </div>
+              ) : null}
+            </>
           ) : null}
         </div>
       ))}

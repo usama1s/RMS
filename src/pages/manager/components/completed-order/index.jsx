@@ -187,11 +187,17 @@ export const CompletedOrder = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold">Completed Orders</h1>
+      <h1 className="text-2xl font-bold">Branch Statistics</h1>
       <div className="flex justify-between items-center">
-        {convertTimestamp(selectedClocking) === "Invalid Date"
-          ? "All"
-          : convertTimestamp(selectedClocking)}
+        {convertTimestamp(selectedClocking) === "Invalid Date" ? (
+          <span class="bg-gray-100 text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded">
+            All
+          </span>
+        ) : (
+          <span class="bg-gray-100 text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded">
+            {convertTimestamp(selectedClocking)}
+          </span>
+        )}
         <select
           onChange={(e) => setSelectedClocking(e.target.value)}
           className="bg-gray-900 border border-gray-300 text-gray-50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-fit p-1"

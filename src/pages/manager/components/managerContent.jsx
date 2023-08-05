@@ -32,7 +32,7 @@ export function ManagerContent() {
         return <ManagersWaiterSection />;
       case "Payment Methods":
         return <PaymentMethods />;
-      case "Completed Order":
+      case "Branch Statistics":
         return <CompletedOrder />;
       case "Manage Expenses":
         return <Expenses />;

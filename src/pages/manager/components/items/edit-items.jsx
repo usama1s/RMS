@@ -159,6 +159,9 @@ export function ManagerEditItem({
               value={formik.values.category}
               onBlur={formik.handleBlur}
             >
+              <option disabled value="">
+                Select a category
+              </option>
               {formattedData?.map((item) => (
                 <option key={item?.categoryName} value={item?.categoryName}>
                   {item?.categoryName}

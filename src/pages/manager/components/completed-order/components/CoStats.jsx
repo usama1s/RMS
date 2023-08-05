@@ -60,7 +60,7 @@ const CoStats = ({ id, setShowExpenseTable, setShowOrderTable }) => {
                 ({totalSales?.paymentDone} TRY)
               </span>
             </p>
-            <p className="capitalize">Completed Orders</p>
+            <p className="capitalize">Branch Statistics</p>
           </div>
         </div>
         <div
@@ -109,7 +109,7 @@ const CoStats = ({ id, setShowExpenseTable, setShowOrderTable }) => {
       {/* Payment Methods Stats */}
       {tabs === 1 && (
         <div className="mt-4">
-          <p className="text-gray-900 font-semibold mb-0">Completed Orders</p>
+          <p className="text-gray-900 font-semibold mb-0">Branch Statistics</p>
           <div className="flex flex-1 p-4 space-x-4 rounded-lg md:space-x-6 dark:bg-gray-900 dark:text-gray-100 col-span-1">
             {totalOrders?.paymentCounts.map((item, index) => (
               <div className="flex gap-4" key={index + 1}>

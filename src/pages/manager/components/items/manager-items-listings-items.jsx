@@ -25,7 +25,11 @@ export function ManagerItemsListingItems({ formattedD }) {
       {propData?.map((item, index) => (
         <div
           key={index + 1}
-          className="flex  bg-[#FBFBFB] shadow-md w-full rounded-md my-2 relative"
+          className={`${
+            item?.category === ""
+              ? "border-2 border-red-600 shadow-red-600"
+              : ""
+          } flex bg-[#FBFBFB] shadow-md w-full rounded-md my-2 relative`}
         >
           <div className=" w-40 h-40">
             <img

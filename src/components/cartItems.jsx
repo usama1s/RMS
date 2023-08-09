@@ -112,7 +112,7 @@ function DeleteCartItemJSX({
           onClick={() => {
             deleteItem();
           }}
-          className="inline-flex w-full items-center justify-center rounded-md bg-black px-3.5 py-2.5 text-base font-semibold leading-7 text-white"
+          className="inline-flex w-full items-center justify-center rounded-md bg-red-600 px-3.5 py-2.5 text-base font-semibold leading-7 text-white"
         >
           Yes
         </button>

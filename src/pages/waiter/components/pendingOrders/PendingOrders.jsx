@@ -33,13 +33,11 @@ const PendingOrders = () => {
       setActive(resp.data.data?.lobbyName);
     } catch (err) {
       console.log(err.response.data.message);
-      setNoLobbyError(err.response.data.message)
+      setNoLobbyError(err.response.data.message);
     } finally {
       setIsLoading(false);
     }
   };
-
-  console.log("lobbies", noLobbyError)
 
   const getOrders = async () => {
     const resp = await api.get("/getAllOrders", {
@@ -92,10 +90,10 @@ const PendingOrders = () => {
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Something went wrong.</p>;
-  if (noLobbyError) return <p>No Lobbies Found</p>
+  if (noLobbyError) return <p>No Lobbies Found</p>;
 
   return (
-    <div>
+    <>
       <main className="p-5 bg-light-blue">
         <div className="flex justify-center items-start my-2">
           <div className="w-full my-1">
@@ -297,7 +295,7 @@ const PendingOrders = () => {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

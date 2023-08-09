@@ -190,11 +190,11 @@ export const CompletedOrder = () => {
       <h1 className="text-2xl font-bold">Branch Statistics</h1>
       <div className="flex justify-between items-center">
         {convertTimestamp(selectedClocking) === "Invalid Date" ? (
-          <span class="bg-gray-100 text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded">
+          <span className="bg-gray-100 text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded">
             All
           </span>
         ) : (
-          <span class="bg-gray-100 text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded">
+          <span className="bg-gray-100 text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded">
             {convertTimestamp(selectedClocking)}
           </span>
         )}

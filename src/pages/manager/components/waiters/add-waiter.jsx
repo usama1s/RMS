@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useCtx } from "../../../../context/Ctx";
 import { useFormik } from "formik";
 import { validation_schema_manager_add_waiters } from "../../../../utils/validation_schema";
 import api from "../../../../config/AxiosBase";
+import Select from "react-select";
 
 export function AddWaiters() {
+  const id = localStorage.getItem("managerId");
   const [status, setStatus] = useState({ loading: false, error: null });
   const { updateModalStatus, updateApiDoneStatus, apiDone } = useCtx();
+  const [lobbiesData, setLobbiesData] = useState();
 
   const formik = useFormik({
     initialValues: {
@@ -14,10 +17,28 @@ export function AddWaiters() {
       subRole: "Head Waiter",
       username: "",
       password: "",
+      lobbyAssigned: [],
     },
     validationSchema: validation_schema_manager_add_waiters,
     onSubmit: onSubmit,
   });
+
+  const getLobbies = async () => {
+    try {
+      const resp = await api.get(`/getLobbies/${id}`, {
+        withCredentials: true,
+      });
+
+      setLobbiesData(resp.data.data);
+    } catch (err) {
+      console.log(err);
+      setLobbiesData();
+    }
+  };
+
+  useEffect(() => {
+    getLobbies();
+  }, [apiDone]);
 
   async function onSubmit(values) {
     setStatus({ loading: true, error: null });
@@ -26,11 +47,12 @@ export function AddWaiters() {
       await api.post(
         "/waiter-register",
         {
-          name: values.waiterName,
-          waiterRole: values.subRole,
-          userName: values.username,
-          password: values.password,
           branchName: localStorage.getItem("branchName"),
+          name: values.waiterName,
+          userName: values.username,
+          waiterRole: values.subRole,
+          password: values.password,
+          lobbyAssigned: values.lobbyAssigned,
         },
         {
           withCredentials: true,
@@ -45,6 +67,11 @@ export function AddWaiters() {
       setStatus({ loading: false, error: e ? e?.response.data.error : null });
     }
   }
+
+  const options = lobbiesData?.map((item) => ({
+    value: item._id,
+    name: item.lobbyName,
+  }));
 
   const formJSX = (
     <div>
@@ -95,6 +122,37 @@ export function AddWaiters() {
               )}
             </div>
           </div>
+          {formik.values.subRole === "Regular Waiter" && (
+            <div>
+              <label
+                htmlFor="lobbyAssigned"
+                className="text-lg font-medium text-gray-900"
+              >
+                Assign Lobby
+              </label>
+              <div className="mt-1">
+                <div className="flex flex-wrap">
+                  <Select
+                    className="w-full active:shadow-none"
+                    closeMenuOnSelect={false}
+                    isMulti
+                    options={options}
+                    value={formik.values.lobbyAssigned}
+                    onChange={(e) => {
+                      formik.setFieldValue("lobbyAssigned", e);
+                    }}
+                    getOptionLabel={(option) => option.name}
+                    getOptionValue={(option) => option.value}
+                  />
+                </div>
+                {formik.touched.subRole && formik.errors.subRole ? (
+                  <p className="my-2 text-red-500">{formik.errors.subRole}</p>
+                ) : (
+                  ""
+                )}
+              </div>
+            </div>
+          )}
           <div>
             <label htmlFor="" className="text-lg font-medium text-gray-900">
               Username
@@ -136,15 +194,13 @@ export function AddWaiters() {
             </div>
           </div>
           {status.error && <p className="text-red-500">{status.error}</p>}
-          <div>
-            <button
-              type="submit"
-              disabled={status.loading}
-              className="inline-flex w-full items-center justify-center rounded-md bg-gray-900/100 px-3.5 py-2.5  font-regular leading-7 text-white  text-xl"
-            >
-              {status.loading ? "Adding..." : "Add Waiter"}
-            </button>
-          </div>
+          <button
+            type="submit"
+            disabled={status.loading}
+            className="inline-flex w-full items-center justify-center rounded-md bg-gray-900/100 px-3.5 py-2.5  font-regular leading-7 text-white  text-xl"
+          >
+            {status.loading ? "Adding..." : "Add Waiter"}
+          </button>
         </div>
       </form>
     </div>

@@ -73,9 +73,27 @@ export function ManagersWaiterSection() {
                 <p className="text-sm font-normal">
                   <span className="font-bold">Role:</span> {data.waiterRole}
                 </p>
+                <div className="flex gap-2 flex-wrap pt-1">
+                  {data.waiterRole === "Regular Waiter" ? (
+                    data?.lobbyAssigned?.length > 0 ? (
+                      data?.lobbyAssigned.map((item, index) => (
+                        <div key={index + 1}>
+                          <p className="font-semibold bg-green-500 text-white p-1 rounded-md text-sm">
+                            {item?.name}
+                          </p>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-sm underline text-red-600">
+                        No Lobby Assigned
+                      </p>
+                    )
+                  ) : null}
+                </div>
               </div>
-              {managerClocking?.managerId._id ===
-                localStorage.getItem("managerId") && managerClocking === undefined ||
+              {(managerClocking?.managerId._id ===
+                localStorage.getItem("managerId") &&
+                managerClocking === undefined) ||
               managerClocking.status !== true ? (
                 <div className="flex mr-1">
                   <TrashIcon
@@ -101,6 +119,7 @@ export function ManagersWaiterSection() {
                           wr_userName={data?.userName}
                           wr_name={data?.name}
                           wr_role={data?.waiterRole}
+                          wr_lobbyAssigned={data?.lobbyAssigned}
                         />
                       )
                     }
@@ -172,7 +191,6 @@ const DeleteItemJSX = ({
           </button>
         </div>
       )}
-
       {status.error && <h1>{status.error}</h1>}
     </div>
   );

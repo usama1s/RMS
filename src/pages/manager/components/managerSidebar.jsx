@@ -41,7 +41,7 @@ export function ManagerSidebar() {
     <div
       className={`flex flex-col items-center ${
         managerSidebarToggle ? "-translate-x-[-100%] w-0" : "translate-x-0 w-64"
-      } md:translate-x-0 md:w-64 min-h-[100vh] overflow-hidden text-gray-700 bg-gray-100  rounded transition-all duration-75 ease-in`}
+      } md:translate-x-0 md:w-64 min-h-[100vh] overflow-hidden text-gray-700 bg-gray-100 rounded transition-all duration-75 ease-in`}
     >
       <div className="flex flex-col justify-center items-center w-full h-16">
         <div className="flex gap-1 sm:gap-2 items-center">

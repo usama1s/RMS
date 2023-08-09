@@ -506,7 +506,7 @@ const PlaceOrderJSX = ({
     if (resp.data.status !== "success") {
       setError(true);
     }
-    console.log(resp);
+
     setResp(resp.data.data);
     setLoading(false);
   };

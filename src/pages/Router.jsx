@@ -11,10 +11,14 @@ import Login from "./shared/Login";
 export function Router() {
   const { authStatus, authenticatedUser } = useCtx();
 
+  console.log({ authStatus }); //true
+  console.log({ authenticatedUser }); // Waiter
+
   return (
     <>
       {authStatus && (
         <Routes>
+          {/* public routes */}
           <Route
             path="/"
             element={
@@ -27,8 +31,8 @@ export function Router() {
               />
             }
           />
-          <Route element={<h1>Unauthorized</h1>} path="/unauthorized" />
           <Route
+            path="/global-signin"
             element={
               !authenticatedUser ? (
                 <Login />
@@ -36,9 +40,8 @@ export function Router() {
                 <Navigate to={`/${authenticatedUser?.toLowerCase()}`} />
               )
             }
-            path="/global-signin"
           />
-
+          {/* protected routes */}
           <Route element={<RequireAuth roles={[ROLES.ADMIN]} />}>
             <Route element={<Admin />} path={ROUTES.admin} />
           </Route>
@@ -48,6 +51,8 @@ export function Router() {
           <Route element={<RequireAuth roles={[ROLES.WAITER]} />}>
             <Route element={<Waiter />} path={ROUTES.waiter} />
           </Route>
+          {/* 404 page */}
+          <Route element={<h1>Unauthorized</h1>} path="/unauthorized" />
         </Routes>
       )}
     </>

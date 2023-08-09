@@ -40,7 +40,7 @@ export function EditManager({ branchId, branchNames, branchEmail, names }) {
   }
 
   const formJSX = (
-    <div>
+    <>
       <h1 className="font-bold text-2xl py-3">Edit Branch</h1>
       <form>
         <div className="space-y-5">
@@ -116,7 +116,7 @@ export function EditManager({ branchId, branchNames, branchEmail, names }) {
           </div>
         </div>
       </form>
-    </div>
+    </>
   );
   return <div>{formJSX}</div>;
 }

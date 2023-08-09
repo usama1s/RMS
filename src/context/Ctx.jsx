@@ -71,22 +71,6 @@ export function CtxProvider({ children }) {
       title: "Branch Statistics",
       active: false,
     },
-    // {
-    //   title: "Manage Expenses",
-    //   active: false,
-    // },
-    // {
-    //   title: "Cancelled Order",
-    //   active: false,
-    // },
-    // {
-    //   title: "Clocking System",
-    //   active: false,
-    // },
-    // {
-    //   title: "Pending Dine In Orders",
-    //   active: false,
-    // },
   ]);
 
   const updateManagerClocking = (value) => {

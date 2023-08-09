@@ -1,17 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useCtx } from "../../../../context/Ctx";
 import api from "../../../../config/AxiosBase";
+import Select from "react-select";
 
-export function ManagerEditWaiter({ waiterId, wr_userName, wr_name, wr_role }) {
+export function ManagerEditWaiter({
+  waiterId,
+  wr_userName,
+  wr_name,
+  wr_role,
+  wr_lobbyAssigned,
+}) {
+  const id = localStorage.getItem("managerId");
   const [status, setStatus] = useState({ loading: false, error: null });
   const { updateApiDoneStatus, updateModalStatus, apiDone } = useCtx();
   const [name, setName] = useState(wr_name);
   const [waiterRole, setWaiterRole] = useState(wr_role);
   const [userName, setUserName] = useState(wr_userName);
   const [password, setPassword] = useState("");
+  const [lobbiesData, setLobbiesData] = useState();
+  const [lobbyAssigned, setLobbyAssigned] = useState(wr_lobbyAssigned);
+
+  const getLobbies = async () => {
+    try {
+      const resp = await api.get(`/getLobbies/${id}`, {
+        withCredentials: true,
+      });
+
+      setLobbiesData(resp.data.data);
+    } catch (err) {
+      console.log(err);
+      setLobbiesData();
+    }
+  };
+
+  useEffect(() => {
+    getLobbies();
+  }, [apiDone]);
 
   async function onSubmit(e) {
-   
     if (password) {
       setStatus({ loading: true, error: null });
       setStatus((prev) => ({ ...prev, loading: true }));
@@ -23,6 +49,7 @@ export function ManagerEditWaiter({ waiterId, wr_userName, wr_name, wr_role }) {
             waiterRole,
             userName,
             password,
+            lobbyAssigned,
           },
           {
             withCredentials: true,
@@ -41,6 +68,11 @@ export function ManagerEditWaiter({ waiterId, wr_userName, wr_name, wr_role }) {
       }
     }
   }
+
+  const options = lobbiesData?.map((item) => ({
+    value: item._id,
+    name: item.lobbyName,
+  }));
 
   return (
     <div>
@@ -82,6 +114,32 @@ export function ManagerEditWaiter({ waiterId, wr_userName, wr_name, wr_role }) {
               </select>
             </div>
           </div>
+          {waiterRole === "Regular Waiter" && (
+            <div>
+              <label
+                htmlFor="lobbyAssigned"
+                className="text-lg font-medium text-gray-900"
+              >
+                Assign Lobby
+              </label>
+              <div className="mt-1">
+                <div className="flex flex-wrap">
+                  <Select
+                    className="w-full active:shadow-none"
+                    closeMenuOnSelect={false}
+                    isMulti
+                    options={options}
+                    value={lobbyAssigned}
+                    onChange={(e) => {
+                      setLobbyAssigned(e);
+                    }}
+                    getOptionLabel={(option) => option.name}
+                    getOptionValue={(option) => option.value}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
           <div>
             <label htmlFor="" className="text-lg font-medium text-gray-900">
               Username
@@ -112,18 +170,16 @@ export function ManagerEditWaiter({ waiterId, wr_userName, wr_name, wr_role }) {
             </div>
           </div>
           {status.error && <p className="text-red-500">{status.error}</p>}
-          <div>
-            <button
-              type="submit"
-              disabled={status.loading}
-              className="inline-flex w-full items-center justify-center rounded-md bg-black px-3.5 py-2.5 text-base font-semibold leading-7 text-white"
-              onClick={() => {
-                onSubmit();
-              }}
-            >
-              {status.loading ? "Updating..." : "Update"}
-            </button>
-          </div>
+          <button
+            type="submit"
+            disabled={status.loading}
+            className="inline-flex w-full items-center justify-center rounded-md bg-black px-3.5 py-2.5 text-base font-semibold leading-7 text-white"
+            onClick={() => {
+              onSubmit();
+            }}
+          >
+            {status.loading ? "Updating..." : "Update"}
+          </button>
         </div>
       </form>
     </div>

@@ -65,14 +65,19 @@ export function WaiterSidebar() {
         managerSidebarToggle ? "-translate-x-[-100%] w-0" : "translate-x-0 w-64"
       } md:translate-x-0 md:w-64 min-h-[100vh] overflow-hidden text-gray-700 bg-gray-100  rounded transition-all duration-75 ease-in`}
     >
-      <div className="flex justify-center items-center w-full h-14">
-        <MdRestaurantMenu className="w-6 h-6 sm:w-8 sm:h-8" />
-        <span className="text-xs sm:text-lg font-bold">India Gate</span>
+      <div className="flex flex-col justify-center items-center w-full h-16">
+        <div className="flex gap-1 sm:gap-2 items-center">
+          <img
+            src="/assets/indiagateLogo.png"
+            alt="indiagate logo"
+            className="w-32 mt-14"
+          />
+        </div>
+        <span className="text-xs sm:text-sm font-bold text-[#CBA03B]">
+          {profileData?.branchName}
+        </span>
       </div>
-      <span className="text-xs sm:text-sm font-bold">
-        {localStorage.getItem("branchName")}
-      </span>
-      <div className="w-full px-2">
+      <div className="w-full px-2 mt-12">
         <div className="flex flex-col items-center w-full mt-2 border-t border-gray-300">
           {JSX}
         </div>

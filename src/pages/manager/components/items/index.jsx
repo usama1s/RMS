@@ -19,7 +19,6 @@ export function ManagerItems() {
         withCredentials: true,
       });
 
-      console.log(resp);
       setFormattedData(resp.data.data);
     } catch (err) {
       setError(true);

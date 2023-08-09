@@ -25,7 +25,6 @@ export function AdminManagerSection() {
       setNoBranches(false);
       setFormattedData(resp.data.data);
     } catch (e) {
-      console.log(e.response.data.message);
       setNoBranches(true);
       setErrorMessage(e.response.data.message);
       setFormattedData();
@@ -33,8 +32,6 @@ export function AdminManagerSection() {
       setIsLoading(false);
     }
   };
-
-  console.log("Branch Name", noBranches);
 
   useEffect(() => {
     getBranches();
@@ -67,9 +64,9 @@ export function AdminManagerSection() {
           <h1 className="font-bold text-xl">No Branches right now.</h1>
         )}
         {formattedData?.length > 0 &&
-          formattedData.map((data) => (
+          formattedData.map((data, index) => (
             <div
-              key={data.slug}
+              key={index + 1}
               className="flex bg-[#FBFBFB]  shadow-xl rounded-md relative my-2 w-full"
             >
               <div className="flex w-full items-center justify-between p-4">
@@ -140,7 +137,6 @@ function DeleteItemJSX({ slug, updateModalStatus }) {
     }
 
     updateApiDoneStatus(!apiDone);
-
     updateModalStatus(false, null);
     setIsLoading(false);
   };
@@ -155,7 +151,7 @@ function DeleteItemJSX({ slug, updateModalStatus }) {
       ) : (
         <div className="flex">
           <button
-            className="bg-black text-base font-semibold text-white rounded-md py-2 px-4  mr-2"
+            className="bg-red-600 text-base font-semibold text-white rounded-md py-2 px-4  mr-2"
             onClick={deleteBranch}
             disabled={isLoading}
           >

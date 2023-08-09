@@ -8,5 +8,5 @@ export const COLLECTIONS = Object.freeze({
   managers: "managers",
   branches: "branches",
   waiters: "waiters",
-  paymentMethods:'payment-methods'
+  paymentMethods: "payment-methods",
 });

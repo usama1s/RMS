@@ -1,5 +1,8 @@
-export const ROLES={
-    ADMIN:"ADMIN",
-    MANAGER:"MANAGER",
-    WAITER:'WAITER'
-}
+export const ROLES = {
+  ADMIN: "ADMIN",
+  MANAGER: "MANAGER",
+  WAITER: "WAITER",
+  HEADWAITER: "HEAD WAITER",
+  REGULARWAITER: "REGULAR WAITER",
+  CHEF: "CHEF",
+};

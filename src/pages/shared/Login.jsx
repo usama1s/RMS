@@ -38,6 +38,8 @@ const Login = () => {
         withCredentials: true,
       });
 
+      console.log("Login Response ", response.data.data);
+
       localStorage.setItem("ADMIN", response.data.data.role);
       localStorage.setItem("SubRole", response.data.data.subRole);
       localStorage.setItem("branchName", response.data.data.branch);
@@ -53,11 +55,9 @@ const Login = () => {
         error: null,
       });
     } catch (e) {
-      console.log(e);
       setStatus({
         loading: false,
         error: e ? e.response.data.error : "Error authenticating the user.",
-
       });
     }
   }
@@ -66,9 +66,12 @@ const Login = () => {
     <div className="bg-gray-50 flex flex-col items-center justify-center px-6 py-8 mx-auto h-screen lg:py-0">
       <div className="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-          <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
-            Login
-          </h1>
+          <div className="flex items-center justify-between">
+            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
+              Login
+            </h1>
+            <img src="/assets/indiagateLogo.png" className="w-20" />
+          </div>
           <form
             className="space-y-4 md:space-y-6"
             onSubmit={formik.handleSubmit}

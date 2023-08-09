@@ -117,7 +117,7 @@ function DeleteItemJSX({
       ) : (
         <div className="flex">
           <button
-            className="bg-black text-base font-semibold text-white rounded-md py-2 px-4  mr-2"
+            className="bg-red-600 text-base font-semibold text-white rounded-md py-2 px-4  mr-2"
             onClick={async () => {
               try {
                 setStatus({ loading: true, error: null });

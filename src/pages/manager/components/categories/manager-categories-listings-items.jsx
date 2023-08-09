@@ -19,8 +19,9 @@ export function ManagerCategoriesListingsItems({ formattedD }) {
           <div>
             <h3 className="font-bold text-xl">{item?.categoryName}</h3>
           </div>
-          {managerClocking?.managerId._id ===
-            localStorage.getItem("managerId") && managerClocking === undefined ||
+          {(managerClocking?.managerId._id ===
+            localStorage.getItem("managerId") &&
+            managerClocking === undefined) ||
           managerClocking?.status !== true ? (
             <div className="absolute right-4 flex">
               <TrashIcon
@@ -41,7 +42,10 @@ export function ManagerCategoriesListingsItems({ formattedD }) {
                 onClick={() =>
                   updateModalStatus(
                     true,
-                    <ManagerEditCategory categoryId={item?._id} categoryName={item?.categoryName}  />
+                    <ManagerEditCategory
+                      categoryId={item?._id}
+                      categoryName={item?.categoryName}
+                    />
                   )
                 }
                 className="h-6 w-6 mr-4 text-gray-900 cursor-pointer hover:scale-110 duration-200"
@@ -75,7 +79,7 @@ const DeleteItemJSX = ({
       ) : (
         <div className="flex mt-2">
           <button
-            className="bg-black text-base font-semibold text-white rounded-md py-2 px-4  mr-2"
+            className="bg-red-600 text-base font-semibold text-white rounded-md py-2 px-4  mr-2"
             onClick={async () => {
               try {
                 setStatus({ loading: true, error: null });

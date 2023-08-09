@@ -22,8 +22,6 @@ export function WaiterOrder() {
       setError(true);
     }
 
-    console.log(resp.data.data[0]?._id);
-
     setFormattedData(resp.data.data);
     setActive(resp.data.data[0]?._id);
     setLoading(false);
@@ -37,7 +35,6 @@ export function WaiterOrder() {
       setError(true);
     }
 
-    console.log("Item by category", resp);
     setItems(resp.data.data);
   };
 

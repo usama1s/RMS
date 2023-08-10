@@ -25,13 +25,8 @@ export function Cart({ title }) {
     onClearCart,
     resetApiCart,
   } = useCartCtx();
-  const {
-    updateModalStatus,
-    activeWaiterTab,
-    updateApiDoneStatus,
-    apiDone,
-    modalStatus,
-  } = useCtx();
+  const { updateModalStatus, updateApiDoneStatus, apiDone, modalStatus } =
+    useCtx();
 
   const handleTooltipMouseEnter = () => {
     setShowTooltip(true);
@@ -44,13 +39,11 @@ export function Cart({ title }) {
   function convertToReadable(dateTimeString) {
     const dateTime = new Date(dateTimeString);
     const options = {
-      // weekday: "long",
       year: "numeric",
       month: "long",
       day: "numeric",
       hour: "numeric",
       minute: "numeric",
-      // second: "numeric",
     };
     return dateTime.toLocaleString(undefined, options);
   }
@@ -298,16 +291,18 @@ export function Cart({ title }) {
         }`}
       >
         <div className="flex items-center justify-between py-4">
-          {apiItemsOfCart.length !== 0 ? (
-            <button
-              onClick={() => {
-                cancelOrderHandler();
-              }}
-              disabled={apiItemsOfCart.length <= 0}
-              className={`w-fit items-center justify-center rounded-md bg-red-500 hover:bg-red-700 px-2.5 py-2 text-base font-semibold leading-7 text-white`}
-            >
-              Cancel Order
-            </button>
+          {localStorage.getItem("SubRole") === "Head Waiter" ? (
+            apiItemsOfCart.length !== 0 ? (
+              <button
+                onClick={() => {
+                  cancelOrderHandler();
+                }}
+                disabled={apiItemsOfCart.length <= 0}
+                className={`w-fit items-center justify-center rounded-md bg-red-500 hover:bg-red-700 px-2.5 py-2 text-base font-semibold leading-7 text-white`}
+              >
+                Cancel Order
+              </button>
+            ) : null
           ) : null}
           <p className="text-center font-semibold text-xl m-auto ">
             {localStorage.getItem("seletedLobby")} -{" "}
@@ -427,32 +422,34 @@ export function Cart({ title }) {
           </h1>
           <div className="flex gap-2">
             <div className="relative inline-block">
-              <button
-                onClick={() => {
-                  updateModalStatus(
-                    true,
-                    <PlaceOrderJSX
-                      apiDone={apiDone}
-                      TotalPriceOfCart={apiItemsOfCart[0]?.totalPrice}
-                      itemsOfCart={itemsOfCart}
-                      orderData={orderData}
-                      resetCart={resetCart}
-                      updateApiDoneStatus={updateApiDoneStatus}
-                      updateModalStatus={updateModalStatus}
-                      updateCartStatus={updateCartStatus}
-                      resetApiCart={resetApiCart}
-                    />
-                  );
-                }}
-                disabled={apiItemsOfCart.length === 0}
-                className={`${
-                  apiItemsOfCart.length === 0
-                    ? "bg-green-300 hover:bg-green-300 cursor-not-allowed"
-                    : "bg-green-500 hover:bg-green-700"
-                } items-center justify-center rounded-md px-2.5 py-2 text-base font-semibold leading-7 text-white`}
-              >
-                Complete Order
-              </button>
+              {localStorage.getItem("SubRole") === "Head Waiter" ? (
+                <button
+                  onClick={() => {
+                    updateModalStatus(
+                      true,
+                      <PlaceOrderJSX
+                        apiDone={apiDone}
+                        TotalPriceOfCart={apiItemsOfCart[0]?.totalPrice}
+                        itemsOfCart={itemsOfCart}
+                        orderData={orderData}
+                        resetCart={resetCart}
+                        updateApiDoneStatus={updateApiDoneStatus}
+                        updateModalStatus={updateModalStatus}
+                        updateCartStatus={updateCartStatus}
+                        resetApiCart={resetApiCart}
+                      />
+                    );
+                  }}
+                  disabled={apiItemsOfCart.length === 0}
+                  className={`${
+                    apiItemsOfCart.length === 0
+                      ? "bg-green-300 hover:bg-green-300 cursor-not-allowed"
+                      : "bg-green-500 hover:bg-green-700"
+                  } items-center justify-center rounded-md px-2.5 py-2 text-base font-semibold leading-7 text-white`}
+                >
+                  Complete Order
+                </button>
+              ) : null}
               {showTooltip && (
                 <div
                   className="absolute -top-10 -left-[6rem] p-2 bg-gray-800 text-white text-sm rounded-md shadow-md"

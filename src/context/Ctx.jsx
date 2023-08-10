@@ -21,6 +21,7 @@ export function CtxProvider({ children }) {
   const [activeWaiterTab, setActiveWaiterTab] = useState("Dine in");
   const [managerSidebarToggle, setManagerSidebarToggle] = useState(false);
   const [authenticatedUser, setAuthenticatedUser] = useState();
+  const [authDetailInfo, setAuthDetailInfo] = useState();
   const [authStatus, setAuthStatus] = useState(false);
   const [editedCategoryValue, setEditCategoryValue] = useState(null);
   const [editedItemValue, setEditedItemValue] = useState(null);
@@ -147,6 +148,10 @@ export function CtxProvider({ children }) {
     setAuthStatus(true);
   }, []);
 
+  const setDetialAuthData = (data) => {
+    setAuthDetailInfo(data);
+  };
+
   return (
     <Ctx.Provider
       value={{
@@ -186,6 +191,8 @@ export function CtxProvider({ children }) {
         selectedOrderType,
         managerClocking,
         updateManagerClocking,
+        setDetialAuthData,
+        authDetailInfo,
       }}
     >
       {children}

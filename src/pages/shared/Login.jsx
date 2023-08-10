@@ -6,7 +6,7 @@ import api from "../../config/AxiosBase";
 
 const Login = () => {
   const [status, setStatus] = useState({ loading: false, error: null });
-  const { setAuthenticatedUser } = useCtx();
+  const { setAuthenticatedUser, setDetialAuthData } = useCtx();
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -38,7 +38,7 @@ const Login = () => {
         withCredentials: true,
       });
 
-      console.log("Login Response ", response.data.data);
+      setDetialAuthData(response.data.data);
 
       localStorage.setItem("ADMIN", response.data.data.role);
       localStorage.setItem("SubRole", response.data.data.subRole);

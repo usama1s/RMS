@@ -15,17 +15,22 @@ const PendingOrders = () => {
   const [toggleDetail, setToggleDetail] = useState(false);
   const [orderDetail, setOrderDetail] = useState();
   const [isOpen, setIsOpen] = useState({});
-  const { updateModalStatus, updateApiDoneStatus, apiDone } = useCtx();
+  const { updateModalStatus, updateApiDoneStatus, apiDone, authDetailInfo } =
+    useCtx();
   const { onItemAddFromAPI, updateCartStatus, addOrderData, resetApiCart } =
     useCartCtx();
 
   const getLobbies = async () => {
     try {
       setIsLoading(true);
+      const lobbyIds = authDetailInfo.assignedLobbies?.map(
+        (lobby) => lobby.lobbyId
+      );
       const resp = await api.get(
         `/getLobbies/${localStorage.getItem("managerId")}`,
         {
           withCredentials: true,
+          params: { lobbyIds: lobbyIds.join(",") },
         }
       );
 
@@ -76,16 +81,6 @@ const PendingOrders = () => {
     getLobbies();
     getOrders();
   }, [apiDone]);
-
-  // useEffect(() => {
-  //   const tableNo = localStorage.getItem("seletedTable") * 1;
-  //   const lobbyNam = localStorage.getItem("seletedLobby")?.toString();
-  //   const orderId = localStorage.getItem("orderId")?.toString();
-
-  //   if ((tableNo, lobbyNam, orderId)) {
-  //     getSingleOrders(lobbyNam, tableNo, orderId);
-  //   }
-  // }, [apiDone]);
 
   const handleItemClick = (lobbyName) => {
     setIsOpen((prevOpen) => (prevOpen === lobbyName ? "" : lobbyName));

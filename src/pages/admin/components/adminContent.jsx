@@ -11,9 +11,8 @@ export function AdminContent() {
     switch (slug) {
       case "Branches":
         return <AdminManagerSection />;
-
-      case "Z":
-        return <h2>z</h2>;
+      // case "Z":
+      //   return <h2>z</h2>;
     }
   };
 

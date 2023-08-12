@@ -299,9 +299,5 @@ const PendingOrders = () => {
 export default PendingOrders;
 
 const UpdateStatusJSX = () => {
-  return (
-    <div>
-      <WaiterOrder />
-    </div>
-  );
+  return <WaiterOrder />;
 };

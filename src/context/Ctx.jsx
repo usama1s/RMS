@@ -40,7 +40,7 @@ export function CtxProvider({ children }) {
   ]);
   const [adminSidebarLinks, setAdminSidebarLinks] = useState([
     { title: "Branches", active: true },
-    { title: "Z", active: false },
+    // { title: "Z", active: false },
   ]);
   const [activeAdminTab, setActiveAdminTab] = useState("Branches");
   const [managerSidebarLinks, setManagerSidebarLinks] = useState([

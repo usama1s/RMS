@@ -38,14 +38,18 @@ export const PendingOrders = () => {
   };
 
   const getOrders = async () => {
-    const resp = await api.get(
-      `/getAllOrdersByManager${localStorage.getItem("managerId")}`,
-      {
-        withCredentials: true,
-      }
-    );
+    try {
+      const resp = await api.get(
+        `/getAllOrdersByManager/${localStorage.getItem("managerId")}`,
+        {
+          withCredentials: true,
+        }
+      );
 
-    setOrdersList(resp.data.data);
+      setOrdersList(resp.data.data);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const getSingleOrders = async (lobbyName, tableNo, orderId) => {
@@ -81,6 +85,8 @@ export const PendingOrders = () => {
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>No Lobby Found.</p>;
+
+  console.log("test", formattedData, ordersList);
 
   return (
     <>

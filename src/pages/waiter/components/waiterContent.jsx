@@ -27,7 +27,7 @@ export function WaiterContent() {
     const role = localStorage.getItem("SubRole");
     setSubRole(role);
     getClockIn();
-  }, []);
+  }, [clockInData]);
 
   const renderWaiterContentHead = (slug) => {
     switch (slug) {
@@ -60,6 +60,8 @@ export function WaiterContent() {
         <h1>Abc</h1>;
     }
   };
+
+  console.log({ clockInData });
 
   return (
     <div className={"w-full px-4 lg:px-6 overflow-x-hidden"}>

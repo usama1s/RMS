@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
-import { PlusIcon } from "@heroicons/react/24/solid";
-import { useCtx } from "../../../../context/Ctx";
-import { AddWaiters } from "./add-waiter";
-import { Loading } from "../../../../components/loading";
-import { TrashIcon, PencilIcon } from "@heroicons/react/24/solid";
-import { ManagerEditWaiter } from "./edit-waiter";
-import api from "../../../../config/AxiosBase";
+import { useState, useEffect } from 'react';
+import { PlusIcon } from '@heroicons/react/24/solid';
+import { useCtx } from '../../../../context/Ctx';
+import { AddWaiters } from './add-waiter';
+import { Loading } from '../../../../components/loading';
+import { TrashIcon, PencilIcon } from '@heroicons/react/24/solid';
+import { ManagerEditWaiter } from './edit-waiter';
+import api from '../../../../config/AxiosBase';
 
 export function ManagersWaiterSection() {
   const { updateModalStatus, apiDone, updateApiDoneStatus, managerClocking } =
@@ -17,7 +17,7 @@ export function ManagersWaiterSection() {
   const getWaiters = async () => {
     try {
       setLoading(true);
-      const resp = await api.get("/getAllWaiters", { withCredentials: true });
+      const resp = await api.get('/getAllWaiters', { withCredentials: true });
 
       setFormattedData(resp.data.data);
     } catch (err) {
@@ -74,7 +74,7 @@ export function ManagersWaiterSection() {
                   <span className="font-bold">Role:</span> {data.waiterRole}
                 </p>
                 <div className="flex gap-2 flex-wrap pt-1">
-                  {data.waiterRole === "Regular Waiter" ? (
+                  {data.waiterRole === 'Regular Waiter' ? (
                     data?.lobbyAssigned?.length > 0 ? (
                       data?.lobbyAssigned.map((item, index) => (
                         <div key={index + 1}>
@@ -92,9 +92,9 @@ export function ManagersWaiterSection() {
                 </div>
               </div>
               {(managerClocking?.managerId._id ===
-                localStorage.getItem("managerId") &&
+                localStorage.getItem('managerId') &&
                 managerClocking === undefined) ||
-              managerClocking.status !== true ? (
+              managerClocking?.status !== true ? (
                 <div className="flex mr-1">
                   <TrashIcon
                     onClick={async () =>
@@ -174,7 +174,7 @@ const DeleteItemJSX = ({
                 console.log(e);
                 setStatus({
                   loading: false,
-                  error: "Error deleting the item.",
+                  error: 'Error deleting the item.',
                 });
               }
             }}

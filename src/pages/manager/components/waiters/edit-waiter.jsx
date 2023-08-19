@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { useCtx } from "../../../../context/Ctx";
-import api from "../../../../config/AxiosBase";
-import Select from "react-select";
+import React, { useState, useEffect } from 'react';
+import { useCtx } from '../../../../context/Ctx';
+import api from '../../../../config/AxiosBase';
+import Select from 'react-select';
 
 export function ManagerEditWaiter({
   waiterId,
@@ -10,13 +10,13 @@ export function ManagerEditWaiter({
   wr_role,
   wr_lobbyAssigned,
 }) {
-  const id = localStorage.getItem("managerId");
+  const id = localStorage.getItem('managerId');
   const [status, setStatus] = useState({ loading: false, error: null });
   const { updateApiDoneStatus, updateModalStatus, apiDone } = useCtx();
   const [name, setName] = useState(wr_name);
   const [waiterRole, setWaiterRole] = useState(wr_role);
   const [userName, setUserName] = useState(wr_userName);
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState('');
   const [lobbiesData, setLobbiesData] = useState();
   const [lobbyAssigned, setLobbyAssigned] = useState(wr_lobbyAssigned);
 
@@ -37,29 +37,29 @@ export function ManagerEditWaiter({
     getLobbies();
   }, [apiDone]);
 
-  async function onSubmit(e) {
-    if (password) {
+  async function onSubmit() {
+    if (password || password === '') {
       setStatus({ loading: true, error: null });
-      setStatus((prev) => ({ ...prev, loading: true }));
       try {
-        await api.patch(
-          `/editWaiters/${waiterId}`,
-          {
-            name,
-            waiterRole,
-            userName,
-            password,
-            lobbyAssigned,
-          },
-          {
-            withCredentials: true,
-          }
-        );
+        const payload = {
+          name,
+          waiterRole,
+          userName,
+          lobbyAssigned,
+        };
+
+        if (password !== '') {
+          payload.password = password;
+        }
+
+        await api.patch(`/editWaiters/${waiterId}`, payload, {
+          withCredentials: true,
+        });
+
         setStatus({ error: null, loading: false });
         updateModalStatus(false, null);
         updateApiDoneStatus(!apiDone);
       } catch (e) {
-        console.log(e);
         setStatus((prev) => ({
           ...prev,
           loading: false,
@@ -114,7 +114,7 @@ export function ManagerEditWaiter({
               </select>
             </div>
           </div>
-          {waiterRole === "Regular Waiter" && (
+          {waiterRole === 'Regular Waiter' && (
             <div>
               <label
                 htmlFor="lobbyAssigned"
@@ -163,7 +163,6 @@ export function ManagerEditWaiter({
                 className="flex  h-10 w-full rounded-md border border-gray-300 bg-transparent py-2 px-3 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
                 placeholder="Password"
                 name="password"
-                required
                 onChange={(e) => setPassword(e.target.value)}
                 value={password}
               />
@@ -178,7 +177,7 @@ export function ManagerEditWaiter({
               onSubmit();
             }}
           >
-            {status.loading ? "Updating..." : "Update"}
+            {status.loading ? 'Updating...' : 'Update'}
           </button>
         </div>
       </form>

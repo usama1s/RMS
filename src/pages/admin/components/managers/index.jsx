@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
-import { PlusIcon } from "@heroicons/react/24/solid";
-import { AdminAddManagers } from "./add-managers";
-import { useCtx } from "../../../../context/Ctx";
-import { Loading } from "../../../../components/loading";
-import { TrashIcon, PencilIcon } from "@heroicons/react/24/solid";
-import { EditManager } from "./EditManager";
-import api from "../../../../config/AxiosBase";
+import { useEffect, useState } from 'react';
+import { PlusIcon } from '@heroicons/react/24/solid';
+import { AdminAddManagers } from './add-managers';
+import { useCtx } from '../../../../context/Ctx';
+import { Loading } from '../../../../components/loading';
+import { TrashIcon, PencilIcon } from '@heroicons/react/24/solid';
+import { EditManager } from './EditManager';
+import api from '../../../../config/AxiosBase';
 
 export function AdminManagerSection() {
   const { updateModalStatus, apiDone } = useCtx();
@@ -13,13 +13,13 @@ export function AdminManagerSection() {
   const [loading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [noBranches, setNoBranches] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
 
   const getBranches = async () => {
     try {
       setIsLoading(true);
-      const resp = await api.get("/getAllBranches", { withCredentials: true });
-      if (resp.data.status !== "success") {
+      const resp = await api.get('/getAllBranches', { withCredentials: true });
+      if (resp.data.status !== 'success') {
         setError(true);
       }
       setNoBranches(false);
@@ -50,7 +50,7 @@ export function AdminManagerSection() {
     );
 
   return (
-    <div>
+    <>
       <div className="flex items-center justify-between py-4">
         <h1 className="text-2xl font-bold">Branches</h1>
         <PlusIcon
@@ -73,13 +73,13 @@ export function AdminManagerSection() {
                 <div className="flex flex-col gap-2">
                   <h2 className="text-xl font-bold">{data.email}</h2>
                   <p className="text-base font-normal">
-                    <span className="font-bold">Branch:</span>{" "}
+                    <span className="font-bold">Branch:</span>{' '}
                     <span className="bg-green-500 p-1 text-xs rounded-sm text-white">
                       {data.branchName}
                     </span>
                   </p>
                   <p className="text-base font-normal">
-                    <span className="font-bold">Name:</span>{" "}
+                    <span className="font-bold">Name:</span>{' '}
                     <span className="bg-gray-900 p-1 text-xs rounded-sm text-white">
                       {data.name}
                     </span>
@@ -117,7 +117,7 @@ export function AdminManagerSection() {
             </div>
           ))}
       </div>
-    </div>
+    </>
   );
 }
 
@@ -132,7 +132,7 @@ function DeleteItemJSX({ slug, updateModalStatus }) {
     const resp = await api.delete(`/deleteBranch/${slug}`, {
       withCredentials: true,
     });
-    if (resp.data.status !== "success") {
+    if (resp.data.status !== 'success') {
       setError(true);
     }
 

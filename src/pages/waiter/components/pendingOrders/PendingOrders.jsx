@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from "react";
-import api from "../../../../config/AxiosBase";
-import { useCtx } from "../../../../context/Ctx";
-import { useCartCtx } from "../../../../context/CartCtx";
-import { WaiterOrder } from "../orders";
-import { IoIosArrowForward } from "react-icons/io";
+import React, { useState, useEffect } from 'react';
+import api from '../../../../config/AxiosBase';
+import { useCtx } from '../../../../context/Ctx';
+import { useCartCtx } from '../../../../context/CartCtx';
+import { WaiterOrder } from '../orders';
+import { IoIosArrowForward } from 'react-icons/io';
 
 const PendingOrders = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [formattedData, setFormattedData] = useState();
   const [ordersList, setOrdersList] = useState();
-  const [noLobbyError, setNoLobbyError] = useState("");
-  const [active, setActive] = useState("");
+  const [noLobbyError, setNoLobbyError] = useState('');
+  const [active, setActive] = useState('');
   const [toggleDetail, setToggleDetail] = useState(false);
   const [orderDetail, setOrderDetail] = useState();
   const [isOpen, setIsOpen] = useState({});
@@ -23,23 +23,30 @@ const PendingOrders = () => {
   const getLobbies = async () => {
     try {
       setIsLoading(true);
-      const lobbyIds = authDetailInfo.assignedLobbies?.map(
-        (lobby) => lobby.lobbyId
-      );
+      let lobbyIds = [];
+
+      const subRole = localStorage.getItem('subRole');
+      if (subRole === 'Regular Waiter') {
+        const storedLobbyIds = localStorage.getItem('lobbyIds');
+        if (storedLobbyIds) {
+          lobbyIds = JSON.parse(storedLobbyIds);
+        }
+      }
+
       const resp = await api.get(
-        `/getLobbies/${localStorage.getItem("managerId")}`,
+        `/getLobbies/${localStorage.getItem('managerId')}`,
         {
           withCredentials: true,
-          params: { lobbyIds: lobbyIds.join(",") },
+          params: { lobbyIds: lobbyIds.join(',') },
         }
       );
 
-      setFormattedData(resp.data.data);
-      setIsOpen(resp.data.data?.lobbyName);
-      setActive(resp.data.data?.lobbyName);
+      setFormattedData(resp?.data.data);
+      setIsOpen(resp?.data?.data?.lobbyName);
+      setActive(resp?.data?.data?.lobbyName);
     } catch (err) {
-      console.log(err.response.data.message);
-      setNoLobbyError(err.response.data.message);
+      console.log(err?.response?.data?.message);
+      setNoLobbyError(err?.response?.data?.message);
     } finally {
       setIsLoading(false);
     }
@@ -47,7 +54,7 @@ const PendingOrders = () => {
 
   const getOrders = async () => {
     const resp = await api.get(
-      `/getAllOrdersByManager/${localStorage.getItem("managerId")}`,
+      `/getAllOrdersByManager/${localStorage.getItem('managerId')}`,
       {
         withCredentials: true,
       }
@@ -83,7 +90,7 @@ const PendingOrders = () => {
   }, [apiDone]);
 
   const handleItemClick = (lobbyName) => {
-    setIsOpen((prevOpen) => (prevOpen === lobbyName ? "" : lobbyName));
+    setIsOpen((prevOpen) => (prevOpen === lobbyName ? '' : lobbyName));
     setActive(lobbyName);
   };
 
@@ -107,13 +114,13 @@ const PendingOrders = () => {
                       <span>{item.lobbyName}</span>
                       <IoIosArrowForward
                         className={`${
-                          isOpen === item.lobbyName ? "-rotate-90" : "rotate-90"
+                          isOpen === item.lobbyName ? '-rotate-90' : 'rotate-90'
                         }`}
                       />
                     </h2>
                     <div
                       className={`${
-                        isOpen === item.lobbyName ? "relative" : "hidden"
+                        isOpen === item.lobbyName ? 'relative' : 'hidden'
                       } border-l-2 border-purple-600 duration-500 transition-all`}
                     >
                       <div className="p-3 mt-4 flex gap-4 flex-wrap">
@@ -126,24 +133,24 @@ const PendingOrders = () => {
                               ordersList?.map(
                                 (j, index) => j.TableNo === i.tableNo
                               )
-                                ? "bg-gray-400"
-                                : "bg-blue-500"
+                                ? 'bg-gray-400'
+                                : 'bg-blue-500'
                             } px-4 py-2 w-14 h-14 rounded-md hover:scale-110 duration-200 cursor-pointer flex items-center justify-center text-white`}
                             onClick={() => {
                               if (i?.isBooked !== true) {
                                 localStorage.setItem(
-                                  "seletedLobby",
+                                  'seletedLobby',
                                   item.lobbyName
                                 );
                                 localStorage.setItem(
-                                  "seletedTable",
+                                  'seletedTable',
                                   i.tableNumber
                                 );
                                 localStorage.setItem(
-                                  "selectedLobbyId",
+                                  'selectedLobbyId',
                                   item._id
                                 );
-                                localStorage.removeItem("orderId");
+                                localStorage.removeItem('orderId');
                                 resetApiCart();
                                 addOrderData(item.lobbyName, i.tableNumber);
                                 updateModalStatus(
@@ -166,15 +173,15 @@ const PendingOrders = () => {
                                     const order = ordersList.find(
                                       (order) => order.TableNo === i.tableNumber
                                     );
-                                    localStorage.setItem("orderId", order._id);
+                                    localStorage.setItem('orderId', order._id);
                                   }
                                 }
                                 localStorage.setItem(
-                                  "seletedLobby",
+                                  'seletedLobby',
                                   item.lobbyName
                                 );
                                 localStorage.setItem(
-                                  "seletedTable",
+                                  'seletedTable',
                                   i.tableNumber
                                 );
                                 resetApiCart();
@@ -182,7 +189,7 @@ const PendingOrders = () => {
                                 getSingleOrders(
                                   item.lobbyName,
                                   i.tableNumber,
-                                  localStorage.getItem("orderId")?.toString()
+                                  localStorage.getItem('orderId')?.toString()
                                 );
                               }
                             }}
@@ -270,7 +277,7 @@ const PendingOrders = () => {
                   {orderDetail.Status}
                 </h2>
               </div>
-              {orderDetail.Status !== "Delivered" && (
+              {orderDetail.Status !== 'Delivered' && (
                 <button
                   className="bg-gray-900 py-1 px-2 rounded-md hover:underline hover:scale-105 duration-200"
                   onClick={async () =>

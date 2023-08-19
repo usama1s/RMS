@@ -1,86 +1,111 @@
-import React, { useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useFormik } from 'formik';
-import { validation_schema_form } from '../../utils/validation_schema';
-import { useCtx } from '../../context/Ctx';
-import api from '../../config/AxiosBase';
-
-const Login = () => {
+import { validation_schema_form_b } from '../../../utils/validation_schema';
+import { COLLECTIONS } from '../../../utils/firestore-collections';
+import {
+  where,
+  getDocs,
+  query,
+  collection,
+  getDoc,
+  doc,
+} from 'firebase/firestore';
+import { db, auth } from '../../../config/@firebase';
+import { signInWithEmailAndPassword } from '@firebase/auth';
+import {
+  useCtx,
+  LOCAL_STORAGE_BASE,
+  WAITER_SIDERBARLINKS_CHEF,
+  WAITER_SIDERBARLINKS_NORMAL,
+} from '../../../context/Ctx';
+import { formatCollectionData } from '../../../utils/formatData';
+import { useNavigate } from 'react-router';
+const { users } = COLLECTIONS;
+export function WaiterLogin({ url, type }) {
+  const navigate = useNavigate();
   const [status, setStatus] = useState({ loading: false, error: null });
-  const { setAuthenticatedUser, setDetialAuthData } = useCtx();
+  const { setAuthenticatedUser, setActiveWaiterTab, setWaiterSidebarLinks } =
+    useCtx();
+  //Forms Data
   const formik = useFormik({
     initialValues: {
       email: '',
       password: '',
     },
-    validationSchema: validation_schema_form,
+    validationSchema: validation_schema_form_b,
     onSubmit: onSubmit,
   });
 
-  async function onSubmit(values) {
+  async function onSubmit(values, actions) {
     try {
       setStatus({ loading: true, error: null });
 
-      let data = {};
+      const branchData = await getDocs(
+        query(
+          collection(db, COLLECTIONS.waiters),
+          where('username', '==', values.email)
+        )
+      );
+      const formattedData = formatCollectionData(branchData);
 
-      if (values.email.includes('@')) {
-        data = {
-          email: values.email,
-          password: values.password,
-        };
-      } else {
-        data = {
-          userName: values.email,
-          password: values.password,
-        };
-      }
-
-      const response = await api.post('/signin', data, {
-        withCredentials: true,
-      });
-
-      if (response.data.data.subRole === 'Regular Waiter') {
+      if (
+        formattedData.length === 1 &&
+        formattedData[0].password === values.password
+      ) {
+        setStatus({ loading: false, error: null });
+        if (formattedData[0].subRole === 'CHEF') {
+          setActiveWaiterTab('Pending Orders');
+          setWaiterSidebarLinks(WAITER_SIDERBARLINKS_CHEF);
+        }
+        if (formattedData[0].subRole === 'NORMAL') {
+          setActiveWaiterTab('Dine in');
+          setWaiterSidebarLinks(WAITER_SIDERBARLINKS_NORMAL);
+        }
         localStorage.setItem(
-          'lobbyIds',
-          JSON.stringify(response.data.data.assignedLobbies)
+          `${LOCAL_STORAGE_BASE}Data`,
+          JSON.stringify(formattedData[0])
         );
+        setAuthenticatedUser(formattedData[0]);
+        return;
+      }
+      if (
+        formattedData.length === 1 &&
+        formattedData[0].password !== values.password
+      ) {
+        setStatus({
+          loading: false,
+          error: 'Password doesnot match',
+        });
+        return;
+      }
+      if (formattedData.length === 0) {
+        setStatus({
+          loading: false,
+          error: 'Username doesnot exist',
+        });
+        return;
       }
 
-      setDetialAuthData(response.data.data);
-
-      localStorage.setItem('lobbyIds', response.data.data);
-
-      localStorage.setItem('ADMIN', response.data.data.role);
-      localStorage.setItem('SubRole', response.data.data.subRole);
-      localStorage.setItem('branchName', response.data.data.branch);
-      if (response.data.data.role === 'MANAGER') {
-        localStorage.setItem('managerId', response.data.data.user);
-      } else if (response.data.data.role === 'WAITER') {
-        localStorage.setItem('managerId', response.data.data.managerId);
-        localStorage.getItem('waiterId', response.data.data.user);
-      }
-      setAuthenticatedUser(response.data.data.role);
-      setStatus({
-        loading: false,
-        error: null,
-      });
+      //   navigate(url);
     } catch (e) {
+      console.log(e?.message);
       setStatus({
         loading: false,
-        error: e ? e.response.data.error : 'Error authenticating the user.',
+        error: e?.message ? e?.message : 'Error authenticating the user.',
       });
     }
   }
 
-  return (
+  const reset = (actions) => {
+    actions.resetForm({ branchName: '' });
+  };
+  const formJSX = (
     <div className="bg-gray-50 flex flex-col items-center justify-center px-6 py-8 mx-auto h-screen lg:py-0">
       <div className="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-          <div className="flex items-center justify-between">
-            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
-              Login
-            </h1>
-            <img src="/assets/indiagateLogo.png" className="w-20" />
-          </div>
+          <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
+            {type} Login.
+          </h1>
           <form
             className="space-y-4 md:space-y-6"
             onSubmit={formik.handleSubmit}
@@ -90,18 +115,18 @@ const Login = () => {
                 htmlFor="email"
                 className="block mb-2 text-sm font-medium text-gray-900s"
               >
-                Your email
+                Username
               </label>
               <input
                 className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                placeholder="Email"
+                placeholder="Username"
                 name="email"
                 onChange={formik.handleChange}
                 value={formik.values.email}
                 onBlur={formik.handleBlur}
               />
               {formik.touched.email && formik.errors.email ? (
-                <p className="my-2 text-red-500">{formik.errors.email}</p>
+                <p className="my-2">{formik.errors.email}</p>
               ) : (
                 ''
               )}
@@ -115,15 +140,15 @@ const Login = () => {
               </label>
               <input
                 className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                type="password"
                 placeholder="Password"
                 name="password"
                 onChange={formik.handleChange}
                 value={formik.values.password}
                 onBlur={formik.handleBlur}
-                type="password"
               />
               {formik.touched.password && formik.errors.password ? (
-                <p className="my-2 text-red-500">{formik.errors.password}</p>
+                <p className="my-2">{formik.errors.password}</p>
               ) : (
                 ''
               )}
@@ -148,6 +173,5 @@ const Login = () => {
       </div>
     </div>
   );
-};
-
-export default Login;
+  return <div>{formJSX}</div>;
+}

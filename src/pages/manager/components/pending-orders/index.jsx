@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { useCtx } from "../../../../context/Ctx";
-import { useCartCtx } from "../../../../context/CartCtx";
-import { IoIosArrowForward } from "react-icons/io";
-import api from "../../../../config/AxiosBase";
+import React, { useState, useEffect } from 'react';
+import { useCtx } from '../../../../context/Ctx';
+import { useCartCtx } from '../../../../context/CartCtx';
+import { IoIosArrowForward } from 'react-icons/io';
+import api from '../../../../config/AxiosBase';
 
 export const PendingOrders = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [formattedData, setFormattedData] = useState(false);
   const [ordersList, setOrdersList] = useState();
-  const [active, setActive] = useState("");
+  const [active, setActive] = useState('');
   const [isOpen, setIsOpen] = useState({});
   const { apiDone, managerClocking } = useCtx();
   const { onItemAddFromAPI, updateCartStatus, addOrderData } = useCartCtx();
@@ -18,7 +18,7 @@ export const PendingOrders = () => {
     try {
       setIsLoading(true);
       const resp = await api.get(
-        `/getLobbies/${localStorage.getItem("managerId")}`,
+        `/getLobbies/${localStorage.getItem('managerId')}`,
         {
           withCredentials: true,
         }
@@ -29,7 +29,7 @@ export const PendingOrders = () => {
       setActive(resp.data.data?.lobbyName);
     } catch (err) {
       console.log(err.response.data.message);
-      if (err.response.data.message === "No lobby found") {
+      if (err.response.data.message === 'No lobby found') {
         setError(true);
       }
     } finally {
@@ -40,7 +40,7 @@ export const PendingOrders = () => {
   const getOrders = async () => {
     try {
       const resp = await api.get(
-        `/getAllOrdersByManager/${localStorage.getItem("managerId")}`,
+        `/getAllOrdersByManager/${localStorage.getItem('managerId')}`,
         {
           withCredentials: true,
         }
@@ -79,14 +79,12 @@ export const PendingOrders = () => {
   }, [apiDone]);
 
   const handleItemClick = (lobbyName) => {
-    setIsOpen((prevOpen) => (prevOpen === lobbyName ? "" : lobbyName));
+    setIsOpen((prevOpen) => (prevOpen === lobbyName ? '' : lobbyName));
     setActive(lobbyName);
   };
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>No Lobby Found.</p>;
-
-  console.log("test", formattedData, ordersList);
 
   return (
     <>
@@ -98,7 +96,7 @@ export const PendingOrders = () => {
               <div className="flex justify-center items-start my-2">
                 <div className="w-full my-1">
                   <ul className="flex flex-col">
-                    {formattedData &&
+                    {formattedData ? (
                       formattedData.map((item) => (
                         <li
                           className="bg-white my-2 shadow-lg"
@@ -112,14 +110,14 @@ export const PendingOrders = () => {
                             <IoIosArrowForward
                               className={`${
                                 isOpen === item.lobbyName
-                                  ? "-rotate-90"
-                                  : "rotate-90"
+                                  ? '-rotate-90'
+                                  : 'rotate-90'
                               }`}
                             />
                           </h2>
                           <div
                             className={`${
-                              isOpen === item.lobbyName ? "relative" : "hidden"
+                              isOpen === item.lobbyName ? 'relative' : 'hidden'
                             } border-l-2 border-purple-600 duration-500 transition-all`}
                           >
                             <div className="p-3 mt-4 flex gap-4 flex-wrap">
@@ -132,8 +130,8 @@ export const PendingOrders = () => {
                                     ordersList?.map(
                                       (j, index) => j.TableNo === i.tableNo
                                     )
-                                      ? "bg-gray-400"
-                                      : "bg-blue-500"
+                                      ? 'bg-gray-400'
+                                      : 'bg-blue-500'
                                   } px-4 py-2 w-14 h-14 rounded-md hover:scale-110 duration-200 cursor-pointer flex items-center justify-center text-white`}
                                   onClick={() => {
                                     if (i?.isBooked === true) {
@@ -149,17 +147,17 @@ export const PendingOrders = () => {
                                               order.TableNo === i.tableNumber
                                           );
                                           localStorage.setItem(
-                                            "orderId",
+                                            'orderId',
                                             order._id
                                           );
                                         }
                                       }
                                       localStorage.setItem(
-                                        "seletedLobby",
+                                        'seletedLobby',
                                         item.lobbyName
                                       );
                                       localStorage.setItem(
-                                        "seletedTable",
+                                        'seletedTable',
                                         i.tableNumber
                                       );
                                       addOrderData(
@@ -170,7 +168,7 @@ export const PendingOrders = () => {
                                         item.lobbyName,
                                         i.tableNumber,
                                         localStorage
-                                          .getItem("orderId")
+                                          .getItem('orderId')
                                           ?.toString()
                                       );
                                     }
@@ -182,7 +180,10 @@ export const PendingOrders = () => {
                             </div>
                           </div>
                         </li>
-                      ))}
+                      ))
+                    ) : (
+                      <p>No Pending Orders Found</p>
+                    )}
                   </ul>
                 </div>
               </div>

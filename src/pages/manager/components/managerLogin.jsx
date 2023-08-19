@@ -1,12 +1,26 @@
-import React, { useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useFormik } from 'formik';
-import { validation_schema_form } from '../../utils/validation_schema';
-import { useCtx } from '../../context/Ctx';
-import api from '../../config/AxiosBase';
-
-const Login = () => {
+import { validation_schema_form } from '../../../utils/validation_schema';
+import { COLLECTIONS } from '../../../utils/firestore-collections';
+import {
+  where,
+  getDocs,
+  query,
+  collection,
+  getDoc,
+  doc,
+} from 'firebase/firestore';
+import { db, auth } from '../../../config/@firebase';
+import { signInWithEmailAndPassword } from '@firebase/auth';
+import { useCtx, LOCAL_STORAGE_BASE } from '../../../context/Ctx';
+import { formatCollectionData } from '../../../utils/formatData';
+import { useNavigate } from 'react-router';
+const { users } = COLLECTIONS;
+export function ManagerLogin({ url, type }) {
+  const navigate = useNavigate();
   const [status, setStatus] = useState({ loading: false, error: null });
-  const { setAuthenticatedUser, setDetialAuthData } = useCtx();
+  const { setAuthenticatedUser } = useCtx();
+  //Forms Data
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -16,71 +30,61 @@ const Login = () => {
     onSubmit: onSubmit,
   });
 
-  async function onSubmit(values) {
+  async function onSubmit(values, actions) {
     try {
       setStatus({ loading: true, error: null });
+      const user = await signInWithEmailAndPassword(
+        auth,
+        values.email,
+        values.password
+      );
+      const userData = await getDoc(doc(db, COLLECTIONS.users, user.user.uid));
 
-      let data = {};
+      //   const branchData = await getDocs(
+      //     query(
+      //       collection(db, COLLECTIONS.branches),
+      //       where("managerId", "==", user.user.uid)
+      //     )
+      //   );
+      //   const formattedBranchData = formatCollectionData(branchData);
+      const formattedUserData = {
+        ...userData.data(),
+        id: userData.id,
+      };
 
-      if (values.email.includes('@')) {
-        data = {
-          email: values.email,
-          password: values.password,
-        };
-      } else {
-        data = {
-          userName: values.email,
-          password: values.password,
-        };
+      if (formattedUserData?.role !== type.toUpperCase()) {
+        setStatus({ error: 'User doesnot exists', loading: false });
+        return;
       }
-
-      const response = await api.post('/signin', data, {
-        withCredentials: true,
-      });
-
-      if (response.data.data.subRole === 'Regular Waiter') {
-        localStorage.setItem(
-          'lobbyIds',
-          JSON.stringify(response.data.data.assignedLobbies)
-        );
-      }
-
-      setDetialAuthData(response.data.data);
-
-      localStorage.setItem('lobbyIds', response.data.data);
-
-      localStorage.setItem('ADMIN', response.data.data.role);
-      localStorage.setItem('SubRole', response.data.data.subRole);
-      localStorage.setItem('branchName', response.data.data.branch);
-      if (response.data.data.role === 'MANAGER') {
-        localStorage.setItem('managerId', response.data.data.user);
-      } else if (response.data.data.role === 'WAITER') {
-        localStorage.setItem('managerId', response.data.data.managerId);
-        localStorage.getItem('waiterId', response.data.data.user);
-      }
-      setAuthenticatedUser(response.data.data.role);
+      localStorage.setItem(
+        `${LOCAL_STORAGE_BASE}Data`,
+        JSON.stringify(formattedUserData)
+      );
+      setAuthenticatedUser(formattedUserData);
       setStatus({
         loading: false,
         error: null,
       });
+      navigate(url);
     } catch (e) {
+      console.log(e?.message);
       setStatus({
         loading: false,
-        error: e ? e.response.data.error : 'Error authenticating the user.',
+        error: e?.message ? e?.message : 'Error authenticating the user.',
       });
     }
   }
 
-  return (
+  const reset = (actions) => {
+    actions.resetForm({ branchName: '' });
+  };
+  const formJSX = (
     <div className="bg-gray-50 flex flex-col items-center justify-center px-6 py-8 mx-auto h-screen lg:py-0">
       <div className="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-          <div className="flex items-center justify-between">
-            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
-              Login
-            </h1>
-            <img src="/assets/indiagateLogo.png" className="w-20" />
-          </div>
+          <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
+            {type} Login.
+          </h1>
           <form
             className="space-y-4 md:space-y-6"
             onSubmit={formik.handleSubmit}
@@ -101,7 +105,7 @@ const Login = () => {
                 onBlur={formik.handleBlur}
               />
               {formik.touched.email && formik.errors.email ? (
-                <p className="my-2 text-red-500">{formik.errors.email}</p>
+                <p className="my-2">{formik.errors.email}</p>
               ) : (
                 ''
               )}
@@ -123,7 +127,7 @@ const Login = () => {
                 type="password"
               />
               {formik.touched.password && formik.errors.password ? (
-                <p className="my-2 text-red-500">{formik.errors.password}</p>
+                <p className="my-2">{formik.errors.password}</p>
               ) : (
                 ''
               )}
@@ -148,6 +152,5 @@ const Login = () => {
       </div>
     </div>
   );
-};
-
-export default Login;
+  return <div>{formJSX}</div>;
+}

@@ -1,6 +1,6 @@
-import React from "react";
-import { useCtx } from "../context/Ctx";
-import { XMarkIcon } from "@heroicons/react/24/solid";
+import React from 'react';
+import { useCtx } from '../context/Ctx';
+import { XMarkIcon } from '@heroicons/react/24/solid';
 
 export function Modal({}) {
   const {
@@ -12,7 +12,7 @@ export function Modal({}) {
   return (
     <div
       onClick={(event) => {
-        if (event.target.classList.contains("modal-shadow")) {
+        if (event.target.classList.contains('modal-shadow')) {
           updateModalStatus(false, null);
           updateCategoryValue(null);
           updateItemValue(null);
@@ -23,7 +23,7 @@ export function Modal({}) {
       <div className="relative my-6 p-4 mx-5 md:mx-auto w-[550px] h-auto bg-white rounded-md">
         <div className="w-fit float-right">
           <XMarkIcon
-            className="h-6 w-6 cursor-pointer"
+            className="h-6 w-6 cursor-pointer hover:scale-105 duration-200 ease-in"
             onClick={() => {
               updateModalStatus(false, null);
               updateCategoryValue(null);

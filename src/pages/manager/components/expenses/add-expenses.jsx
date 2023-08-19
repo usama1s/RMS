@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { useFormik } from "formik";
-import { validation_schema_expenses } from "../../../../utils/validation_schema";
-import { useCtx } from "../../../../context/Ctx";
-import api from "../../../../config/AxiosBase";
+import React, { useState, useEffect } from 'react';
+import { useFormik } from 'formik';
+import { validation_schema_expenses } from '../../../../utils/validation_schema';
+import { useCtx } from '../../../../context/Ctx';
+import api from '../../../../config/AxiosBase';
 
 export const AddExpense = () => {
   const { updateModalStatus, updateApiDoneStatus, apiDone } = useCtx();
   const [status, setStatus] = useState({ loading: false, error: null });
   const [formattedData, setFormattedData] = useState();
-  const [selectedItem, setSelectedItem] = useState("Cash");
+  const [selectedItem, setSelectedItem] = useState('Cash');
 
   const getPaymentMethods = async () => {
     try {
       const resp = await api.get(
-        `/getPaymentMethods/${localStorage.getItem("managerId")}`,
+        `/getPaymentMethods/${localStorage.getItem('managerId')}`,
         { withCredentials: true }
       );
       setFormattedData(resp.data.data);
@@ -28,7 +28,7 @@ export const AddExpense = () => {
 
   const formik = useFormik({
     initialValues: {
-      title: "",
+      title: '',
       amount: 0,
     },
     validationSchema: validation_schema_expenses,
@@ -40,7 +40,7 @@ export const AddExpense = () => {
 
     try {
       await api.post(
-        "/addExpense",
+        '/addExpense',
         {
           title: values.title,
           amount: values.amount,
@@ -65,7 +65,7 @@ export const AddExpense = () => {
   }
 
   const reset = (actions) => {
-    actions.resetForm({ title: "" });
+    actions.resetForm({ title: '' });
   };
 
   const handleSelectChange = (event) => {
@@ -93,7 +93,7 @@ export const AddExpense = () => {
               {formik.touched.title && formik.errors.title ? (
                 <p className="my-2 text-red-500">{formik.errors.title}</p>
               ) : (
-                ""
+                ''
               )}
             </div>
           </div>
@@ -113,7 +113,7 @@ export const AddExpense = () => {
               {formik.touched.amount && formik.errors.amount ? (
                 <p className="my-2 text-red-500">{formik.errors.amount}</p>
               ) : (
-                ""
+                ''
               )}
             </div>
           </div>
@@ -129,9 +129,9 @@ export const AddExpense = () => {
             >
               {formattedData
                 ?.sort((a, b) => {
-                  if (a.title === "Cash") {
+                  if (a.title === 'Cash') {
                     return -1;
-                  } else if (b.title === "Cash") {
+                  } else if (b.title === 'Cash') {
                     return 1;
                   } else {
                     return a.title.localeCompare(b.title);
@@ -150,7 +150,7 @@ export const AddExpense = () => {
               disabled={status.loading}
               className="inline-flex w-full items-center justify-center rounded-md bg-gray-900/100 px-3.5 py-2.5 text-base font-semibold leading-7 text-white hover:cursor-pointer"
             >
-              {status.loading ? "Adding..." : "Add an expense"}
+              {status.loading ? 'Adding...' : 'Add an expense'}
             </button>
           </div>
         </div>

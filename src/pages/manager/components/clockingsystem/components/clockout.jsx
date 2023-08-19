@@ -1,4 +1,4 @@
-import { useCtx } from "../../../../../context/Ctx";
+import { useCtx } from '../../../../../context/Ctx';
 
 export function ClockOut({ clockOut, disabled, loading }) {
   const { updateModalStatus } = useCtx();
@@ -21,13 +21,13 @@ export function ClockOut({ clockOut, disabled, loading }) {
               updateModalStatus(false, null);
             }}
             disabled={disabled}
-            className="bg-black text-base font-semibold text-white rounded-md py-2 px-4  mr-2"
+            className="bg-green-900 hover:bg-green-950 text-base font-semibold text-white rounded-md py-2 px-4 mr-2"
           >
             Yes
           </button>
           <button
             onClick={() => updateModalStatus(false, null)}
-            className="bg-black text-base font-semibold text-white rounded-md py-2 px-4  mr-2"
+            className="bg-gray-900 hover:bg-gray-950 text-base font-semibold text-white rounded-md py-2 px-4 mr-2"
           >
             No
           </button>

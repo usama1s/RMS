@@ -1,18 +1,15 @@
-import { Routes, Route, Navigate } from "react-router-dom";
-import { RequireAuth } from "../components/protectedroute";
-import { ROUTES } from "../utils/routes";
-import { useCtx } from "../context/Ctx";
-import { Manager } from "./manager";
-import { Waiter } from "./waiter";
-import { Admin } from "./admin";
-import { ROLES } from "../utils/roles";
-import Login from "./shared/Login";
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { RequireAuth } from '../components/protectedroute';
+import { ROUTES } from '../utils/routes';
+import { useCtx } from '../context/Ctx';
+import { Manager } from './manager';
+import { Waiter } from './waiter';
+import { Admin } from './admin';
+import { ROLES } from '../utils/roles';
+import Login from './shared/Login';
 
 export function Router() {
   const { authStatus, authenticatedUser } = useCtx();
-
-  console.log({ authStatus }); //true
-  console.log({ authenticatedUser }); // Waiter
 
   return (
     <>

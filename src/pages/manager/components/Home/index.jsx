@@ -1,48 +1,58 @@
-import React, { useEffect, useState } from "react";
-import { BsClock } from "react-icons/bs";
-import { useCtx } from "../../../../context/Ctx";
-import { ClockIn } from "./components/clockin";
-import { ClockOut } from "./components/clockout";
-import { Loading } from "../../../../components/loading";
-import { PendingOrders } from "../pending-orders";
-import HomeStats from "./components/home-stats";
-import api, { url } from "../../../../config/AxiosBase";
-import { AddExpense } from "../expenses/add-expenses";
+import { useEffect, useState } from 'react';
+import { BsClock } from 'react-icons/bs';
+import { useCtx } from '../../../../context/Ctx';
+import { ClockIn } from './components/clockin';
+import { ClockOut } from './components/clockout';
+import { PendingOrders } from '../pending-orders';
+import { AddExpense } from '../expenses/add-expenses';
+import { convertDateTime } from '../../../../utils/formatData';
+import api, { url } from '../../../../config/AxiosBase';
+import ClockinMessage from '../../../../components/ClockinMessage';
+import HomeStats from './components/home-stats';
 
 export const Home = () => {
-  const { updateModalStatus, updateManagerClocking } = useCtx();
+  const { updateModalStatus, updateManagerClocking, managerClocking } =
+    useCtx();
   const [status, setStatus] = useState({ loading: false, error: null });
   const [formattedData, setFormattedData] = useState();
   const [clockingData, setClockingData] = useState();
 
   const getClockingsData = async () => {
-    const resp = await api.get(
-      `/getAllClockings/${localStorage.getItem("managerId")}`,
-      {
-        withCredentials: true,
+    try {
+      const resp = await api.get(
+        `/getAllClockings/${localStorage.getItem('managerId')}`,
+        {
+          withCredentials: true,
+        }
+      );
+      updateManagerClocking(resp.data.data[0]);
+      setClockingData(resp.data.data[0]);
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        console.log('Bad Request Error:', error.response.data);
+      } else {
+        console.error('An error occurred:', error);
       }
-    );
-    updateManagerClocking(resp.data.data[0]);
-    setClockingData(resp.data.data[0]);
+    }
   };
 
   const clockIn = async () => {
     setStatus({ loading: true, error: null });
     try {
       const response = await fetch(`${url}/checkIn`, {
-        method: "POST",
-        credentials: "include",
+        method: 'POST',
+        credentials: 'include',
       });
       const data = await response.json();
 
-      if (data.message !== "Check-in successful!") {
-        setStatus({ loading: false, error: "Error updating the status." });
+      if (data.message !== 'Check-in successful!') {
+        setStatus({ loading: false, error: 'Error updating the status.' });
       } else {
         setFormattedData(data);
         setStatus({ loading: false, error: null });
       }
     } catch (error) {
-      setStatus({ loading: false, error: "Error updating the status." });
+      setStatus({ loading: false, error: 'Error updating the status.' });
     }
   };
 
@@ -51,38 +61,16 @@ export const Home = () => {
     try {
       url;
       const response = await fetch(`${url}/checkOut/` + clockingData?._id, {
-        method: "PATCH",
-        credentials: "include",
+        method: 'PATCH',
+        credentials: 'include',
       });
       await response.json();
       setFormattedData(null);
       setStatus({ loading: false, error: null });
     } catch (error) {
-      setStatus({ loading: false, error: "Error updating the status." });
+      setStatus({ loading: false, error: 'Error updating the status.' });
     }
   };
-
-  function convertDateTime(dateTimeString) {
-    const dateTime = new Date(dateTimeString);
-
-    const year = dateTime.getFullYear();
-    const month = dateTime.getMonth() + 1;
-    const day = dateTime.getDate();
-
-    const hours = dateTime.getHours();
-    const minutes = dateTime.getMinutes();
-    const seconds = dateTime.getSeconds();
-
-    const formattedDateTime = `${year}-${month
-      .toString()
-      .padStart(2, "0")}-${day.toString().padStart(2, "0")} ${hours
-      .toString()
-      .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds
-      .toString()
-      .padStart(2, "0")}`;
-
-    return formattedDateTime;
-  }
 
   useEffect(() => {
     getClockingsData();
@@ -91,8 +79,8 @@ export const Home = () => {
   return (
     <div className="py-4">
       <div className="flex items-center justify-between">
-        <div className="flex items-center w-[50%] rounded shadow-md overflow-hidden max-w-xl relative dark:bg-gray-900 dark:text-gray-100">
-          <div className="self-stretch flex items-center px-3 flex-shrink-0 dark:bg-gray-700 dark:text-teal-400">
+        <div className="flex items-center w-1/2 rounded shadow-md overflow-hidden max-w-xl relative bg-gray-900 text-gray-100">
+          <div className="self-stretch flex items-center px-3 flex-shrink-0 bg-gray-700 text-teal-400">
             <BsClock className="h-8 w-8" />
           </div>
           <div className="p-4 flex justify-between w-full">
@@ -142,14 +130,20 @@ export const Home = () => {
           </div>
         </div>
         <button
-          className="px-8 py-3 font-semibold rounded dark:bg-gray-100 dark:text-gray-800 shadow-md hover:bg-gray-200"
+          className="px-8 py-3 font-semibold rounded bg-gray-100 text-gray-800 shadow-md hover:bg-gray-200"
           onClick={() => updateModalStatus(true, <AddExpense />)}
         >
           Add Expense
         </button>
       </div>
-      <HomeStats />
-      <PendingOrders />
+      {managerClocking !== undefined ? (
+        <>
+          <HomeStats />
+          <PendingOrders />
+        </>
+      ) : (
+        <ClockinMessage />
+      )}
     </div>
   );
 };

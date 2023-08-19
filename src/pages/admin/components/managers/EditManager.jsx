@@ -1,45 +1,48 @@
-import React, { useState } from "react";
-import { useCtx } from "../../../../context/Ctx";
-import api from "../../../../config/AxiosBase";
+import React, { useState } from 'react';
+import { useCtx } from '../../../../context/Ctx';
+import api from '../../../../config/AxiosBase';
 
 export function EditManager({ branchId, branchNames, branchEmail, names }) {
-  const [status, setStatus] = useState({ loading: false, error: null });
   const { updateModalStatus, updateApiDoneStatus, apiDone } = useCtx();
+  const [status, setStatus] = useState({ loading: false, error: null });
   const [branchName, setBranchName] = useState(branchNames);
   const [managerName, setManagerName] = useState(names);
   const [email, setEmail] = useState(branchEmail);
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState('');
 
   async function onSubmit() {
-    if (password) {
+    if (password || password === '') {
       setStatus({ loading: true, error: null });
       try {
-        await api.patch(
-          `/editBranch/${branchId}`,
-          {
-            branchName: branchName,
-            email: email,
-            name: managerName,
-            password: password,
-          },
-          {
-            withCredentials: true,
-          }
-        );
+        const payload = {
+          branchName,
+          email,
+          name: managerName,
+        };
+
+        if (password !== '') {
+          payload.password = password;
+        }
+
+        await api.patch(`/editBranch/${branchId}`, payload, {
+          withCredentials: true,
+        });
+
         setStatus({ error: null, loading: false });
         updateModalStatus(false, null);
         updateApiDoneStatus(!apiDone);
       } catch (e) {
-        console.log(e);
         setStatus({
           loading: false,
-          error: e?.message ? e?.message : "Error updating the branch.",
+          error: e?.response.data.message
+            ? e?.response.data.message
+            : 'Error updating the branch.',
         });
       }
     }
   }
 
-  const formJSX = (
+  return (
     <>
       <h1 className="font-bold text-2xl py-3">Edit Branch</h1>
       <form>
@@ -111,12 +114,11 @@ export function EditManager({ branchId, branchNames, branchEmail, names }) {
               disabled={status.loading}
               onClick={onSubmit}
             >
-              {status.loading ? "Editing..." : "Edit Branch"}
+              {status.loading ? 'Editing...' : 'Edit Branch'}
             </button>
           </div>
         </div>
       </form>
     </>
   );
-  return <div>{formJSX}</div>;
 }

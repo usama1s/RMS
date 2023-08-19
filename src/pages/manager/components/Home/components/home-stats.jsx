@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useReducer } from "react";
-import { useCtx } from "../../../../../context/Ctx";
-import { BiStats } from "react-icons/bi";
-import { ImStatsDots, ImStatsBars } from "react-icons/im";
-import { BsInfoCircleFill } from "react-icons/bs";
-import api from "../../../../../config/AxiosBase";
+import { useState, useEffect, useReducer } from 'react';
+import { ImStatsDots, ImStatsBars } from 'react-icons/im';
+import { BiStats } from 'react-icons/bi';
+import { useCtx } from '../../../../../context/Ctx';
+import ClockinMessage from '../../../../../components/ClockinMessage';
+import api from '../../../../../config/AxiosBase';
 
 const fetchData = async (url) => {
   const resp = await api.get(url, {
@@ -20,7 +20,7 @@ const initialState = {
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case "SET_DATA":
+    case 'SET_DATA':
       return {
         ...state,
         totalOrders: action.payload.totalOrders,
@@ -40,7 +40,7 @@ const HomeStats = () => {
 
   const getClockingsData = async () => {
     const resp = await api.get(
-      `/getAllClockings/${localStorage.getItem("managerId")}`,
+      `/getAllClockings/${localStorage.getItem('managerId')}`,
       {
         withCredentials: true,
       }
@@ -62,7 +62,7 @@ const HomeStats = () => {
       ]);
 
       dispatch({
-        type: "SET_DATA",
+        type: 'SET_DATA',
         payload: {
           totalOrders: orders,
           totalSales: sales,
@@ -82,7 +82,7 @@ const HomeStats = () => {
             <div
               className="flex flex-1 p-4 rounded-lg md:space-x-6 bg-gray-900 text-gray-100 col-span-1 cursor-pointer group hover:bg-gray-800"
               onClick={() => {
-                updateOrderType("PaymentDone");
+                updateOrderType('PaymentDone');
                 setTabs(1);
               }}
             >
@@ -91,7 +91,7 @@ const HomeStats = () => {
               </div>
               <div className="flex flex-col justify-center align-middle">
                 <p className="text-3xl font-semibold leading">
-                  {totalOrders?.completedOrderTotal}{" "}
+                  {totalOrders?.completedOrderTotal}{' '}
                   <span className=" text-base">
                     ({totalSales?.paymentDone} TRY)
                   </span>
@@ -102,7 +102,7 @@ const HomeStats = () => {
             <div
               className="flex flex-1 p-4 space-x-4 rounded-lg md:space-x-6 bg-gray-900 text-gray-100 col-span-1 cursor-pointer group hover:bg-gray-800"
               onClick={() => {
-                updateOrderType("cancelled");
+                updateOrderType('cancelled');
                 setTabs(2);
               }}
             >
@@ -111,7 +111,7 @@ const HomeStats = () => {
               </div>
               <div className="flex flex-col justify-center align-middle">
                 <p className="text-3xl font-semibold leadi">
-                  {totalOrders?.canceledOrderTotal}{" "}
+                  {totalOrders?.canceledOrderTotal}{' '}
                   <span className=" text-base">
                     ({totalSales?.cancelled} TRY)
                   </span>
@@ -130,7 +130,7 @@ const HomeStats = () => {
               </div>
               <div className="flex flex-col justify-center align-middle">
                 <p className="text-3xl font-semibold leadi">
-                  {totalExpense?.expenseCountTotal}{" "}
+                  {totalExpense?.expenseCountTotal}{' '}
                   <span className=" text-base">
                     ({totalExpense?.totalExpense} TRY)
                   </span>
@@ -184,24 +184,7 @@ const HomeStats = () => {
           )}
         </section>
       ) : (
-        <div className="rounded p-2 bg-yellow-500 mt-2 shadow-md">
-          <p className="m-2 text-black text-base leading-7">
-            Please <span className="font-semibold">Clock In</span> to start
-            today’s session.
-            <span className="flex items-center gap-2">
-              <BsInfoCircleFill />
-              Make sure you start the session only once in a day to avoid
-              confusions later on in the stats and sales management.
-            </span>
-            <span className="flex items-center gap-2">
-              <BsInfoCircleFill />
-              <span className="font-semibold">Clock In</span> once you are going
-              to start the sales in the morning and{" "}
-              <span className="font-semibold">Clock Out</span> after you end
-              your work day in the night.
-            </span>
-          </p>
-        </div>
+        <ClockinMessage />
       )}
     </>
   );

@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { CartItems } from "./cartItems";
-import { CartItems2 } from "./cartItems2";
-import { useCartCtx } from "../context/CartCtx";
-import { XMarkIcon } from "@heroicons/react/24/solid";
-import { Cart2Items } from "./cart2Items";
+import { useState } from 'react';
+import { CartItems } from './cartItems';
+import { CartItems2 } from './cartItems2';
+import { useCartCtx } from '../context/CartCtx';
+import { XMarkIcon } from '@heroicons/react/24/solid';
+import { Cart2Items } from './cart2Items';
 
-export function ManCart({ title }) {
+export function ManCart() {
   const {
     updateCartStatus,
     cartStatus,
@@ -20,25 +20,25 @@ export function ManCart({ title }) {
   return (
     <div
       onClick={(e) => {
-        if (e.target.classList.contains("card-shadow")) {
+        if (e.target.classList.contains('card-shadow')) {
           updateCartStatus(false);
         }
       }}
       className={`card-shadow transition-all duration-75 ease-in-outs ${
         cartStatus
-          ? "opacity-1 pointer-events-auto"
-          : "opacity-0 pointer-events-none"
+          ? 'opacity-1 pointer-events-auto'
+          : 'opacity-0 pointer-events-none'
       } fixed h-full top-0 right-0 w-full flex justify-end bg-[rgba(0,0,0,0.5)] `}
     >
       <div
         className={`bg-white w-[30rem] flex flex-col overflow-hidden px-2 transition-all duration-75 ease-in-outs ${
-          !cartStatus ? "translate-x-full" : "translate-x-0"
+          !cartStatus ? 'translate-x-full' : 'translate-x-0'
         }`}
       >
         <div className="flex items-center justify-between py-4">
           <p className="text-center font-semibold text-xl m-auto ">
-            {localStorage.getItem("seletedLobby")} -{" "}
-            {localStorage.getItem("seletedTable")}
+            {localStorage.getItem('seletedLobby')} -{' '}
+            {localStorage.getItem('seletedTable')}
           </p>
           <XMarkIcon
             onClick={() => {
@@ -61,7 +61,7 @@ export function ManCart({ title }) {
             {apiItemsOfCart.length !== 0 && <hr className="my-5" />}
             {itemsOfCart.length >= 1
               ? itemsOfCart.map((itemData) => (
-                  <div>
+                  <div key={itemData.slug}>
                     <CartItems2 key={itemData.slug} {...itemData} />
                   </div>
                 ))
@@ -82,7 +82,7 @@ export function ManCart({ title }) {
             {apiItemsOfCart.length !== 0 && <hr className="my-5" />}
             {itemsOfCart.length >= 1
               ? itemsOfCart.map((itemData) => (
-                  <div>
+                  <div key={itemData.slug}>
                     <CartItems2 key={itemData.slug} {...itemData} />
                   </div>
                 ))

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useCtx } from '../../../../context/Ctx';
 import { useCartCtx } from '../../../../context/CartCtx';
 import { IoIosArrowForward } from 'react-icons/io';
@@ -128,7 +128,7 @@ export const PendingOrders = () => {
                                     i?.isBooked !== true &&
                                     ordersList &&
                                     ordersList?.map(
-                                      (j, index) => j.TableNo === i.tableNo
+                                      (j) => j.TableNo === i.tableNo
                                     )
                                       ? 'bg-gray-400'
                                       : 'bg-blue-500'

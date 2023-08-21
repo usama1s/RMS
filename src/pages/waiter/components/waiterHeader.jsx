@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useCtx } from "../../../context/Ctx";
-import { GiHamburgerMenu } from "react-icons/gi";
-import api from "../../../config/AxiosBase";
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useCtx } from '../../../context/Ctx';
+import { GiHamburgerMenu } from 'react-icons/gi';
+import { CurrentDateTime } from '../../../utils/formatData';
+import api from '../../../config/AxiosBase';
 
 export function WaiterHeader() {
   const navigate = useNavigate();
@@ -15,10 +16,10 @@ export function WaiterHeader() {
 
   const logout = async () => {
     try {
-      await api.get("/signout", { withCredentials: true });
-      navigate("/global-signin");
+      await api.get('/signout', { withCredentials: true });
+      navigate('/global-signin');
       setAuthenticatedUser(null);
-      localStorage.removeItem("ADMIN");
+      localStorage.removeItem('ADMIN');
       localStorage.clear();
     } catch (e) {
       console.log(e);
@@ -27,18 +28,8 @@ export function WaiterHeader() {
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      const currentDate = new Date();
-      const formattedDate = currentDate.toLocaleString(undefined, {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "numeric",
-        minute: "numeric",
-      });
-
-      const formattedDateWithoutAt = formattedDate.replace("at", "");
-
-      setCurrentDateTime(formattedDateWithoutAt);
+      const formattedDate = CurrentDateTime();
+      setCurrentDateTime(formattedDate);
     }, 1000);
 
     return () => {

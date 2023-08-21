@@ -31,14 +31,16 @@ export function WaiterOrder() {
   };
 
   const getItemByCategory = async () => {
-    try {
-      const resp = await api.get('/getItemsById/' + active, {
-        withCredentials: true,
-      });
+    if (active !== '') {
+      try {
+        const resp = await api.get('/getItemsById/' + active, {
+          withCredentials: true,
+        });
 
-      setItems(resp.data.data);
-    } catch (err) {
-      console.log(err.response.data.message);
+        setItems(resp.data.data);
+      } catch (err) {
+        console.log(err.response.data.message);
+      }
     }
   };
 

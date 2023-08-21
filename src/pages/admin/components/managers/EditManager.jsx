@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useCtx } from '../../../../context/Ctx';
 import api from '../../../../config/AxiosBase';
 

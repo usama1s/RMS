@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import api from '../../../../config/AxiosBase';
 import { useCtx } from '../../../../context/Ctx';
 import { useCartCtx } from '../../../../context/CartCtx';
@@ -12,11 +12,10 @@ const PendingOrders = () => {
   const [ordersList, setOrdersList] = useState();
   const [noLobbyError, setNoLobbyError] = useState('');
   const [active, setActive] = useState('');
-  const [toggleDetail, setToggleDetail] = useState(false);
+  // const [toggleDetail, setToggleDetail] = useState(false);
   const [orderDetail, setOrderDetail] = useState();
   const [isOpen, setIsOpen] = useState({});
-  const { updateModalStatus, updateApiDoneStatus, apiDone, authDetailInfo } =
-    useCtx();
+  const { updateModalStatus, updateApiDoneStatus, apiDone } = useCtx();
   const { onItemAddFromAPI, updateCartStatus, addOrderData, resetApiCart } =
     useCartCtx();
 
@@ -78,6 +77,7 @@ const PendingOrders = () => {
       tableNo: resp?.data.data[0].TableNo,
       item: resp?.data.data[0].OrderItems,
       totalPrice: resp?.data.data[0].TotalPrice,
+      customerNote: resp?.data.data[0].customerNote,
     };
 
     onItemAddFromAPI(transformObj);
@@ -94,7 +94,44 @@ const PendingOrders = () => {
     setActive(lobbyName);
   };
 
-  if (isLoading) return <p>Loading...</p>;
+  const handleTableClick = (item, table) => {
+    if (!table.isBooked) {
+      localStorage.setItem('seletedLobby', item.lobbyName);
+      localStorage.setItem('seletedTable', table.tableNumber);
+      localStorage.setItem('selectedLobbyId', item._id);
+      localStorage.removeItem('orderId');
+      resetApiCart();
+
+      addOrderData(item.lobbyName, table.tableNumber);
+
+      updateModalStatus(
+        true,
+        <UpdateStatusJSX
+          slug={orderDetail?._id}
+          updateModalStatus={updateModalStatus}
+          updateApiDoneStatus={updateApiDoneStatus}
+          apiDone={apiDone}
+          updateCartStatus={updateCartStatus}
+        />
+      );
+    } else {
+      const existingOrder = ordersList.find(
+        (order) =>
+          order.TableNo === table.tableNumber && order.Status !== 'cancelled'
+      );
+
+      if (existingOrder) {
+        localStorage.setItem('seletedLobby', item.lobbyName);
+        localStorage.setItem('seletedTable', table.tableNumber);
+        localStorage.setItem('selectedLobbyId', item._id);
+        resetApiCart();
+        addOrderData(item.lobbyName, table.tableNumber);
+
+        getSingleOrders(item.lobbyName, table.tableNumber, existingOrder._id);
+      }
+    }
+  };
+
   if (error) return <p>Something went wrong.</p>;
   if (noLobbyError) return <p>No Lobbies Found</p>;
 
@@ -121,7 +158,7 @@ const PendingOrders = () => {
                     <div
                       className={`${
                         isOpen === item.lobbyName ? 'relative' : 'hidden'
-                      } border-l-2 border-purple-600 duration-500 transition-all`}
+                      } border-l-2 border-gray-900 duration-500 transition-all`}
                     >
                       <div className="p-3 mt-4 flex gap-4 flex-wrap">
                         {item.Tables?.map((i, ind) => (
@@ -130,68 +167,12 @@ const PendingOrders = () => {
                             className={`${
                               i?.isBooked !== true &&
                               ordersList &&
-                              ordersList?.map(
-                                (j, index) => j.TableNo === i.tableNo
-                              )
+                              ordersList?.map((j) => j.TableNo === i.tableNo)
                                 ? 'bg-gray-400'
                                 : 'bg-blue-500'
                             } px-4 py-2 w-14 h-14 rounded-md hover:scale-110 duration-200 cursor-pointer flex items-center justify-center text-white`}
                             onClick={() => {
-                              if (i?.isBooked !== true) {
-                                localStorage.setItem(
-                                  'seletedLobby',
-                                  item.lobbyName
-                                );
-                                localStorage.setItem(
-                                  'seletedTable',
-                                  i.tableNumber
-                                );
-                                localStorage.setItem(
-                                  'selectedLobbyId',
-                                  item._id
-                                );
-                                localStorage.removeItem('orderId');
-                                resetApiCart();
-                                addOrderData(item.lobbyName, i.tableNumber);
-                                updateModalStatus(
-                                  true,
-                                  <UpdateStatusJSX
-                                    slug={orderDetail?._id}
-                                    updateModalStatus={updateModalStatus}
-                                    updateApiDoneStatus={updateApiDoneStatus}
-                                    apiDone={apiDone}
-                                    updateCartStatus={updateCartStatus}
-                                  />
-                                );
-                              } else {
-                                {
-                                  if (
-                                    ordersList?.find(
-                                      (order) => order.TableNo === i.tableNumber
-                                    )
-                                  ) {
-                                    const order = ordersList.find(
-                                      (order) => order.TableNo === i.tableNumber
-                                    );
-                                    localStorage.setItem('orderId', order._id);
-                                  }
-                                }
-                                localStorage.setItem(
-                                  'seletedLobby',
-                                  item.lobbyName
-                                );
-                                localStorage.setItem(
-                                  'seletedTable',
-                                  i.tableNumber
-                                );
-                                resetApiCart();
-                                addOrderData(item.lobbyName, i.tableNumber);
-                                getSingleOrders(
-                                  item.lobbyName,
-                                  i.tableNumber,
-                                  localStorage.getItem('orderId')?.toString()
-                                );
-                              }
+                              handleTableClick(item, i);
                             }}
                           >
                             {i.tableNumber}
@@ -205,7 +186,7 @@ const PendingOrders = () => {
           </div>
         </div>
       </main>
-      {toggleDetail && (
+      {/* {toggleDetail && (
         <div className="mt-4 bg-blue-500 p-4 rounded-2xl text-white">
           <div className="flex justify-between">
             <h1 className="text-2xl font-bold mb-2">Order Detail</h1>
@@ -298,7 +279,7 @@ const PendingOrders = () => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </>
   );
 };

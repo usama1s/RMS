@@ -1,23 +1,14 @@
-import { PlusCircleIcon, MinusCircleIcon } from "@heroicons/react/24/solid";
-import { useCartCtx } from "../context/CartCtx";
-import { useCtx } from "../context/Ctx";
-import api from "../config/AxiosBase";
+import { useCtx } from '../context/Ctx';
+import api from '../config/AxiosBase';
 
 export function CartItems(props) {
-  const { onItemDelete, onCartItemAdd, onCartItemRemove, onApiItemDelete } =
-    useCartCtx();
   const { updateModalStatus, updateApiDoneStatus, apiDone } = useCtx();
 
   function convertToReadable(dateTimeString) {
     const dateTime = new Date(dateTimeString);
     const options = {
-      // weekday: "long",
-      // year: "numeric",
-      // month: "long",
-      // day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-      // second: "numeric",
+      hour: 'numeric',
+      minute: 'numeric',
     };
     return dateTime.toLocaleString(undefined, options);
   }
@@ -47,7 +38,7 @@ export function CartItems(props) {
                         </p>
                       </div>
                       <div className="flex items-center gap-4">
-                        {localStorage.getItem("ADMIN") !== "MANAGER" && (
+                        {localStorage.getItem('ADMIN') !== 'MANAGER' && (
                           <svg
                             onClick={() =>
                               updateModalStatus(
@@ -77,6 +68,15 @@ export function CartItems(props) {
                     </div>
                   </div>
                 ))}
+                {j.customerNote ? (
+                  <>
+                    <h5 className="font-semibold text-sm text-gray-500 underline">
+                      Customer Note
+                    </h5>
+                    <p className="text-sm">{j.customerNote}</p>
+                  </>
+                ) : null}
+
                 <div className="mb-3" />
               </div>
             ))}

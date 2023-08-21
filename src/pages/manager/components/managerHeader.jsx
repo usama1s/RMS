@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { useCtx } from "../../../context/Ctx";
-import { useNavigate } from "react-router";
-import { IoIosArrowUp } from "react-icons/io";
-import { GiHamburgerMenu } from "react-icons/gi";
-import api from "../../../config/AxiosBase";
+import { useEffect, useState } from 'react';
+import { useCtx } from '../../../context/Ctx';
+import { useNavigate } from 'react-router';
+import { IoIosArrowUp } from 'react-icons/io';
+import { GiHamburgerMenu } from 'react-icons/gi';
+import { CurrentDateTime } from '../../../utils/formatData';
+import api from '../../../config/AxiosBase';
 
 export function ManagerHeader() {
   const navigate = useNavigate();
@@ -19,11 +20,11 @@ export function ManagerHeader() {
 
   const logout = async () => {
     try {
-      await api.get("/signout", { withCredentials: true });
-      updateManagerSidebarLinks("Home")();
+      await api.get('/signout', { withCredentials: true });
+      updateManagerSidebarLinks('Home')();
       setAuthenticatedUser(null);
-      localStorage.removeItem("ADMIN");
-      navigate("/global-signin");
+      localStorage.removeItem('ADMIN');
+      navigate('/global-signin');
     } catch (e) {
       console.log(e);
     }
@@ -31,7 +32,7 @@ export function ManagerHeader() {
 
   const getMe = async () => {
     try {
-      const resp = await api.get("/me", { withCredentials: true });
+      const resp = await api.get('/me', { withCredentials: true });
       setProfileData(resp.data.data.doc);
     } catch (err) {
       console.log(err);
@@ -44,18 +45,8 @@ export function ManagerHeader() {
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      const currentDate = new Date();
-      const formattedDate = currentDate.toLocaleString(undefined, {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "numeric",
-        minute: "numeric",
-      });
-
-      const formattedDateWithoutAt = formattedDate.replace("at", "");
-
-      setCurrentDateTime(formattedDateWithoutAt);
+      const formattedDate = CurrentDateTime();
+      setCurrentDateTime(formattedDate);
     }, 1000);
 
     return () => {
@@ -87,18 +78,18 @@ export function ManagerHeader() {
               className="w-8 h-8 border rounded-full dark:bg-gray-500 dark:border-gray-700"
             />
           </div>
-          {profileData?.name}{" "}
+          {profileData?.name}{' '}
           <IoIosArrowUp
             className={`${
-              toggleDropdown != true ? "rotate-180" : ""
+              toggleDropdown != true ? 'rotate-180' : ''
             } w-4 h-4 ml-2`}
           />
         </button>
         <div
           className={`${
             toggleDropdown != true
-              ? "hidden"
-              : "absolute top-14 right-0 z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-900"
+              ? 'hidden'
+              : 'absolute top-14 right-0 z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-900'
           } `}
         >
           <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">

@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { useFormik } from "formik";
-import { validation_schema_admin_add_managers } from "../../../../utils/validation_schema";
-import { useCtx } from "../../../../context/Ctx";
-import api from "../../../../config/AxiosBase";
+import { useState } from 'react';
+import { useFormik } from 'formik';
+import { validation_schema_admin_add_managers } from '../../../../utils/validation_schema';
+import { useCtx } from '../../../../context/Ctx';
+import api from '../../../../config/AxiosBase';
 
 export function AdminAddManagers() {
   const [status, setStatus] = useState({ loading: false, error: null });
@@ -10,16 +10,16 @@ export function AdminAddManagers() {
 
   const formik = useFormik({
     initialValues: {
-      branchName: "",
-      managerName: "",
-      email: "",
-      password: "",
+      branchName: '',
+      managerName: '',
+      email: '',
+      password: '',
     },
     validationSchema: validation_schema_admin_add_managers,
     onSubmit: onSubmit,
   });
 
-  async function onSubmit(values, actions) {
+  async function onSubmit(values) {
     setStatus({ loading: true, error: null });
     try {
       let data = {
@@ -27,10 +27,10 @@ export function AdminAddManagers() {
         name: values.managerName,
         email: values.email,
         password: values.password,
-        role: "MANAGER",
+        role: 'MANAGER',
       };
 
-      await api.post("/branch-register", data, {
+      await api.post('/branch-register', data, {
         withCredentials: true,
       });
       setStatus({ error: null, loading: false });
@@ -40,14 +40,11 @@ export function AdminAddManagers() {
       console.log(e);
       setStatus({
         loading: false,
-        error: e ? e?.response.data.error : "Error creating the user.",
+        error: e ? e?.response.data.error : 'Error creating the user.',
       });
     }
   }
 
-  const reset = (actions) => {
-    actions.resetForm({ branchName: "" });
-  };
   const formJSX = (
     <div>
       <h1 className="font-bold text-2xl py-3">Add Branches</h1>
@@ -69,13 +66,13 @@ export function AdminAddManagers() {
               {formik.touched.branchName && formik.errors.branchName ? (
                 <p className="my-2 text-red-500">{formik.errors.branchName}</p>
               ) : (
-                ""
+                ''
               )}
             </div>
           </div>
           <div>
             <label htmlFor="" className="text-lg font-medium text-gray-900">
-              Manager's Name
+              Manager&aposs Name
             </label>
             <div className="mt-1">
               <input
@@ -89,7 +86,7 @@ export function AdminAddManagers() {
               {formik.touched.managerName && formik.errors.managerName ? (
                 <p className="my-2 text-red-500">{formik.errors.managerName}</p>
               ) : (
-                ""
+                ''
               )}
             </div>
           </div>
@@ -109,7 +106,7 @@ export function AdminAddManagers() {
               {formik.touched.email && formik.errors.email ? (
                 <p className="my-2 text-red-500">{formik.errors.email}</p>
               ) : (
-                ""
+                ''
               )}
             </div>
           </div>
@@ -129,7 +126,7 @@ export function AdminAddManagers() {
               {formik.touched.password && formik.errors.password ? (
                 <p className="my-2 text-red-500">{formik.errors.password}</p>
               ) : (
-                ""
+                ''
               )}
             </div>
           </div>
@@ -141,7 +138,7 @@ export function AdminAddManagers() {
               type="submit"
               disabled={status.loading}
             >
-              {status.loading ? "Adding..." : "Add Branch"}
+              {status.loading ? 'Adding...' : 'Add Branch'}
             </button>
           </div>
         </div>

@@ -15,8 +15,6 @@ export function ManagerOrderCards({ items }) {
     };
   }, []);
 
-  console.log({ items });
-
   return (
     <div className={`flex flex-wrap gap-2 overflow-x-hidden mt-4`}>
       {items && items.length !== 0 ? (

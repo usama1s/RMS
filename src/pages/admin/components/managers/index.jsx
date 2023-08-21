@@ -122,7 +122,6 @@ export function AdminManagerSection() {
 }
 
 function DeleteItemJSX({ slug, updateModalStatus }) {
-  const [status, setStatus] = useState({ loading: false, error: null });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const { updateApiDoneStatus, apiDone } = useCtx();

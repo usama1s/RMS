@@ -1,4 +1,4 @@
-import { AdminSidebar } from "./adminSidebar";
+import { AdminSidebar } from './adminSidebar';
 
 export function AdminLayout({ children }) {
   return (

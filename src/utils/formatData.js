@@ -17,3 +17,16 @@ export function convertDateTime(dateTimeString) {
 
   return formattedDateTime;
 }
+
+export function CurrentDateTime() {
+  const currentDate = new Date();
+  return currentDate
+    .toLocaleString(undefined, {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+    })
+    .replace('at', '');
+}

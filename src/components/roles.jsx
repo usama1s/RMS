@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
-import { ROLES } from "../utils/roles";
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
+import { ROLES } from '../utils/roles';
 function RolesComponent() {
   const navigate = useNavigate();
   const [roles, setRoles] = useState();

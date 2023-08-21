@@ -1,8 +1,7 @@
-import React from "react";
-import { useCtx } from "../../../context/Ctx";
-import { useNavigate } from "react-router";
-import { GiHamburgerMenu } from "react-icons/gi";
-import api from "../../../config/AxiosBase";
+import { useCtx } from '../../../context/Ctx';
+import { useNavigate } from 'react-router';
+import { GiHamburgerMenu } from 'react-icons/gi';
+import api from '../../../config/AxiosBase';
 
 export function AdminHeader() {
   const navigate = useNavigate();
@@ -15,11 +14,11 @@ export function AdminHeader() {
 
   const logout = async () => {
     try {
-      await api.get("/signout", { withCredentials: true });
-      updateAdminSidebarLinks("Branches")();
+      await api.get('/signout', { withCredentials: true });
+      updateAdminSidebarLinks('Branches')();
       setAuthenticatedUser(null);
-      localStorage.removeItem("ADMIN");
-      navigate("/global-signin");
+      localStorage.removeItem('ADMIN');
+      navigate('/global-signin');
     } catch (e) {
       console.log(e);
     }

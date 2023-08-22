@@ -68,6 +68,8 @@ export function WaiterOrder() {
 
   if (loading) return <Loading />;
 
+  console.log({ formattedData });
+
   return (
     <>
       <div className="w-full flex flex-wrap gap-4 mt-4">

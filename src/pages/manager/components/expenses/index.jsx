@@ -1,19 +1,19 @@
-import { useState, useEffect } from "react";
-import { PlusIcon } from "@heroicons/react/24/solid";
-import { useCtx } from "../../../../context/Ctx";
-import { AddExpense } from "./add-expenses";
-import { ExpensesListingsItems } from "./expenses-listing";
-import api from "../../../../config/AxiosBase";
+import { useState, useEffect } from 'react';
+import { PlusIcon } from '@heroicons/react/24/solid';
+import { useCtx } from '../../../../context/Ctx';
+import { AddExpense } from './add-expenses';
+import { ExpensesListingsItems } from './expenses-listing';
+import api from '../../../../config/AxiosBase';
 
 export const Expenses = () => {
   const { updateModalStatus, apiDone } = useCtx();
   const [formattedData, setFormattedData] = useState();
   const [clockingData, setClockingData] = useState();
-  const [selectedClocking, setSelectedClocking] = useState("all");
+  const [selectedClocking, setSelectedClocking] = useState('all');
 
   const getClockingsData = async () => {
     const resp = await api.get(
-      `/getAllClockings/${localStorage.getItem("managerId")}`,
+      `/getAllClockings/${localStorage.getItem('managerId')}`,
       {
         withCredentials: true,
       }
@@ -31,11 +31,11 @@ export const Expenses = () => {
   function convertTimestamp(timestamp) {
     const date = new Date(timestamp);
     const options = {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
     };
     return date.toLocaleDateString(undefined, options);
   }
@@ -67,7 +67,8 @@ export const Expenses = () => {
           {clockingData &&
             clockingData?.map((item, index) => (
               <option key={index + 1} value={item?.startDateTime}>
-                {convertTimestamp(item?.startDateTime)}
+                {convertTimestamp(item?.startDateTime)} to{' '}
+                {convertTimestamp(item?.endDateTime)}
               </option>
             ))}
         </select>

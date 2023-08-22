@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { useCtx } from "../../../../context/Ctx";
-import api from "../../../../config/AxiosBase";
-import DataTable from "react-data-table-component";
+import React, { useState, useEffect } from 'react';
+import { useCtx } from '../../../../context/Ctx';
+import api from '../../../../config/AxiosBase';
+import DataTable from 'react-data-table-component';
 
 export const CancelledOrder = () => {
   const { apiDone } = useCtx();
   const [loading, setLoading] = useState(false);
   const [formattedData, setFormattedData] = useState();
   const [clockingData, setClockingData] = useState();
-  const [selectedClocking, setSelectedClocking] = useState("all");
+  const [selectedClocking, setSelectedClocking] = useState('all');
 
   const getClockingsData = async () => {
     const resp = await api.get(
-      `/getAllClockings/${localStorage.getItem("managerId")}`,
+      `/getAllClockings/${localStorage.getItem('managerId')}`,
       {
         withCredentials: true,
       }
@@ -30,33 +30,33 @@ export const CancelledOrder = () => {
   function convertTimestamp(timestamp) {
     const date = new Date(timestamp);
     const options = {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
     };
     return date.toLocaleDateString(undefined, options);
   }
 
   const column = [
     {
-      name: "Testing ID",
-      selector: (row, index) => index + 1,
+      name: 'Id',
+      selector: (row) => row._id,
       sortable: true,
     },
     {
-      name: "Date and Time",
+      name: 'Date and Time',
       selector: (row) => convertTimestamp(row.createdAt),
       sortable: true,
     },
     {
-      name: "Total Price",
+      name: 'Total Price',
       selector: (row) => row.TotalPrice,
       sortable: true,
     },
     {
-      name: "PaymentMethod",
+      name: 'PaymentMethod',
       selector: (row) => row.PaymentMethod,
       sortable: true,
     },
@@ -117,7 +117,7 @@ export const CancelledOrder = () => {
       <DataTable
         columns={column}
         data={formattedData
-          ?.filter((item) => item.Status === "cancelled")
+          ?.filter((item) => item.Status === 'cancelled')
           .sort((a, b) => a.createdAt - b.createdAt)}
         pagination
         fixedHeader

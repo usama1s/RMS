@@ -5,6 +5,8 @@ import { useCtx } from '../context/Ctx';
 import { useCartCtx } from '../context/CartCtx';
 import { XMarkIcon } from '@heroicons/react/24/solid';
 import { WaiterOrder } from '../pages/waiter/components/orders';
+import { BsFillPlusCircleFill } from 'react-icons/bs';
+import { AiFillMinusCircle } from 'react-icons/ai';
 import { HiOutlineSwitchHorizontal } from 'react-icons/hi';
 import { PlusCircleIcon } from '@heroicons/react/24/solid';
 import { Cart2Items } from './cart2Items';
@@ -29,6 +31,15 @@ export function Cart() {
   } = useCartCtx();
   const { updateModalStatus, updateApiDoneStatus, apiDone, modalStatus } =
     useCtx();
+  const [qty, setQty] = useState(1);
+
+  const add = (value) => () => {
+    if (qty + value <= 0) {
+      setQty(1);
+      return;
+    }
+    setQty((prev) => prev + value);
+  };
 
   const handleTooltipMouseEnter = () => {
     setShowTooltip(true);
@@ -77,6 +88,7 @@ export function Cart() {
       customerNote,
       slug: apiItemsOfCart[0]?.slug,
       managerId: localStorage.getItem('managerId'),
+      CustomerCount: qty,
     };
 
     const resp = await api.post('/makeDineInOrderPending', payload, {
@@ -175,6 +187,8 @@ export function Cart() {
     );
     updateApiDoneStatus(!apiDone);
   };
+
+  console.log({ apiItemsOfCart });
 
   return (
     <div
@@ -278,14 +292,32 @@ export function Cart() {
                 ))
               : null}
             {itemsOfCart.length >= 1 && (
-              <textarea
-                id="message"
-                rows="4"
-                className="mb-4 block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Write customer note if there is any..."
-                value={customerNote}
-                onChange={(e) => setCustomerNote(e.target.value)}
-              />
+              <div>
+                <textarea
+                  id="message"
+                  rows="4"
+                  className="mb-4 block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Write customer note if there is any..."
+                  value={customerNote}
+                  onChange={(e) => setCustomerNote(e.target.value)}
+                />
+                <div className="flex items-center py-2 gap-2 justify-center">
+                  <AiFillMinusCircle
+                    onClick={add(-1)}
+                    className="text-2xl text-gray-900 cursor-pointer"
+                  />
+                  <input
+                    type="number"
+                    value={qty}
+                    onChange={(e) => setQty(e.target.value)}
+                    className="w-16 h-8 text-center border rounded hide-arrows"
+                  />
+                  <BsFillPlusCircleFill
+                    onClick={add(+1)}
+                    className="text-2xl text-gray-900 cursor-pointer"
+                  />
+                </div>
+              </div>
             )}
             <div className="flex justify-center gap-4">
               {modalStatus.status === false ? (
@@ -400,7 +432,7 @@ const PlaceOrderJSX = ({
   const [resp, setResp] = useState();
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
-  const [selectedItem, setSelectedItem] = useState('Cash');
+  const [selectedItem, setSelectedItem] = useState('');
   const [selectedAmount, setSelectedAmount] = useState(TotalPriceOfCart);
   const LobbyName = localStorage.getItem('seletedLobby');
   const TableNo = localStorage.getItem('seletedTable');
@@ -415,9 +447,12 @@ const PlaceOrderJSX = ({
       setError(true);
     }
 
+    setSelectedItem(resp.data.data[0].title);
     setResp(resp.data.data);
     setLoading(false);
   };
+
+  console.log({ selectedItem });
 
   const handleSelectChange = (event) => {
     setSelectedItem(event.target.value);

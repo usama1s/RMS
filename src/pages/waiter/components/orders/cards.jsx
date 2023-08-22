@@ -16,7 +16,7 @@ export function ManagerOrderCards({ items }) {
   }, []);
 
   return (
-    <div className={`flex flex-wrap gap-2 overflow-x-hidden mt-4`}>
+    <div className={`flex flex-wrap gap-2 overflow-x-hidden overflow-y-auto h-[500px] mt-4`}>
       {items && items.length !== 0 ? (
         items?.map((data) => (
           <div

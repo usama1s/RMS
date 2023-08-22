@@ -1,6 +1,7 @@
 import { useState, useEffect, useReducer } from 'react';
-import { ImStatsDots, ImStatsBars } from 'react-icons/im';
-import { BiStats } from 'react-icons/bi';
+import { AiOutlineCheckCircle } from 'react-icons/ai';
+import { GiCancel } from 'react-icons/gi';
+import { GrNotes } from 'react-icons/gr';
 import { useCtx } from '../../../../../context/Ctx';
 import ClockinMessage from '../../../../../components/ClockinMessage';
 import api from '../../../../../config/AxiosBase';
@@ -87,7 +88,7 @@ const HomeStats = () => {
               }}
             >
               <div className="flex justify-center p-2 align-middle rounded-lg sm:p-4 bg-teal-400 group-hover:scale-105 duration-200">
-                <BiStats className="h-9 w-9 text-gray-800" />
+                <AiOutlineCheckCircle className="h-9 w-9 text-gray-800" />
               </div>
               <div className="flex flex-col justify-center align-middle">
                 <p className="text-3xl font-semibold leading">
@@ -107,7 +108,7 @@ const HomeStats = () => {
               }}
             >
               <div className="flex justify-center p-2 align-middle rounded-lg sm:p-4 bg-teal-400 group-hover:scale-105 duration-200">
-                <ImStatsDots className="h-9 w-9 text-gray-800" />
+                <GiCancel className="h-9 w-9 text-gray-800" />
               </div>
               <div className="flex flex-col justify-center align-middle">
                 <p className="text-3xl font-semibold leadi">
@@ -126,7 +127,7 @@ const HomeStats = () => {
               }}
             >
               <div className="flex justify-center p-2 align-middle rounded-lg sm:p-4 bg-teal-400 group-hover:scale-105 duration-200">
-                <ImStatsBars className="h-9 w-9 text-gray-800" />
+                <GrNotes className="h-9 w-9 text-gray-800" />
               </div>
               <div className="flex flex-col justify-center align-middle">
                 <p className="text-3xl font-semibold leadi">

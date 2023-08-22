@@ -60,6 +60,8 @@ export const PendingOrders = () => {
       }
     );
 
+    console.log(resp);
+
     const transformObj = {
       slug: resp.data.data[0]._id,
       createdAt: resp.data.data[0].createdAt,
@@ -67,6 +69,7 @@ export const PendingOrders = () => {
       tableNo: resp.data.data[0].TableNo,
       item: resp.data.data[0].OrderItems,
       totalPrice: resp.data.data[0].TotalPrice,
+      customerCount: resp.data.data[0].CustomerCount,
     };
 
     updateCartStatus(true, null);

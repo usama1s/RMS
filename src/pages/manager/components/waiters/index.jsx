@@ -75,8 +75,8 @@ export function ManagersWaiterSection() {
                 </p>
                 <div className="flex gap-2 flex-wrap pt-1">
                   {data.waiterRole === 'Regular Waiter' ? (
-                    data?.lobbyAssigned?.length > 0 ? (
-                      data?.lobbyAssigned.map((item, index) => (
+                    data?.assignedLobbies?.length > 0 ? (
+                      data?.assignedLobbies.map((item, index) => (
                         <div key={index + 1}>
                           <p className="font-semibold bg-green-500 text-white p-1 rounded-md text-sm">
                             {item?.name}

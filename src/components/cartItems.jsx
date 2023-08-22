@@ -2,6 +2,7 @@ import { useCtx } from '../context/Ctx';
 import api from '../config/AxiosBase';
 
 export function CartItems(props) {
+  console.log({ props });
   const { updateModalStatus, updateApiDoneStatus, apiDone } = useCtx();
 
   function convertToReadable(dateTimeString) {
@@ -68,12 +69,17 @@ export function CartItems(props) {
                     </div>
                   </div>
                 ))}
+
                 {j.customerNote ? (
                   <>
                     <h5 className="font-semibold text-sm text-gray-500 underline">
                       Customer Note
                     </h5>
                     <p className="text-sm">{j.customerNote}</p>
+                    <h5 className="font-semibold text-sm text-gray-500 underline">
+                      Customer Count
+                    </h5>
+                    <p className="text-sm">{pItem.customerCount}</p>
                   </>
                 ) : null}
 

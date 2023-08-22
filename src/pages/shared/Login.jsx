@@ -38,17 +38,9 @@ const Login = () => {
         withCredentials: true,
       });
 
-      if (response.data.data.subRole === 'Regular Waiter') {
-        localStorage.setItem(
-          'lobbyIds',
-          JSON.stringify(response.data.data.assignedLobbies)
-        );
-      }
-
       setDetialAuthData(response.data.data);
 
-      localStorage.setItem('lobbyIds', response.data.data);
-
+      localStorage.setItem('name', response.data.data.name);
       localStorage.setItem('ADMIN', response.data.data.role);
       localStorage.setItem('SubRole', response.data.data.subRole);
       localStorage.setItem('branchName', response.data.data.branch);

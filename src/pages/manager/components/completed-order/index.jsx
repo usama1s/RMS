@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { useCtx } from "../../../../context/Ctx";
-import api from "../../../../config/AxiosBase";
-import DataTable from "react-data-table-component";
-import CoCharts from "./components/CoCharts";
-import CoStats from "./components/CoStats";
-import ItemPriceChart from "./components/ItemPriceChart";
+import React, { useState, useEffect } from 'react';
+import { useCtx } from '../../../../context/Ctx';
+import api from '../../../../config/AxiosBase';
+import DataTable from 'react-data-table-component';
+import CoCharts from './components/CoCharts';
+import CoStats from './components/CoStats';
+import ItemPriceChart from './components/ItemPriceChart';
 
 export const CompletedOrder = () => {
   const { apiDone, selectedOrderType } = useCtx();
@@ -12,13 +12,13 @@ export const CompletedOrder = () => {
   const [formattedData, setFormattedData] = useState();
   const [expenseData, setExpenseData] = useState();
   const [clockingData, setClockingData] = useState();
-  const [selectedClocking, setSelectedClocking] = useState("all");
+  const [selectedClocking, setSelectedClocking] = useState('all');
   const [showOrderTable, setShowOrderTable] = useState(true);
   const [showExpenseTable, setShowExpenseTable] = useState(false);
 
   const getClockingsData = async () => {
     const resp = await api.get(
-      `/getAllClockings/${localStorage.getItem("managerId")}`,
+      `/getAllClockings/${localStorage.getItem('managerId')}`,
       {
         withCredentials: true,
       }
@@ -39,36 +39,37 @@ export const CompletedOrder = () => {
     });
     setExpenseData(resp.data.data);
   };
+
   function convertTimestamp(timestamp) {
     const date = new Date(timestamp);
     const options = {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
     };
     return date.toLocaleDateString(undefined, options);
   }
 
   const column = [
     {
-      name: "Testing ID",
-      selector: (row, index) => index + 1,
+      name: 'Id',
+      selector: (row) => row._id,
       sortable: true,
     },
     {
-      name: "Date and Time",
+      name: 'Date and Time',
       selector: (row) => convertTimestamp(row.createdAt),
       sortable: true,
     },
     {
-      name: "Total Price",
+      name: 'Total Price',
       selector: (row) => row.TotalPrice,
       sortable: true,
     },
     {
-      name: "PaymentMethod",
+      name: 'PaymentMethod',
       selector: (row) => row.PaymentMethod,
       sortable: true,
     },
@@ -76,27 +77,27 @@ export const CompletedOrder = () => {
 
   const expenseColumn = [
     {
-      name: "Testing ID",
-      selector: (row, index) => index + 1,
+      name: 'Id',
+      selector: (row) => row._id,
       sortable: true,
     },
     {
-      name: "Date and Time",
+      name: 'Date and Time',
       selector: (row) => convertTimestamp(row.createdAt),
       sortable: true,
     },
     {
-      name: "Title",
+      name: 'Title',
       selector: (row) => row.title,
       sortable: true,
     },
     {
-      name: "Amount",
+      name: 'Amount',
       selector: (row) => row.amount,
       sortable: true,
     },
     {
-      name: "PaymentMethod",
+      name: 'PaymentMethod',
       selector: (row) => row.paymentMethod,
       sortable: true,
     },
@@ -105,7 +106,7 @@ export const CompletedOrder = () => {
   const expenseExpandedComponent = ({ data }) => (
     <div className="flex items-center  bg-gray-200 shadow-md w-[50%] p-4 rounded-md my-4 relative mx-auto">
       <div>
-        <h3 className="font-bold text-xl">Order Detail</h3>
+        <h3 className="font-bold text-xl">Expense Detail</h3>
         <div className="flex gap-8 font-semibold text-sm">
           <p className="w-[100px]">Item Title</p>
           <p className="text-gray-600 mb-2 ">{data?.title}</p>
@@ -120,7 +121,9 @@ export const CompletedOrder = () => {
         </div>
         <div className="flex gap-8 font-semibold text-sm">
           <p className="w-[100px]">Created At: </p>
-          <p className="text-gray-600 mb-2 ">{data?.createdAt}</p>
+          <p className="text-gray-600 mb-2 ">
+            {convertTimestamp(data?.createdAt)}
+          </p>
         </div>
       </div>
     </div>
@@ -165,11 +168,7 @@ export const CompletedOrder = () => {
       </div>
       <div className="flex gap-8 font-semibold text-sm">
         <p>Total Price</p>
-        <p className="text-gray-600 mb-2 ">{data.TotalPrice}</p>
-      </div>
-      <div className="flex gap-8 font-semibold text-sm">
-        <p>Order Status</p>
-        <p className="text-gray-600 mb-2 ">{data.Status}</p>
+        <p className="text-gray-600 mb-2 ">{data.TotalPrice} TL</p>
       </div>
     </div>
   );
@@ -186,10 +185,10 @@ export const CompletedOrder = () => {
   }, [selectedClocking]);
 
   return (
-    <div>
+    <div className="mt-2">
       <h1 className="text-2xl font-bold">Branch Statistics</h1>
       <div className="flex justify-between items-center">
-        {convertTimestamp(selectedClocking) === "Invalid Date" ? (
+        {convertTimestamp(selectedClocking) === 'Invalid Date' ? (
           <span className="bg-gray-100 text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded">
             All
           </span>
@@ -206,7 +205,8 @@ export const CompletedOrder = () => {
           {clockingData &&
             clockingData?.map((item, index) => (
               <option key={index + 1} value={item?.startDateTime}>
-                {convertTimestamp(item?.startDateTime)}
+                {convertTimestamp(item?.startDateTime)} to{' '}
+                {convertTimestamp(item?.endDateTime)}
               </option>
             ))}
         </select>

@@ -12,7 +12,6 @@ const PendingOrders = () => {
   const [ordersList, setOrdersList] = useState();
   const [noLobbyError, setNoLobbyError] = useState('');
   const [active, setActive] = useState('');
-  // const [toggleDetail, setToggleDetail] = useState(false);
   const [orderDetail, setOrderDetail] = useState();
   const [isOpen, setIsOpen] = useState({});
   const { updateModalStatus, updateApiDoneStatus, apiDone } = useCtx();
@@ -24,27 +23,38 @@ const PendingOrders = () => {
       setIsLoading(true);
       let lobbyIds = [];
 
-      const subRole = localStorage.getItem('subRole');
+      const subRole = localStorage.getItem('SubRole');
+
+      const profile = await api.get('me', {
+        withCredentials: true,
+      });
+
       if (subRole === 'Regular Waiter') {
-        const storedLobbyIds = localStorage.getItem('lobbyIds');
-        if (storedLobbyIds) {
-          lobbyIds = JSON.parse(storedLobbyIds);
-        }
+        lobbyIds = profile.data.data.doc.assignedLobbies?.map(
+          (item) => item.value
+        );
       }
 
-      const resp = await api.get(
-        `/getLobbies/${localStorage.getItem('managerId')}`,
-        {
+      const lobbyIdsString = lobbyIds.join(',');
+
+      const managerId = localStorage.getItem('managerId');
+
+      let resp;
+      if (subRole === 'Regular Waiter') {
+        resp = await api.get(`/getLobbiesByWaiter/${managerId}`, {
           withCredentials: true,
-          params: { lobbyIds: lobbyIds.join(',') },
-        }
-      );
+          params: { lobbyIds: lobbyIdsString },
+        });
+      } else {
+        resp = await api.get(`/getLobbies/${managerId}`, {
+          withCredentials: true,
+        });
+      }
 
       setFormattedData(resp?.data.data);
       setIsOpen(resp?.data?.data?.lobbyName);
       setActive(resp?.data?.data?.lobbyName);
     } catch (err) {
-      console.log(err?.response?.data?.message);
       setNoLobbyError(err?.response?.data?.message);
     } finally {
       setIsLoading(false);
@@ -77,7 +87,7 @@ const PendingOrders = () => {
       tableNo: resp?.data.data[0].TableNo,
       item: resp?.data.data[0].OrderItems,
       totalPrice: resp?.data.data[0].TotalPrice,
-      customerNote: resp?.data.data[0].customerNote,
+      customerCount: resp?.data.data[0].CustomerCount,
     };
 
     onItemAddFromAPI(transformObj);
@@ -85,9 +95,24 @@ const PendingOrders = () => {
   };
 
   useEffect(() => {
+    // getMe();
     getLobbies();
     getOrders();
   }, [apiDone]);
+
+  function filterArrayByValues(arr1, arr2) {
+    // Create a set of values from the first array for efficient lookup
+    const valuesToFilterBy = new Set(arr1?.map((item) => item.value));
+
+    // Use filter to create a new array containing only the items with matching values
+    const filteredArray = arr2?.filter((item) =>
+      valuesToFilterBy.has(item._id)
+    );
+
+    return filteredArray;
+  }
+
+  // console.log('testing ', filterArrayByValues(profile, formattedData));
 
   const handleItemClick = (lobbyName) => {
     setIsOpen((prevOpen) => (prevOpen === lobbyName ? '' : lobbyName));
@@ -115,10 +140,12 @@ const PendingOrders = () => {
         />
       );
     } else {
-      const existingOrder = ordersList.find(
+      const existingOrder = ordersList.filter(
         (order) =>
-          order.TableNo === table.tableNumber && order.Status !== 'cancelled'
+          order.TableNo === table.tableNumber && order.Status === 'Pending'
       );
+
+      localStorage.setItem('orderId', existingOrder[0]._id);
 
       if (existingOrder) {
         localStorage.setItem('seletedLobby', item.lobbyName);
@@ -127,7 +154,11 @@ const PendingOrders = () => {
         resetApiCart();
         addOrderData(item.lobbyName, table.tableNumber);
 
-        getSingleOrders(item.lobbyName, table.tableNumber, existingOrder._id);
+        getSingleOrders(
+          item.lobbyName,
+          table.tableNumber,
+          existingOrder[0]._id
+        );
       }
     }
   };

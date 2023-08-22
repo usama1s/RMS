@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import { useCartCtx } from "../context/CartCtx";
+import React, { useState } from 'react';
+import { useCartCtx } from '../context/CartCtx';
 import {
   PlusCircleIcon,
   MinusCircleIcon,
   XMarkIcon,
-} from "@heroicons/react/24/solid";
+} from '@heroicons/react/24/solid';
 
 export function CartModal() {
   const {
@@ -31,7 +31,7 @@ export function CartModal() {
   return (
     <div
       onClick={(e) => {
-        if (e.target.classList.contains("cart-modal-shadow")) {
+        if (e.target.classList.contains('cart-modal-shadow')) {
           updateCartModalStatus(false, null);
         }
       }}
@@ -52,7 +52,12 @@ export function CartModal() {
             onClick={add(-1)}
             className="w-8 h-8 text-gray-900/100 cursor-pointer"
           />
-          <span>{qty}</span>
+          <input
+            type="number"
+            value={qty}
+            onChange={(e) => setQty(e.target.value)}
+            className="w-16 h-8 text-center border rounded hide-arrows"
+          />
           <PlusCircleIcon
             onClick={add(+1)}
             className="w-8 h-8 text-gray-900/100 cursor-pointer"

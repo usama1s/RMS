@@ -14,7 +14,7 @@ export const Home = () => {
   const { updateModalStatus, updateManagerClocking, managerClocking } =
     useCtx();
   const [status, setStatus] = useState({ loading: false, error: null });
-  const [formattedData, setFormattedData] = useState();
+  const [formattedData, setFormattedData] = useState(null);
   const [clockingData, setClockingData] = useState();
 
   const getClockingsData = async () => {
@@ -129,12 +129,14 @@ export const Home = () => {
             )}
           </div>
         </div>
-        <button
-          className="px-8 py-3 font-semibold rounded bg-gray-100 text-gray-800 shadow-md hover:bg-gray-200"
-          onClick={() => updateModalStatus(true, <AddExpense />)}
-        >
-          Add Expense
-        </button>
+        {formattedData !== null ? (
+          <button
+            className="px-8 py-3 font-semibold rounded bg-gray-100 text-gray-800 shadow-md hover:bg-gray-200"
+            onClick={() => updateModalStatus(true, <AddExpense />)}
+          >
+            Add Expense
+          </button>
+        ) : null}
       </div>
       {managerClocking !== undefined ? (
         <>

@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from "react";
-import { useCtx } from "../../../../context/Ctx";
-import { useFormik } from "formik";
-import { validation_schema_manager_add_waiters } from "../../../../utils/validation_schema";
-import api from "../../../../config/AxiosBase";
-import Select from "react-select";
+import React, { useState, useEffect } from 'react';
+import { useCtx } from '../../../../context/Ctx';
+import { useFormik } from 'formik';
+import { validation_schema_manager_add_waiters } from '../../../../utils/validation_schema';
+import api from '../../../../config/AxiosBase';
+import Select from 'react-select';
 
 export function AddWaiters() {
-  const id = localStorage.getItem("managerId");
+  const id = localStorage.getItem('managerId');
   const [status, setStatus] = useState({ loading: false, error: null });
   const { updateModalStatus, updateApiDoneStatus, apiDone } = useCtx();
   const [lobbiesData, setLobbiesData] = useState();
 
   const formik = useFormik({
     initialValues: {
-      waiterName: "",
-      subRole: "Head Waiter",
-      username: "",
-      password: "",
+      waiterName: '',
+      subRole: 'Head Waiter',
+      username: '',
+      password: '',
       lobbyAssigned: [],
     },
     validationSchema: validation_schema_manager_add_waiters,
@@ -42,17 +42,17 @@ export function AddWaiters() {
 
   async function onSubmit(values) {
     setStatus({ loading: true, error: null });
-
+    console.log('test', values.lobbyAssigned);
     try {
       await api.post(
-        "/waiter-register",
+        '/waiter-register',
         {
-          branchName: localStorage.getItem("branchName"),
+          branchName: localStorage.getItem('branchName'),
           name: values.waiterName,
           userName: values.username,
           waiterRole: values.subRole,
           password: values.password,
-          lobbyAssigned: values.lobbyAssigned,
+          assignedLobbies: values.lobbyAssigned,
         },
         {
           withCredentials: true,
@@ -94,7 +94,7 @@ export function AddWaiters() {
               {formik.touched.waiterName && formik.errors.waiterName ? (
                 <p className="my-2 text-red-500">{formik.errors.waiterName}</p>
               ) : (
-                ""
+                ''
               )}
             </div>
           </div>
@@ -118,11 +118,11 @@ export function AddWaiters() {
               {formik.touched.subRole && formik.errors.subRole ? (
                 <p className="my-2 text-red-500">{formik.errors.subRole}</p>
               ) : (
-                ""
+                ''
               )}
             </div>
           </div>
-          {formik.values.subRole === "Regular Waiter" && (
+          {formik.values.subRole === 'Regular Waiter' && (
             <div>
               <label
                 htmlFor="lobbyAssigned"
@@ -139,7 +139,7 @@ export function AddWaiters() {
                     options={options}
                     value={formik.values.lobbyAssigned}
                     onChange={(e) => {
-                      formik.setFieldValue("lobbyAssigned", e);
+                      formik.setFieldValue('lobbyAssigned', e);
                     }}
                     getOptionLabel={(option) => option.name}
                     getOptionValue={(option) => option.value}
@@ -148,7 +148,7 @@ export function AddWaiters() {
                 {formik.touched.subRole && formik.errors.subRole ? (
                   <p className="my-2 text-red-500">{formik.errors.subRole}</p>
                 ) : (
-                  ""
+                  ''
                 )}
               </div>
             </div>
@@ -169,7 +169,7 @@ export function AddWaiters() {
               {formik.touched.username && formik.errors.username ? (
                 <p className="my-2 text-red-500">{formik.errors.username}</p>
               ) : (
-                ""
+                ''
               )}
             </div>
           </div>
@@ -189,7 +189,7 @@ export function AddWaiters() {
               {formik.touched.password && formik.errors.password ? (
                 <p className="my-2 text-red-500 ">{formik.errors.password}</p>
               ) : (
-                ""
+                ''
               )}
             </div>
           </div>
@@ -199,7 +199,7 @@ export function AddWaiters() {
             disabled={status.loading}
             className="inline-flex w-full items-center justify-center rounded-md bg-gray-900/100 px-3.5 py-2.5  font-regular leading-7 text-white  text-xl"
           >
-            {status.loading ? "Adding..." : "Add Waiter"}
+            {status.loading ? 'Adding...' : 'Add Waiter'}
           </button>
         </div>
       </form>

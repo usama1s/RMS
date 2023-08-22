@@ -55,7 +55,7 @@ export function ManagerHeader() {
   }, []);
 
   return (
-    <div className="flex items-center justify-between min-h-[10vh] w-full">
+    <div className="flex items-center justify-between min-h-[10vh] w-full border-b-[1px] border-gray-300">
       <GiHamburgerMenu
         className="w-6 h-6 block md:hidden"
         onClick={updateManagerSidebarToggle(!managerSidebarToggle)}

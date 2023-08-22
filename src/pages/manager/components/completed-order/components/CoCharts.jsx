@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import LineChart from "./LineChart";
-import api from "../../../../../config/AxiosBase";
+import React, { useEffect, useState } from 'react';
+import LineChart from './LineChart';
+import api from '../../../../../config/AxiosBase';
 
 const CoCharts = ({ id }) => {
   const [configLabels, setConfigLabels] = useState();
@@ -8,9 +8,10 @@ const CoCharts = ({ id }) => {
 
   const getItemState = async () => {
     const resp = await api.get(`getSoldItemsQTY/${id}`, {
-      withCredentials: "true",
+      withCredentials: 'true',
     });
 
+    console.log('soldItemByQTY', resp);
     if (resp) {
       const sortedQuantities = resp.data.quantities.sort(
         (a, b) => a.quantity - b.quantity
@@ -30,16 +31,16 @@ const CoCharts = ({ id }) => {
     labels: configData,
     datasets: [
       {
-        label: "Quantity",
+        label: 'Quantity',
         data: configLabels,
         backgroundColor: [
-          "rgba(75,192,192,1)",
-          "#ecf0f1",
-          "#50AF95",
-          "#f3ba2f",
-          "#2a71d0",
+          'rgba(75,192,192,1)',
+          '#ecf0f1',
+          '#50AF95',
+          '#f3ba2f',
+          '#2a71d0',
         ],
-        borderColor: "black",
+        borderColor: 'black',
         borderWidth: 1,
       },
     ],

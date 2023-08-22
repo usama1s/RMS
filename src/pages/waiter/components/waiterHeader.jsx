@@ -38,9 +38,12 @@ export function WaiterHeader() {
   }, []);
 
   return (
-    <div className="flex items-center justify-between  min-h-[10vh] w-full">
+    <div className="flex items-center justify-between  min-h-[10vh] w-full border-b-[1px] border-gray-300">
       <p className=" font-semibold text-lg">
         {currentDateTime.toLocaleString()}
+      </p>
+      <p className="font-semibold text-gray-900">
+        {localStorage.getItem('name')} - {localStorage.getItem('SubRole')}
       </p>
       <GiHamburgerMenu
         className="w-6 h-6 block md:hidden"

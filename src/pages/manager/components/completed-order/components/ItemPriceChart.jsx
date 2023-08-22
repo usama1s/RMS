@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
-import LineChart from "./LineChart";
-import api from "../../../../../config/AxiosBase";
+import React, { useEffect, useState } from 'react';
+import LineChart from './LineChart';
+import BarChart from '../../../../../components/BarChart';
+import api from '../../../../../config/AxiosBase';
 
 const ItemPriceChart = ({ id }) => {
   const [configLabels, setConfigLabels] = useState();
@@ -8,8 +9,11 @@ const ItemPriceChart = ({ id }) => {
 
   const getItemState = async () => {
     const resp = await api.get(`getSoldItemsPrice/${id}`, {
-      withCredentials: "true",
+      withCredentials: 'true',
     });
+
+    console.log('soldItemPrice', resp);
+
     if (resp) {
       const sortedQuantities = resp.data.quantities.sort(
         (a, b) => a.price - b.price
@@ -29,16 +33,16 @@ const ItemPriceChart = ({ id }) => {
     labels: configData,
     datasets: [
       {
-        label: "Sales",
+        label: 'Sales',
         data: configLabels,
         backgroundColor: [
-          "rgba(75,192,192,1)",
-          "#ecf0f1",
-          "#50AF95",
-          "#f3ba2f",
-          "#2a71d0",
+          'rgba(75,192,192,1)',
+          '#ecf0f1',
+          '#50AF95',
+          '#f3ba2f',
+          '#2a71d0',
         ],
-        borderColor: "black",
+        borderColor: 'black',
         borderWidth: 1,
       },
     ],
@@ -47,7 +51,8 @@ const ItemPriceChart = ({ id }) => {
   return (
     <div className="mt-4">
       <div className="w-[400px]">
-        <LineChart chartData={chartDummyData} />
+        {/* <LineChart chartData={chartDummyData} /> */}
+        <BarChart chartData={chartDummyData} />
       </div>
     </div>
   );

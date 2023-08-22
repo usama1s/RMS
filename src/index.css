@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700&display=swap');
 @tailwind base;
 * {
   scrollbar-width: thin;
@@ -8,7 +8,7 @@
 @tailwind utilities;
 
 body {
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .customScrollbar::-webkit-scrollbar {
@@ -26,4 +26,15 @@ body {
 
 .customScrollbar::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+.hide-arrows::-webkit-outer-spin-button,
+.hide-arrows::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.hide-arrows {
+  -moz-appearance: textfield;
 }

@@ -1,7 +1,7 @@
-import { useCartCtx } from '../../../../context/CartCtx';
+import { useCartCtx } from '../../../../../context/CartCtx';
 
-export function ManagerOrderCards({ items }) {
-  const { updateCartModalStatus, itemsOfCart, onItemAdd } = useCartCtx();
+export function TakeawayItemCard({ items }) {
+  const { updateTakeawayCartModalStatus } = useCartCtx();
 
   return (
     <div
@@ -11,7 +11,7 @@ export function ManagerOrderCards({ items }) {
         items?.map((data) => (
           <div
             onClick={() => {
-              updateCartModalStatus(true, {
+              updateTakeawayCartModalStatus(true, {
                 price: data.price,
                 slug: data._id,
                 title: data.title,

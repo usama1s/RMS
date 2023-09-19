@@ -31,9 +31,7 @@ export function Modal({}) {
             }}
           />
         </div>
-      
-          {jsx}
-      
+        {jsx}
       </div>
     </div>
   );

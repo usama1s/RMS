@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { TrashIcon, PencilIcon } from "@heroicons/react/24/solid";
-import { useCtx } from "../../../../context/Ctx";
-import { ManagerEditItem } from "./edit-items";
-import { Loading } from "../../../../components/loading";
-import api from "../../../../config/AxiosBase";
+import { useState } from 'react';
+import { TrashIcon, PencilIcon } from '@heroicons/react/24/solid';
+import { useCtx } from '../../../../context/Ctx';
+import { ManagerEditItem } from './edit-items';
+// import { Loading } from '../../../../components/loading';
+import api from '../../../../config/AxiosBase';
 
 export function ManagerItemsListingItems({ formattedD }) {
   const {
@@ -13,7 +13,6 @@ export function ManagerItemsListingItems({ formattedD }) {
     apiDone,
     managerClocking,
   } = useCtx();
-  const [propData, setPropData] = useState(formattedD);
 
   const updateItemHandler = async () => {
     updateModalStatus(true, <ManagerEditItem />);
@@ -22,13 +21,13 @@ export function ManagerItemsListingItems({ formattedD }) {
 
   return (
     <>
-      {propData?.map((item, index) => (
+      {formattedD?.map((item, index) => (
         <div
           key={index + 1}
           className={`${
-            item?.category === ""
-              ? "border-2 border-red-600 shadow-red-600"
-              : ""
+            item?.category === ''
+              ? 'border-2 border-red-600 shadow-red-600'
+              : ''
           } flex bg-[#FBFBFB] shadow-md w-full rounded-md my-2 relative`}
         >
           <div className=" w-40 h-40">
@@ -41,7 +40,7 @@ export function ManagerItemsListingItems({ formattedD }) {
             <div className="flex items-center justify-between w-full ">
               <h3 className="font-bold text-xl p-1 ">{item?.title}</h3>
               {(managerClocking?.managerId._id ===
-                localStorage.getItem("managerId") &&
+                localStorage.getItem('managerId') &&
                 managerClocking === undefined) ||
               managerClocking.status !== true ? (
                 <div className="flex">
@@ -83,12 +82,12 @@ export function ManagerItemsListingItems({ formattedD }) {
               <span className="font-semibold text-base mr-1"> Category:</span>
               {item?.category}
             </p>
-            <p className="text-sm truncate" style={{ textWrap: "wrap" }}>
+            <p className="text-sm truncate" style={{ textWrap: 'wrap' }}>
               <span className="font-semibold text-base mr-1">Description:</span>
               {item?.description}
             </p>
             <p className="pt-2 text-sm">
-              <span className="font-semibold text-base mr-1"> Price:</span>{" "}
+              <span className="font-semibold text-base mr-1"> Price:</span>{' '}
               <span className="py-1 bg-green-500 rounded-md text-white px-2 font-semibold">
                 ${item?.price}
               </span>
@@ -135,7 +134,7 @@ function DeleteItemJSX({
                 console.log(e);
                 setStatus({
                   loading: false,
-                  error: "Error deleting the item.",
+                  error: 'Error deleting the item.',
                 });
               }
             }}

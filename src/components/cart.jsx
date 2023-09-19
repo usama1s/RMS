@@ -10,9 +10,9 @@ import { AiFillMinusCircle } from 'react-icons/ai';
 import { HiOutlineSwitchHorizontal } from 'react-icons/hi';
 import { PlusCircleIcon } from '@heroicons/react/24/solid';
 import { Cart2Items } from './cart2Items';
+import CancelOrder from '../pages/waiter/components/orders/cancel-order';
 import api from '../config/AxiosBase';
 import printJS from 'print-js';
-import CancelOrder from '../pages/waiter/components/orders/cancel-order';
 
 export function Cart() {
   const [customerNote, setCustomerNote] = useState('');
@@ -64,6 +64,7 @@ export function Cart() {
       tableNo: resp?.data.data[0].TableNo,
       item: resp?.data.data[0].OrderItems,
       totalPrice: resp?.data.data[0].TotalPrice,
+      customerCount: resp?.data.data[0].CustomerCount,
     };
 
     onItemAddFromAPI(transformObj);
@@ -187,8 +188,6 @@ export function Cart() {
     );
     updateApiDoneStatus(!apiDone);
   };
-
-  console.log({ apiItemsOfCart });
 
   return (
     <div
@@ -451,8 +450,6 @@ const PlaceOrderJSX = ({
     setResp(resp.data.data);
     setLoading(false);
   };
-
-  console.log({ selectedItem });
 
   const handleSelectChange = (event) => {
     setSelectedItem(event.target.value);

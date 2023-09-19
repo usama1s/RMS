@@ -6,9 +6,11 @@ import { ClockOut } from './components/clockout';
 import { PendingOrders } from '../pending-orders';
 import { AddExpense } from '../expenses/add-expenses';
 import { convertDateTime } from '../../../../utils/formatData';
-import api, { url } from '../../../../config/AxiosBase';
 import ClockinMessage from '../../../../components/ClockinMessage';
 import HomeStats from './components/home-stats';
+import DineinTakeawayTabs from './components/DineinTakeawayTabs';
+import TakeawayOrders from './components/takeawayOrders';
+import api, { url } from '../../../../config/AxiosBase';
 
 export const Home = () => {
   const { updateModalStatus, updateManagerClocking, managerClocking } =
@@ -16,6 +18,11 @@ export const Home = () => {
   const [status, setStatus] = useState({ loading: false, error: null });
   const [formattedData, setFormattedData] = useState(null);
   const [clockingData, setClockingData] = useState();
+  const [selectedTab, setSelectedTab] = useState(1);
+
+  const handleTabClick = (tabId) => {
+    setSelectedTab(tabId);
+  };
 
   const getClockingsData = async () => {
     try {
@@ -138,10 +145,15 @@ export const Home = () => {
           </button>
         ) : null}
       </div>
-      {managerClocking !== undefined ? (
+      {managerClocking !== undefined && managerClocking.status !== false ? (
         <>
           <HomeStats />
-          <PendingOrders />
+          <DineinTakeawayTabs
+            handleTabClick={handleTabClick}
+            selectedTab={selectedTab}
+          />
+          {selectedTab === 1 && <PendingOrders />}
+          {selectedTab === 2 && <TakeawayOrders />}
         </>
       ) : (
         <ClockinMessage />

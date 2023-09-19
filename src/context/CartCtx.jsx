@@ -1,10 +1,16 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from 'react';
 const CartCtx = createContext();
 
 export function CartCtxProvider({ children }) {
   const [orderData, setOrderData] = useState({});
   const [cartStatus, setCartStatus] = useState(false);
+  const [manTakeawayCartStatus, setManTakeawayCartStatus] = useState(false);
   const [cartModalStatus, setCartModalStatus] = useState({
+    open: false,
+    value: null,
+  });
+  const [takeawayCartStatus, setTakeawayCartStatus] = useState(false);
+  const [takeawayCartModalStatus, setTakeawayCartModalStatus] = useState({
     open: false,
     value: null,
   });
@@ -28,11 +34,18 @@ export function CartCtxProvider({ children }) {
 
   useEffect(() => {
     if (cartStatus) {
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.overflow = "auto";
+      document.body.style.overflow = 'auto';
     }
   }, [cartStatus]);
+  useEffect(() => {
+    if (manTakeawayCartStatus) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [manTakeawayCartStatus]);
   const onItemAdd = (data) => {
     const itemExists = itemsOfCart.find((d) => d.slug === data.slug);
     if (itemExists) {
@@ -104,14 +117,26 @@ export function CartCtxProvider({ children }) {
   const updateCartStatus = (value) => setCartStatus(value);
   const updateCartModalStatus = (status, value) =>
     setCartModalStatus({ open: status, value });
+  const updateTakeawayCartStatus = (value) => setTakeawayCartStatus(value);
+  const updateTakeawayCartModalStatus = (status, value) =>
+    setTakeawayCartModalStatus({ open: status, value });
+  const updateManTakeawayCartStatus = (value) =>
+    setManTakeawayCartStatus(value);
 
   return (
     <CartCtx.Provider
       value={{
+        // dine in cart status
         cartStatus,
         updateCartStatus,
         cartModalStatus,
         updateCartModalStatus,
+        // takeaway cart status
+        takeawayCartStatus,
+        updateTakeawayCartStatus,
+        takeawayCartModalStatus,
+        updateTakeawayCartModalStatus,
+        // else
         onClearCart,
         onItemAdd,
         onItemAddFromAPI,
@@ -128,6 +153,9 @@ export function CartCtxProvider({ children }) {
         resetApiCart,
         addOrderData,
         orderData,
+        // manager cart
+        updateManTakeawayCartStatus,
+        manTakeawayCartStatus,
       }}
     >
       {children}

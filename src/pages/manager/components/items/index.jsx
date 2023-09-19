@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
-import { PlusIcon } from "@heroicons/react/24/solid";
-import { useCtx } from "../../../../context/Ctx";
-import { ManagerAddItem } from "./add-items";
-import { ManagerItemsListingItems } from "./manager-items-listings-items";
-import { Loading } from "../../../../components/loading";
-import api from "../../../../config/AxiosBase";
+import { useEffect, useState } from 'react';
+import { PlusIcon } from '@heroicons/react/24/solid';
+import { useCtx } from '../../../../context/Ctx';
+import { ManagerAddItem } from './add-items';
+import { Loading } from '../../../../components/loading';
+import { ManagerAddCategories } from '../categories/add-categories';
+import ItemPage from './components/ItemPage';
+import api from '../../../../config/AxiosBase';
 
 export function ManagerItems() {
   const { updateModalStatus, apiDone } = useCtx();
@@ -15,7 +16,7 @@ export function ManagerItems() {
   const getItems = async () => {
     try {
       setLoading(true);
-      const resp = await api.get("/getItems", {
+      const resp = await api.get('/getItems', {
         withCredentials: true,
       });
 
@@ -43,13 +44,25 @@ export function ManagerItems() {
     <div>
       <div className="flex items-center justify-between py-4">
         <h1 className="text-2xl font-bold">Menu Items</h1>
-        <PlusIcon
-          onClick={() => updateModalStatus(true, <ManagerAddItem />)}
-          className="h-8 w-8 text-gray-900 cursor-pointer"
-        />
+        <div className="flex gap-4">
+          <button
+            onClick={() => updateModalStatus(true, <ManagerAddCategories />)}
+            className="cursor-pointer flex items-center gap-2 text-sm font-semibold bg-gray-800 text-white px-2 py-1 rounded-md"
+          >
+            Category
+            <PlusIcon className="h-6 w-6" />
+          </button>
+          <button
+            onClick={() => updateModalStatus(true, <ManagerAddItem />)}
+            className="cursor-pointer flex items-center gap-2 text-sm font-semibold bg-gray-800 text-white px-2 py-1 rounded-md"
+          >
+            Item
+            <PlusIcon className="h-6 w-6" />
+          </button>
+        </div>
       </div>
+      <ItemPage />
       <div className="text-2xl flex flex-col gap-2">
-        <ManagerItemsListingItems formattedD={formattedData} />
         {!formattedData && error && (
           <div>
             <h1 className="font-bold text-xl">

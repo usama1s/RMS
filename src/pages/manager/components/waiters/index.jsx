@@ -39,6 +39,8 @@ export function ManagersWaiterSection() {
       </div>
     );
 
+  console.log({ formattedData });
+
   return (
     <div>
       <div className="flex items-center justify-between py-4">
@@ -90,6 +92,19 @@ export function ManagersWaiterSection() {
                     )
                   ) : null}
                 </div>
+                {data?.serviceTypes ? (
+                  <p className="text-sm font-bold">
+                    Service Type:
+                    {data.serviceTypes.map((item, index) => (
+                      <span
+                        className="ml-1 font-semibold bg-gray-800 text-white p-1 rounded-md text-sm"
+                        key={index + 1}
+                      >
+                        {item}
+                      </span>
+                    ))}
+                  </p>
+                ) : null}
               </div>
               {(managerClocking?.managerId._id ===
                 localStorage.getItem('managerId') &&
@@ -119,7 +134,8 @@ export function ManagersWaiterSection() {
                           wr_userName={data?.userName}
                           wr_name={data?.name}
                           wr_role={data?.waiterRole}
-                          wr_lobbyAssigned={data?.lobbyAssigned}
+                          wr_lobbyAssigned={data?.assignedLobbies}
+                          wr_serviceTypes={data?.serviceTypes}
                         />
                       )
                     }

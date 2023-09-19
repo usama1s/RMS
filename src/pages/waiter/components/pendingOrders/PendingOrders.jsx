@@ -6,8 +6,6 @@ import { WaiterOrder } from '../orders';
 import { IoIosArrowForward } from 'react-icons/io';
 
 const PendingOrders = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(false);
   const [formattedData, setFormattedData] = useState();
   const [ordersList, setOrdersList] = useState();
   const [noLobbyError, setNoLobbyError] = useState('');
@@ -20,7 +18,6 @@ const PendingOrders = () => {
 
   const getLobbies = async () => {
     try {
-      setIsLoading(true);
       let lobbyIds = [];
 
       const subRole = localStorage.getItem('SubRole');
@@ -56,8 +53,6 @@ const PendingOrders = () => {
       setActive(resp?.data?.data?.lobbyName);
     } catch (err) {
       setNoLobbyError(err?.response?.data?.message);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -95,24 +90,9 @@ const PendingOrders = () => {
   };
 
   useEffect(() => {
-    // getMe();
     getLobbies();
     getOrders();
   }, [apiDone]);
-
-  function filterArrayByValues(arr1, arr2) {
-    // Create a set of values from the first array for efficient lookup
-    const valuesToFilterBy = new Set(arr1?.map((item) => item.value));
-
-    // Use filter to create a new array containing only the items with matching values
-    const filteredArray = arr2?.filter((item) =>
-      valuesToFilterBy.has(item._id)
-    );
-
-    return filteredArray;
-  }
-
-  // console.log('testing ', filterArrayByValues(profile, formattedData));
 
   const handleItemClick = (lobbyName) => {
     setIsOpen((prevOpen) => (prevOpen === lobbyName ? '' : lobbyName));
@@ -163,12 +143,11 @@ const PendingOrders = () => {
     }
   };
 
-  if (error) return <p>Something went wrong.</p>;
   if (noLobbyError) return <p>No Lobbies Found</p>;
 
   return (
     <>
-      <main className="p-5 bg-light-blue">
+      <main className="bg-light-blue">
         <div className="flex justify-center items-start my-2">
           <div className="w-full my-1">
             <ul className="flex flex-col">

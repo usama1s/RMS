@@ -1,36 +1,36 @@
 import React, { useEffect, useState } from 'react';
-import LineChart from './LineChart';
 import api from '../../../../../config/AxiosBase';
+import BarChart from '../../../../../components/BarChart';
 
-const CoCharts = ({ type, id }) => {
+const ItemSoldByTime = ({ type, id }) => {
   const [configLabels, setConfigLabels] = useState();
   const [configData, setConfigData] = useState();
 
   const getItemState = async () => {
-    const resp = await api.get(`getSoldItemsQTY/${type}/${id}`, {
+    const resp = await api.get(`getSoldItemsPriceByClocking/${type}/${id}`, {
       withCredentials: 'true',
     });
 
     if (resp) {
       const sortedQuantities = resp.data.quantities.sort(
-        (a, b) => a.quantity - b.quantity
+        (a, b) => a._id - b._id
       );
-      const labels = sortedQuantities.map((data) => data.quantity);
-      const data = sortedQuantities.map((data) => data._id);
-      setConfigLabels(labels);
-      setConfigData(data);
+      const labels = sortedQuantities.map((data) => data._id);
+      const data = sortedQuantities.map((data) => data.totalPrice);
+      setConfigLabels(data);
+      setConfigData(labels);
     }
   };
 
   useEffect(() => {
     getItemState();
-  }, [id, type]);
+  }, [type, id]);
 
-  const chartData = {
+  const chartDummyData = {
     labels: configData,
     datasets: [
       {
-        label: 'Item Sold Quantity',
+        label: 'Item Sold By Time',
         data: configLabels,
         backgroundColor: [
           'rgba(75,192,192,1)',
@@ -46,12 +46,10 @@ const CoCharts = ({ type, id }) => {
   };
 
   return (
-    <div className="mt-4">
-      <div className="w-[300px] 2xl:w-[400px]">
-        <LineChart chartData={chartData} />
-      </div>
+    <div className="mt-4 w-[300px] 2xl:w-[400px]">
+      <BarChart chartData={chartDummyData} />
     </div>
   );
 };
 
-export default CoCharts;
+export default ItemSoldByTime;

@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { ManagerOrderCards } from './cards';
-import { Loading } from '../../../../components/loading';
-import { useCtx } from '../../../../context/Ctx';
-import api from '../../../../config/AxiosBase';
+import { useState, useEffect } from 'react';
+import { TakeawayItemCard } from './takeawayItemCard';
+import { Loading } from '../../../../../components/loading';
+import { useCtx } from '../../../../../context/Ctx';
+import api from '../../../../../config/AxiosBase';
 
-export function WaiterOrder() {
+export function MenuCategories() {
   const [loading, setLoading] = useState(false);
   const [formattedData, setFormattedData] = useState();
   const [items, setItems] = useState();
   const [active, setActive] = useState('');
-  const { apiDone } = useCtx;
   const [categoryError, setCategoryError] = useState('');
+  const { apiDone } = useCtx;
 
   const getCategories = async () => {
     try {
@@ -87,7 +87,7 @@ export function WaiterOrder() {
         )}
       </div>
 
-      <ManagerOrderCards items={items} />
+      <TakeawayItemCard items={items} />
     </>
   );
 }

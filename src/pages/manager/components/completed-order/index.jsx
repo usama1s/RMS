@@ -5,16 +5,24 @@ import DataTable from 'react-data-table-component';
 import CoCharts from './components/CoCharts';
 import CoStats from './components/CoStats';
 import ItemPriceChart from './components/ItemPriceChart';
+import ItemSoldByTime from './components/ItemSoldByTime';
+import NetPriceStats from './components/NetPriceStats';
+import StatisticsSelection from './components/StatisticsSelection';
 
 export const CompletedOrder = () => {
   const { apiDone, selectedOrderType } = useCtx();
-  const [loading, setLoading] = useState(false);
   const [formattedData, setFormattedData] = useState();
   const [expenseData, setExpenseData] = useState();
   const [clockingData, setClockingData] = useState();
   const [selectedClocking, setSelectedClocking] = useState('all');
   const [showOrderTable, setShowOrderTable] = useState(true);
   const [showExpenseTable, setShowExpenseTable] = useState(false);
+  const [selectedClockingPeriod, setSelectedClockingPeriod] = useState('');
+  const [statisticsState, setStatisticsState] = useState('all');
+
+  const handleStatisticsSelection = (data) => {
+    setStatisticsState(data);
+  };
 
   const getClockingsData = async () => {
     const resp = await api.get(
@@ -27,9 +35,12 @@ export const CompletedOrder = () => {
   };
 
   const getOrderByClockingsData = async () => {
-    const resp = await api.get(`/getOrderByClocking/${selectedClocking}`, {
-      withCredentials: true,
-    });
+    const resp = await api.get(
+      `/getOrderByClocking/${statisticsState}/${selectedClocking}`,
+      {
+        withCredentials: true,
+      }
+    );
     setFormattedData(resp.data.data);
   };
 
@@ -177,48 +188,66 @@ export const CompletedOrder = () => {
     getOrderByClockingsData();
     getExpenses();
     getClockingsData();
-  }, [apiDone]);
+  }, [apiDone, statisticsState]);
 
   useEffect(() => {
     getOrderByClockingsData();
     getExpenses();
   }, [selectedClocking]);
 
+  const handleClockingSelection = (e) => {
+    setSelectedClocking(e.target.value.split(',')[0]);
+    setSelectedClockingPeriod(e.target.value);
+  };
+
   return (
     <div className="mt-2">
+      <StatisticsSelection
+        handleStatisticsSelection={handleStatisticsSelection}
+      />
       <h1 className="text-2xl font-bold">Branch Statistics</h1>
       <div className="flex justify-between items-center">
-        {convertTimestamp(selectedClocking) === 'Invalid Date' ? (
-          <span className="bg-gray-100 text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded">
+        {selectedClockingPeriod === '' || selectedClockingPeriod === 'all' ? (
+          <span className="bg-gray-600 border border-gray-300 text-gray-50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-fit p-1">
             All
           </span>
         ) : (
-          <span className="bg-gray-100 text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded">
-            {convertTimestamp(selectedClocking)}
+          <span className="bg-gray-600 border border-gray-300 text-gray-50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-fit p-1">
+            {convertTimestamp(selectedClockingPeriod.split(',')[0])} to{' '}
+            {convertTimestamp(selectedClockingPeriod.split(',')[1])}
           </span>
         )}
         <select
-          onChange={(e) => setSelectedClocking(e.target.value)}
+          onChange={(e) => handleClockingSelection(e)}
           className="bg-gray-900 border border-gray-300 text-gray-50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-fit p-1"
         >
           <option value="all">All</option>
           {clockingData &&
             clockingData?.map((item, index) => (
-              <option key={index + 1} value={item?.startDateTime}>
-                {convertTimestamp(item?.startDateTime)} to{' '}
-                {convertTimestamp(item?.endDateTime)}
+              <option
+                key={index + 1}
+                value={`${item?.startDateTime},${item?.endDateTime}`}
+              >
+                {convertTimestamp(item?.startDateTime)}
               </option>
             ))}
         </select>
       </div>
+
+      <NetPriceStats id={selectedClocking} />
       <CoStats
+        type={statisticsState}
         id={selectedClocking}
         setShowExpenseTable={setShowExpenseTable}
         setShowOrderTable={setShowOrderTable}
       />
-      <div className="flex justify-center">
-        <CoCharts id={selectedClocking} />
-        <ItemPriceChart id={selectedClocking} />
+
+      <div className="flex justify-center mb-12 mx-6">
+        <div className="flex justify-between gap-4">
+          <CoCharts type={statisticsState} id={selectedClocking} />
+          <ItemPriceChart type={statisticsState} id={selectedClocking} />
+          <ItemSoldByTime type={statisticsState} id={selectedClocking} />
+        </div>
       </div>
       {showExpenseTable && (
         <DataTable
@@ -229,7 +258,6 @@ export const CompletedOrder = () => {
           highlightOnHover
           expandableRows
           expandableRowsComponent={expenseExpandedComponent}
-          loading={loading}
         />
       )}
       {showOrderTable && (
@@ -243,7 +271,6 @@ export const CompletedOrder = () => {
           highlightOnHover
           expandableRows
           expandableRowsComponent={ExpandedComponent}
-          loading={loading}
         />
       )}
     </div>

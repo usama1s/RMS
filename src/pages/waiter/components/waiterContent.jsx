@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useCtx } from '../../../context/Ctx';
 import { Modal } from '../../../components/modal';
-import { WaiterHeader } from './waiterHeader';
-// import { TakeAway } from './takeaway/index.jsx';
-// import { Dinein } from "./simple-waiter/dinein";
-import api from '../../../config/AxiosBase';
-import PendingOrders from './pendingOrders/PendingOrders';
+import { TakeAway } from './takeaway/index.jsx';
 import { AiFillWarning } from 'react-icons/ai';
+import { useCtx } from '../../../context/Ctx';
+import { WaiterHeader } from './waiterHeader';
+import PendingOrders from './pendingOrders/PendingOrders';
+import api from '../../../config/AxiosBase';
 
 export function WaiterContent() {
   const { activeWaiterTab, modalStatus } = useCtx();
@@ -34,8 +33,7 @@ export function WaiterContent() {
       case 'Dine in':
         return <PendingOrders />;
       case 'Take away':
-        return <p>Take away is under development</p>;
-      // return <TakeAway />;
+        return <TakeAway />;
       default:
         <h1>Abc</h1>;
     }
@@ -46,7 +44,7 @@ export function WaiterContent() {
       case 'Dine in':
         return <PendingOrders />;
       case 'Take away':
-        return <p>Take away is under development</p>;
+        return <TakeAway />;
       default:
         <h1>Abc</h1>;
     }

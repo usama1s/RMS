@@ -42,7 +42,7 @@ export function AddWaiters() {
 
   async function onSubmit(values) {
     setStatus({ loading: true, error: null });
-    console.log('test', values.lobbyAssigned);
+
     try {
       await api.post(
         '/waiter-register',
@@ -194,6 +194,7 @@ export function AddWaiters() {
             </div>
           </div>
           {status.error && <p className="text-red-500">{status.error}</p>}
+
           <button
             type="submit"
             disabled={status.loading}

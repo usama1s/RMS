@@ -1,15 +1,14 @@
-import { useState } from "react";
-import { TrashIcon, PencilIcon } from "@heroicons/react/24/solid";
-import { EditPaymentMethods } from "./edit-categories";
-import { useCtx } from "../../../../context/Ctx";
-import api from "../../../../config/AxiosBase";
+import { useState } from 'react';
+import { TrashIcon, PencilIcon } from '@heroicons/react/24/solid';
+import { EditPaymentMethods } from './edit-categories';
+import { useCtx } from '../../../../context/Ctx';
+import api from '../../../../config/AxiosBase';
 
 export function PaymentMethodsListingsItems({ formattedD }) {
   const {
     updateModalStatus,
     updateCategoryValue,
     updateApiDoneStatus,
-    editedCategoryValue,
     apiDone,
     managerClocking,
   } = useCtx();
@@ -27,12 +26,12 @@ export function PaymentMethodsListingsItems({ formattedD }) {
           className="flex items-center  bg-[#FBFBFB] shadow-md w-full p-4 rounded-md my-4 relative"
         >
           <div>
-            <h3 className="font-bold text-xl">{item?.title}</h3>
+            <h3 className="font-semibold text-lg">{item?.title}</h3>
           </div>
           {item?.cashStatus !== true ? (
             <>
               {(managerClocking?.managerId._id ===
-                localStorage.getItem("managerId") &&
+                localStorage.getItem('managerId') &&
                 managerClocking === undefined) ||
               managerClocking?.status !== true ? (
                 <div className="absolute right-4 flex">
@@ -105,7 +104,7 @@ const DeleteItemJSX = ({
                 console.log(e);
                 setStatus({
                   loading: false,
-                  error: "Error deleting the item.",
+                  error: 'Error deleting the item.',
                 });
               }
             }}

@@ -3,7 +3,7 @@ import { useCtx } from '../../../context/Ctx';
 import { Modal } from '../../../components/modal';
 import { Home } from './Home';
 import { Lobbies } from './lobbies';
-import { ManagerCategory } from './categories';
+// import { ManagerCategory } from './categories';
 import { ManagerItems } from './items';
 import { ManagersWaiterSection } from './waiters';
 import { PaymentMethods } from './payment-methods';
@@ -19,8 +19,8 @@ export function ManagerContent() {
         return <Home />;
       case 'Lobbies':
         return <Lobbies />;
-      case 'Categories':
-        return <ManagerCategory />;
+      // case 'Categories':
+      //   return <ManagerCategory />;
       case 'Menu Items':
         return <ManagerItems />;
       case 'Waiters':

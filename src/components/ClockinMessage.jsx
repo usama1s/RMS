@@ -11,7 +11,7 @@ const ClockinMessage = () => {
           Make sure you start the session only once in a day to avoid confusions
           later on in the stats and sales management.
         </span>
-        <span className="flex items-center gap-2">
+        <span className="flex  items-center gap-2 flex-wrap">
           <BsInfoCircleFill />
           <span className="font-semibold">Clock In</span> once you are going to
           start the sales in the morning and{' '}

@@ -1,24 +1,24 @@
-import { createContext, useContext, useEffect, useState } from "react";
-export const LOCAL_STORAGE_BASE = "INDIA_GATES_";
+import { createContext, useContext, useEffect, useState } from 'react';
+export const LOCAL_STORAGE_BASE = 'INDIA_GATES_';
 export const WAITER_SIDERBARLINKS_CHEF = [
-  { title: "Pending Orders", active: true },
+  { title: 'Pending Orders', active: true },
 ];
 export const WAITER_SIDERBARLINKS_NORMAL = [
-  { title: "Dine in", active: true },
-  { title: "Take away", active: false },
+  { title: 'Dine in', active: true },
+  { title: 'Take away', active: false },
 ];
 export const WAITER_SIDERBARLINKS_HEAD = [
-  { title: "Dine in", active: true },
-  { title: "Take away", active: false },
-  { title: "Pending Orders", active: false },
+  { title: 'Dine in', active: true },
+  { title: 'Take away', active: false },
+  { title: 'Pending Orders', active: false },
 ];
 
 const Ctx = createContext();
 
 export function CtxProvider({ children }) {
   const [modalStatus, setModalStatus] = useState({ status: false, jsx: null });
-  const [activeTab, setActiveTab] = useState("Home");
-  const [activeWaiterTab, setActiveWaiterTab] = useState("Dine in");
+  const [activeTab, setActiveTab] = useState('Home');
+  const [activeWaiterTab, setActiveWaiterTab] = useState('Dine in');
   const [managerSidebarToggle, setManagerSidebarToggle] = useState(false);
   const [authenticatedUser, setAuthenticatedUser] = useState();
   const [authDetailInfo, setAuthDetailInfo] = useState();
@@ -27,49 +27,45 @@ export function CtxProvider({ children }) {
   const [editedItemValue, setEditedItemValue] = useState(null);
   const [editedLobbyValue, setEditedLobbyValue] = useState(null);
   const [apiDone, setApiDone] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState("");
-  const [selectedOrderType, setSelectedOrderType] = useState("PaymentDone");
+  const [paymentMethod, setPaymentMethod] = useState('');
+  const [selectedOrderType, setSelectedOrderType] = useState('PaymentDone');
   const [managerClocking, setManagerClocking] = useState();
   const [waiterSidebarLinks, setWaiterSidebarLinks] = useState([
-    { title: "Dine in", active: true },
-    { title: "Take away", active: false },
+    { title: 'Dine in', active: true, ref: 'Dine-In' },
+    { title: 'Take away', active: false, ref: 'Takeaway' },
   ]);
   const [headWaiterSidebarLinks, setHeadWaiterSidebarLinks] = useState([
-    { title: "Dine in", active: true },
-    { title: "Take away", active: false },
+    { title: 'Dine in', active: true },
+    { title: 'Take away', active: false },
   ]);
   const [adminSidebarLinks, setAdminSidebarLinks] = useState([
-    { title: "Branches", active: true },
+    { title: 'Branches', active: true },
     // { title: "Z", active: false },
   ]);
-  const [activeAdminTab, setActiveAdminTab] = useState("Branches");
+  const [activeAdminTab, setActiveAdminTab] = useState('Branches');
   const [managerSidebarLinks, setManagerSidebarLinks] = useState([
     {
-      title: "Home",
+      title: 'Home',
       active: true,
     },
     {
-      title: "Lobbies",
+      title: 'Lobbies',
       active: false,
     },
     {
-      title: "Categories",
+      title: 'Menu Items',
       active: false,
     },
     {
-      title: "Menu Items",
+      title: 'Waiters',
       active: false,
     },
     {
-      title: "Waiters",
+      title: 'Payment Methods',
       active: false,
     },
     {
-      title: "Payment Methods",
-      active: false,
-    },
-    {
-      title: "Branch Statistics",
+      title: 'Branch Statistics',
       active: false,
     },
   ]);
@@ -144,7 +140,7 @@ export function CtxProvider({ children }) {
   const updateManagerSidebarToggle = (value) => () =>
     setManagerSidebarToggle(value);
   useEffect(() => {
-    setAuthenticatedUser(localStorage.getItem("ADMIN"));
+    setAuthenticatedUser(localStorage.getItem('ADMIN'));
     setAuthStatus(true);
   }, []);
 

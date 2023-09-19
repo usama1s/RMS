@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useCtx } from '../../../../context/Ctx';
 import api from '../../../../config/AxiosBase';
 import Select from 'react-select';
+import { BsCheckLg } from 'react-icons/bs';
 
 export function ManagerEditWaiter({
   waiterId,
@@ -9,6 +10,7 @@ export function ManagerEditWaiter({
   wr_name,
   wr_role,
   wr_lobbyAssigned,
+  wr_serviceTypes,
 }) {
   const id = localStorage.getItem('managerId');
   const [status, setStatus] = useState({ loading: false, error: null });
@@ -19,6 +21,24 @@ export function ManagerEditWaiter({
   const [password, setPassword] = useState('');
   const [lobbiesData, setLobbiesData] = useState();
   const [lobbyAssigned, setLobbyAssigned] = useState(wr_lobbyAssigned);
+  const initialDineInChecked = wr_serviceTypes.includes('Dine-In')
+    ? true
+    : false;
+  const [isDineInChecked, setIsDineInChecked] = useState(initialDineInChecked);
+  const initialTakeawayChecked = wr_serviceTypes.includes('Takeaway')
+    ? true
+    : false;
+  const [isTakeawayChecked, setIsTakeawayChecked] = useState(
+    initialTakeawayChecked
+  );
+
+  const handleDineInChange = () => {
+    setIsDineInChecked(!isDineInChecked);
+  };
+
+  const handleTakeawayChange = () => {
+    setIsTakeawayChecked(!isTakeawayChecked);
+  };
 
   const getLobbies = async () => {
     try {
@@ -40,12 +60,18 @@ export function ManagerEditWaiter({
   async function onSubmit() {
     if (password || password === '') {
       setStatus({ loading: true, error: null });
+
+      const serviceTypes = (isDineInChecked ? ['Dine-In'] : []).concat(
+        isTakeawayChecked ? ['Takeaway'] : []
+      );
+
       try {
         const payload = {
           name,
           waiterRole,
           userName,
           lobbyAssigned,
+          serviceTypes,
         };
 
         if (password !== '') {
@@ -115,6 +141,52 @@ export function ManagerEditWaiter({
             </div>
           </div>
           {waiterRole === 'Regular Waiter' && (
+            <div className="flex gap-4">
+              <label className="flex cursor-pointer select-none items-center text-sm font-semibold text-gray-800">
+                <div className="relative">
+                  <input
+                    type="checkbox"
+                    className="sr-only"
+                    checked={isDineInChecked}
+                    onChange={handleDineInChange}
+                  />
+                  <div className="box mr-1 flex h-5 w-5 items-center justify-center rounded border border-gray-800">
+                    <span
+                      className={`opacity-${isDineInChecked ? '100' : '0'}`}
+                    >
+                      <BsCheckLg
+                        className="w-4 h-4 text-green-600"
+                        style={{ strokeWidth: '2' }}
+                      />
+                    </span>
+                  </div>
+                </div>
+                Dine In
+              </label>
+              <label className="flex cursor-pointer select-none items-center text-sm font-semibold text-gray-800">
+                <div className="relative">
+                  <input
+                    type="checkbox"
+                    className="sr-only"
+                    checked={isTakeawayChecked}
+                    onChange={handleTakeawayChange}
+                  />
+                  <div className="box mr-1 flex h-5 w-5 items-center justify-center rounded border border-gray-800">
+                    <span
+                      className={`opacity-${isTakeawayChecked ? '100' : '0'}`}
+                    >
+                      <BsCheckLg
+                        className="w-4 h-4 text-green-600"
+                        style={{ strokeWidth: '2' }}
+                      />
+                    </span>
+                  </div>
+                </div>
+                Takeaway
+              </label>
+            </div>
+          )}
+          {waiterRole === 'Regular Waiter' && isDineInChecked && (
             <div>
               <label
                 htmlFor="lobbyAssigned"

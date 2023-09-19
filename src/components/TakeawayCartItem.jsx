@@ -1,7 +1,7 @@
 import { useCtx } from '../context/Ctx';
 import api from '../config/AxiosBase';
 
-export function CartItems(props) {
+export function TakeawayCartItem(props) {
   const { updateModalStatus, updateApiDoneStatus, apiDone } = useCtx();
 
   function convertToReadable(dateTimeString) {
@@ -75,10 +75,6 @@ export function CartItems(props) {
                       Customer Note
                     </h5>
                     <p className="text-sm">{j.customerNote}</p>
-                    <h5 className="font-semibold text-sm text-gray-500 underline">
-                      Customer Count
-                    </h5>
-                    <p className="text-sm">{pItem.customerCount}</p>
                   </>
                 ) : null}
 

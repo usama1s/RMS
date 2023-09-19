@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { useCtx } from "../../../context/Ctx";
-import { MdRestaurantMenu } from "react-icons/md";
-import api from "../../../config/AxiosBase";
+import React, { useState, useEffect } from 'react';
+import { useCtx } from '../../../context/Ctx';
+import { MdRestaurantMenu } from 'react-icons/md';
+import api from '../../../config/AxiosBase';
 
 export function WaiterSidebar() {
   const [profileData, setProfileData] = useState();
@@ -17,7 +17,7 @@ export function WaiterSidebar() {
 
   const getMe = async () => {
     try {
-      const resp = await api.get("/me", { withCredentials: true });
+      const resp = await api.get('/me', { withCredentials: true });
       setProfileData(resp.data.data.doc);
     } catch (err) {
       console.log(err);
@@ -28,13 +28,19 @@ export function WaiterSidebar() {
     getMe();
   }, []);
 
-  const role = localStorage.getItem("SubRole");
-  if (role !== "Head Waiter") {
-    JSX = waiterSidebarLinks.map(({ title, active }) => (
+  const role = localStorage.getItem('SubRole');
+  const serviceTypes = profileData?.serviceTypes;
+
+  const filteredSidebarLinks = waiterSidebarLinks.filter((link) => {
+    return serviceTypes?.includes(link.ref);
+  });
+
+  if (role !== 'Head Waiter') {
+    JSX = filteredSidebarLinks.map(({ title, active }) => (
       <div
         key={title}
         className={`flex items-center w-full h-12 px-3 mt-1 cursor-pointer ${
-          active && "bg-gray-900 text-white"
+          active && 'bg-gray-900 text-white'
         }  rounded`}
         onClick={updateWaiterSidebarLinks(title)}
       >
@@ -48,7 +54,7 @@ export function WaiterSidebar() {
       <div
         key={title}
         className={`flex items-center w-full h-12 px-3 mt-1 cursor-pointer ${
-          active && "bg-gray-900 text-white"
+          active && 'bg-gray-900 text-white'
         }  rounded`}
         onClick={updateHeadWaiterSidebarLinks(title)}
       >
@@ -62,7 +68,7 @@ export function WaiterSidebar() {
   return (
     <div
       className={`flex flex-col items-center ${
-        managerSidebarToggle ? "-translate-x-[-100%] w-0" : "translate-x-0 w-64"
+        managerSidebarToggle ? '-translate-x-[-100%] w-0' : 'translate-x-0 w-64'
       } md:translate-x-0 md:w-64 min-h-[100vh] overflow-hidden text-gray-700 bg-gray-100  rounded transition-all duration-75 ease-in`}
     >
       <div className="flex flex-col justify-center items-center w-full h-16">

@@ -57,8 +57,8 @@ const HomeStats = () => {
   const fetchDataAsync = async (clockingData) => {
     try {
       const [orders, sales, expenses] = await Promise.all([
-        fetchData(`/getOrderByClocking/${clockingData}`),
-        fetchData(`/getSoldItemsSales/${clockingData}`),
+        fetchData(`/getOrderByClocking/all/${clockingData}`),
+        fetchData(`/getSoldItemsSales/all/${clockingData}`),
         fetchData(`/getAllExpenses/${clockingData}`),
       ]);
 

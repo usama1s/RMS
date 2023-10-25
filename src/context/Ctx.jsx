@@ -49,7 +49,7 @@ export function CtxProvider({ children }) {
       active: true,
     },
     {
-      title: 'Lobbies',
+      title: 'Floors',
       active: false,
     },
     {

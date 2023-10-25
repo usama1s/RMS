@@ -21,14 +21,14 @@ export function CartCtxProvider({ children }) {
   const cartTotalPrice =
     cartNoOfItems > 0
       ? itemsOfCart.reduce((accum, item) => {
-          return accum + item.price * item.qty;
-        }, 0)
+        return accum + item.price * item.qty;
+      }, 0)
       : 0;
   const cartTotalPrice2 =
     cartNoOfItems2 > 0
       ? apiItemsOfCart.reduce((accum, item) => {
-          return accum + item.price * item.qty;
-        }, 0)
+        return accum + item.price * item.qty;
+      }, 0)
       : 0;
   let TotalPriceOfCart = cartTotalPrice + cartTotalPrice2;
 

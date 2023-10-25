@@ -4,9 +4,9 @@ export const validation_schema_form = Yup.object({
   email: Yup.string()
     .matches(
       /^(?:[a-zA-Z0-9._]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}|[a-zA-Z0-9._]+)$/,
-      'Invalid email or username'
+      'Invalid email'
     )
-    .required('Email or username is required'),
+    .required('Email is required'),
   password: Yup.string().required('Password is required.'),
 });
 export const validation_schema_form_b = Yup.object({

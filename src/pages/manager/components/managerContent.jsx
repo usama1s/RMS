@@ -2,8 +2,7 @@ import { ManagerHeader } from './managerHeader';
 import { useCtx } from '../../../context/Ctx';
 import { Modal } from '../../../components/modal';
 import { Home } from './Home';
-import { Lobbies } from './lobbies';
-// import { ManagerCategory } from './categories';
+import { Floors } from './floors';
 import { ManagerItems } from './items';
 import { ManagersWaiterSection } from './waiters';
 import { PaymentMethods } from './payment-methods';
@@ -17,8 +16,8 @@ export function ManagerContent() {
     switch (slug) {
       case 'Home':
         return <Home />;
-      case 'Lobbies':
-        return <Lobbies />;
+      case 'Floors':
+        return <Floors />;
       // case 'Categories':
       //   return <ManagerCategory />;
       case 'Menu Items':

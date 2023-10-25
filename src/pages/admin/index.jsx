@@ -1,4 +1,4 @@
-import { AdminLayout } from "./components/adminLayout";
+import { AdminLayout } from "../../layouts/adminLayout";
 import { AdminContent } from "./components/adminContent";
 
 export function Admin() {

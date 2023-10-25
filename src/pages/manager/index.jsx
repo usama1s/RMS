@@ -1,4 +1,4 @@
-import { ManagerLayout } from './components/managerLayout';
+import { ManagerLayout } from '../../layouts/managerLayout';
 import { ManagerContent } from './components/managerContent';
 import { CartModal } from '../../components/cartModal';
 import { useCartCtx } from '../../context/CartCtx';
